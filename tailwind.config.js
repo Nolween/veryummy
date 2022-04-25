@@ -7,7 +7,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'veryummy-primary': '#43A680'
+        'veryummy-primary': '#43A680',
+        'veryummy-secondary': '#489CC1',
       }
     },
   },
