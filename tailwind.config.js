@@ -9,6 +9,7 @@ module.exports = {
       colors: {
         'veryummy-primary': '#43A680',
         'veryummy-secondary': '#489CC1',
+        'veryummy-ternary': '#F67E7D',
       }
     },
   },
