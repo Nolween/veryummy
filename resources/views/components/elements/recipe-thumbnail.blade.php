@@ -1,5 +1,5 @@
 <div class="w-full">
-    <img class="w-full h-40 object-cover rounded-2xl mb-2" src="https://picsum.photos/200/300" alt="test">
+    <img class="w-full h-40 object-cover rounded-2xl mb-2" src="https://images.unsplash.com/photo-1499028344343-cd173ffc68a9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80" alt="test">
     <div class="bg-gray-100 drop-shadow-md rounded-lg">
         <p class="my-0 h-7"><span class="leading-none pl-4 text-veryummy-primary text-left text-3xl">Recette
                 1</span></p>
