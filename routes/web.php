@@ -22,3 +22,6 @@ Route::get('/exploration', function () {
 Route::get('/my-recipes', function () {
     return view('myrecipes');
 });
+Route::get('/recipe/view', function () {
+    return view('recipeview');
+});
