@@ -25,3 +25,6 @@ Route::get('/my-recipes', function () {
 Route::get('/recipe/view', function () {
     return view('recipeview');
 });
+Route::get('/recipe/new', function () {
+    return view('recipenew');
+});

@@ -30,6 +30,10 @@
         }
 
     </style>
+    {{-- JAVASCRIPT --}}
+    <script>
+
+    </script>
 </head>
 
 <body class="antialiased">
@@ -54,22 +58,36 @@
                 <div class="w-full lg:w-1/2 lg:pl-2 mb-3">
                     <select name="cars" id="cars"
                         class="text-gray-400 border-gray-100 border-2 text-4xl w-full pl-4 rounded-sm focus:border-gray-400 focus:outline-none">
-                        <option value="volvo">TOUS</option>
-                        <option value="saab">VEGETARIEN</option>
-                        <option value="mercedes">VEGAN</option>
-                        <option value="audi">SANS GLUTEN</option>
+                        <option value="1">TOUS</option>
+                        <option value="2">VEGETARIEN</option>
+                        <option value="3">VEGAN</option>
+                        <option value="4">SANS GLUTEN</option>
                     </select>
                 </div>
 
-                <div class="w-full text-center my-auto mt-2 mb-12">
-                    <span class="text-veryummy-ternary text-4xl">2547 RECETTES</span>
+                <div
+                    class="w-3/4 flex flex-wrap justify-center sm:justify-between mx-auto text-center my-auto mt-2 mb-12">
+                    <span class="text-veryummy-primary text-4xl">2547 RECETTES</span>
+                    <a href="{{ url('/recipe/new') }}">
+                        <button type="button" class="bg-white text-3xl" id="newRecipe"><span
+                                class="bg-veryummy-primary pt-3 pb-2 px-3 text-white rounded-sm">NOUVELLE
+                                RECETTE</span></button>
+                    </a>
                 </div>
             </div>
-            <div class="w-full mb-3 flex justify-center">
-              <button class="bg-veryummy-primary text-4xl text-white text-center px-3 mr-3"><<</button>
-              <button class="bg-veryummy-primary text-4xl text-white text-center px-3 mr-3"><</button>
-              <button class="bg-veryummy-primary text-4xl text-white text-center px-3 mr-3">></button>
-              <button class="bg-veryummy-primary text-4xl text-white text-center px-3 mr-3">>></button>
+            <div class="w-full mb-3 flex justify-center ">
+                <button class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                    <x-fas-angle-double-left class="h-6 w-6" />
+                </button>
+                <button class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                    <x-fas-angle-left class="h-6 w-6" />
+                </button>
+                <button class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                    <x-fas-angle-right class="h-6 w-6" />
+                </button>
+                <button class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                    <x-fas-angle-double-right class="h-6 w-6" />
+                </button>
             </div>
         </form>
         {{-- RECETTES --}}
@@ -79,6 +97,20 @@
                     <x-elements.recipe-thumbnail />
                 </div>
             @endfor
+        </div>
+        <div class="w-full mb-3 flex justify-center ">
+            <button class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                <x-fas-angle-double-left class="h-6 w-6" />
+            </button>
+            <button class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                <x-fas-angle-left class="h-6 w-6" />
+            </button>
+            <button class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                <x-fas-angle-right class="h-6 w-6" />
+            </button>
+            <button class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                <x-fas-angle-double-right class="h-6 w-6" />
+            </button>
         </div>
     </div>
 </body>

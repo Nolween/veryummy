@@ -62,14 +62,22 @@
                 </div>
 
                 <div class="w-full text-center my-auto mt-2 mb-12">
-                    <span class="text-veryummy-ternary text-4xl">2547 RECETTES</span>
+                    <span class="text-veryummy-primary text-4xl">2547 RECETTES</span>
                 </div>
             </div>
-            <div class="w-full mb-3 flex justify-center">
-              <button class="bg-veryummy-primary text-4xl text-white text-center px-3 mr-3"><<</button>
-              <button class="bg-veryummy-primary text-4xl text-white text-center px-3 mr-3"><</button>
-              <button class="bg-veryummy-primary text-4xl text-white text-center px-3 mr-3">></button>
-              <button class="bg-veryummy-primary text-4xl text-white text-center px-3 mr-3">>></button>
+            <div class="w-full mb-3 flex justify-center ">
+                <button class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                    <x-fas-angle-double-left class="h-6 w-6" />
+                </button>
+                <button class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                    <x-fas-angle-left class="h-6 w-6" />
+                </button>
+                <button class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                    <x-fas-angle-right class="h-6 w-6" />
+                </button>
+                <button class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                    <x-fas-angle-double-right class="h-6 w-6" />
+                </button>
             </div>
         </form>
         {{-- RECETTES --}}
@@ -79,6 +87,20 @@
                     <x-elements.recipe-thumbnail />
                 </div>
             @endfor
+        </div>
+        <div class="w-full mb-3 flex justify-center ">
+            <button class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                <x-fas-angle-double-left class="h-6 w-6" />
+            </button>
+            <button class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                <x-fas-angle-left class="h-6 w-6" />
+            </button>
+            <button class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                <x-fas-angle-right class="h-6 w-6" />
+            </button>
+            <button class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                <x-fas-angle-double-right class="h-6 w-6" />
+            </button>
         </div>
     </div>
 </body>

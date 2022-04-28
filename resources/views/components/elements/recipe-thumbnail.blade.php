@@ -1,9 +1,9 @@
 <div class="w-full cursor-pointer">
     <a href="{{ url('/recipe/view') }}">
-        <img class="w-full h-40 object-cover rounded-2xl mb-2"
+        <img class="w-full h-40 object-cover rounded-sm mb-2"
             src="https://images.unsplash.com/photo-1499028344343-cd173ffc68a9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80"
             alt="test">
-        <div class="bg-gray-100 drop-shadow-md rounded-lg">
+        <div class="bg-gray-100 drop-shadow-md rounded-sm">
             <p class="my-0 h-7"><span class="leading-none pl-4 text-veryummy-primary text-left text-3xl">Recette
                     1</span></p>
             <p class="my-0 h-7"><span class="leading-none pl-4 text-veryummy-secondary text-left text-3xl">3 ETAPES
