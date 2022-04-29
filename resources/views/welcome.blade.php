@@ -58,12 +58,12 @@
         </div>
         <div class="px-4 divide-y-4 divide-dotted divide-gray-200">
             <div class="flex mb-3 flex-wrap justify-center">
-                <div class="w-full sm:w-1/2 lg:w-1/3"><a href="{{ url('/exploration') }}" class="cursor-pointer"><img
+                <div class="w-full sm:w-1/2 lg:w-1/3"><a href="{{ route('exploration.list') }}" class="cursor-pointer"><img
                             class="w-full max-h-80 object-cover rounded-sm mb-2 cursor-pointer"
                             src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
                             alt="test"></a></div>
                 <div class="w-full sm:w-1/2 lg:w-1/3 my-auto">
-                    <a href="{{ url('/exploration') }}" class="cursor-pointer">
+                    <a href="{{ reoute('exploration.list') }}" class="cursor-pointer">
                         <p
                             class="h-full px-4 text-veryummy-primary text-5xl md:text-7xl w-full text-center cursor-pointer">
                             EXPLORER DE
@@ -73,13 +73,13 @@
             </div>
             <div class="pt-4 flex flex-wrap justify-center">
                 <div class="w-full sm:w-1/2  lg:w-1/3 my-auto ">
-                    <a href="{{ url('/my-recipes') }}" class="cursor-pointer">
+                    <a href="{{ route('my-recipes.list') }}" class="cursor-pointer">
                         <p
                             class="h-full px-4 text-veryummy-primary text-5xl md:text-7xl w-full text-center cursor-pointer">
                             MES RECETTES</p>
                     </a>
                 </div>
-                <div class="w-full sm:w-1/2 lg:w-1/3 cursor-pointer"><a href="{{ url('/my-recipes') }}"
+                <div class="w-full sm:w-1/2 lg:w-1/3 cursor-pointer"><a href="{{ route('my-recipes.list') }}"
                         class="cursor-pointer"><img class="w-full max-h-80 object-cover rounded-sm mb-2"
                             src="https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
                             alt="test"></a></div>

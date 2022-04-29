@@ -43,7 +43,7 @@
 
         {{-- Titre de la page --}}
         <div class="mb-4 pt-20 sm:pt-10">
-            <h1 class="text-veryummy-secondary text-9xl w-full text-center">MES RECETTES</h1>
+            <h1 class="text-veryummy-secondary text-9xl w-full text-center">MON CARNET</h1>
         </div>
         <form method="GET" action="/profile">
             @csrf
@@ -68,9 +68,9 @@
                 <div
                     class="w-3/4 flex flex-wrap justify-center sm:justify-between mx-auto text-center my-auto mt-2 mb-12">
                     <span class="text-veryummy-primary text-4xl">2547 RECETTES</span>
-                    <a href="{{ route('my-notebook.list') }}">
+                    <a href="{{ route('my-recipes.list') }}">
                         <button type="button" class="bg-white text-3xl" id="newRecipe"><span
-                                class="bg-veryummy-secondary pt-3 pb-2 px-3 text-white rounded-sm">MON CARNET</span></button>
+                                class="bg-veryummy-secondary pt-3 pb-2 px-3 text-white rounded-sm">MES RECETTES</span></button>
                     </a>
                     <a href="{{ route('my-recipes.new') }}">
                         <button type="button" class="bg-white text-3xl" id="newRecipe"><span

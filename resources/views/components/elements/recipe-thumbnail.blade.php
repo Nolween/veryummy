@@ -1,5 +1,6 @@
 <div class="w-full cursor-pointer">
-    <a href="{{ url('/recipe/view') }}">
+
+    <a href="{{ Route::currentRouteName() === 'my-recipes.list' ? route('my-recipes.edit', ['54']) : route('my-recipes.view', ['54']) }}">
         <img class="w-full h-40 object-cover rounded-sm mb-2"
             src="https://images.unsplash.com/photo-1499028344343-cd173ffc68a9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80"
             alt="test">

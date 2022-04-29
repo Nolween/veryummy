@@ -15,16 +15,22 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 Route::get('/exploration', function () {
     return view('exploration');
-});
+})->name('exploration.list');
+Route::get('/my-notebook', function () {
+    return view('mynotebook');
+})->name('my-notebook.list');
 Route::get('/my-recipes', function () {
     return view('myrecipes');
-});
-Route::get('/recipe/view', function () {
+})->name('my-recipes.list');
+Route::get('/recipe/view/{id}', function ($i) {
     return view('recipeview');
-});
+})->name('my-recipes.view');
 Route::get('/recipe/new', function () {
     return view('recipenew');
-});
+})->name('my-recipes.new');
+Route::get('/recipe/edit/{id}', function ($id) {
+    return view('recipeedit');
+})->name('my-recipes.edit');
