@@ -46,10 +46,11 @@
                     <select name="ingredient[` + count.value + `][unit]"
                         class="text-gray-400 border-gray-100 border-2 text-4xl w-38 pl-4 rounded-sm focus:border-gray-400 focus:outline-none ml-2 mb-3">
                         <option value="1">UNITE(S)</option>
-                        <option value="2">CUILLERE(S) A SOUPE</option>
-                        <option value="3">CUILLERE(S) A CAFE</option>
-                        <option value="4">CENTILITRE(S)</option>
-                        <option value="5">LITRE(S)</option>
+                        <option value="2">GRAMME(S)</option>
+                        <option value="3">CUILLERE(S) A SOUPE</option>
+                        <option value="4">CUILLERE(S) A CAFE</option>
+                        <option value="5">CENTILITRE(S)</option>
+                        <option value="6">LITRE(S)</option>
                     </select>
                     <input type="number" name="ingredient[` + count.value + `][quantity]"
                         class="caret-gray-400 border-gray-100 border-2 text-4xl text-gray-400 w-24 pl-4 mx-3 rounded-sm focus:border-gray-400 focus:outline-none">
@@ -102,7 +103,7 @@
 
 @php
 $name = 'LES SCOUBIDOUS';
-$photo = '01.jpg';
+$photo = '1.jpg';
 $cookingTime = 30;
 $makingTime = 20;
 $ingredients = [['name' => 'Pommes', 'unit' => 1, 'quantity' => 5], ['name' => 'Poires', 'unit' => 1, 'quantity' => 4], ['name' => 'Scoubidoubidou', 'unit' => 3, 'quantity' => 3]];
@@ -164,13 +165,15 @@ $steps = ['Prenez les pommes', 'Prenez les poires', 'Prenez le scoubidoubidou', 
                         <select name="ingredient[{{ $ingredientK }}][unit]"
                             class="text-gray-400 border-gray-100 border-2 text-4xl w-38 pl-4 rounded-sm focus:border-gray-400 focus:outline-none ml-2 mb-3">
                             <option value="1" {{ $ingredientV['unit'] === 1 ? 'selected' : '' }}>UNITE(S)</option>
-                            <option value="2" {{ $ingredientV['unit'] === 2 ? 'selected' : '' }}>CUILLERE(S) A SOUPE
+                            <option value="2" {{ $ingredientV['unit'] === 2 ? 'selected' : '' }}>GRAMME(S)
                             </option>
-                            <option value="3" {{ $ingredientV['unit'] === 3 ? 'selected' : '' }}>CUILLERE(S) A CAFE
+                            <option value="2" {{ $ingredientV['unit'] === 3 ? 'selected' : '' }}>CUILLERE(S) A SOUPE
                             </option>
-                            <option value="4" {{ $ingredientV['unit'] === 4 ? 'selected' : '' }}>CENTILITRE(S)
+                            <option value="3" {{ $ingredientV['unit'] === 4 ? 'selected' : '' }}>CUILLERE(S) A CAFE
                             </option>
-                            <option value="5" {{ $ingredientV['unit'] === 5 ? 'selected' : '' }}>LITRE(S)</option>
+                            <option value="4" {{ $ingredientV['unit'] === 5 ? 'selected' : '' }}>CENTILITRE(S)
+                            </option>
+                            <option value="5" {{ $ingredientV['unit'] === 6 ? 'selected' : '' }}>LITRE(S)</option>
                         </select>
                         <input type="number" name="ingredient[{{ $ingredientK }}][quantity]"
                             value="{{ $ingredientV['quantity'] }}"
