@@ -68,7 +68,8 @@
             count.value = parseInt(count.value) + 1
 
             var newStep = `
-            <div class="w-full xl:w-3/4 flex flex-wrap my-4 pt-8 px-4 mx-auto justify-center" id="stepInputs` + count.value + `">
+            <div class="w-full xl:w-3/4 flex flex-wrap my-4 pt-8 px-4 mx-auto justify-center" id="stepInputs` + count
+                .value + `">
                 <textarea type="text" placeholder="ETAPE" name="step[0][description]"
                     class="caret-gray-400 border-gray-100 border-2 text-4xl w-3/4 pl-4 text-gray-400 rounded-sm focus:border-gray-400 focus:outline-none mb-3 mx-3"></textarea>
                 <button onclick="deleteStep(` + count.value + `)" type="button" class="bg-veryummy-ternary text-4xl p-2 rounded-sm align-middle my-auto">
@@ -90,6 +91,12 @@
             var stepToDelete = document.getElementById("stepInputs" + place)
             stepToDelete.remove()
         }
+
+        // Modification de la photo
+        var loadFile = function(event) {
+            var image = document.getElementById('photo');
+            image.src = URL.createObjectURL(event.target.files[0]);
+        };
     </script>
 </head>
 
@@ -107,10 +114,13 @@
                 class="caret-gray-400 border-gray-100 border-2 text-4xl w-full pl-4 rounded-sm focus:border-gray-400 focus:outline-none">
         </div>
         {{-- Photo --}}
-        <div class="w-3/4 lg:w-1/2 mb-3 px-4 mx-auto">
-            <img class="w-full h-full max-h-80 object-cover rounded-sm mb-2"
-                src="https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
-                alt="test">
+        <div class="w-3/4 lg:w-1/2 mb-3 px-4 mx-auto" id="photo-div">
+            <label for="photo-input">
+                <img class="w-full h-full max-h-80 object-cover rounded-sm mb-2 cursor-pointer" id="photo"
+                    src="{{ asset('img/ajout-photo.png') }}"
+                    alt="test">
+            </label>
+            <input id="photo-input" type="file" accept="image/*" name="image" id="photo-input" onchange="loadFile(event)" style="display: none;" />
         </div>
         {{-- Résumé --}}
         {{-- Préparation --}}
@@ -186,8 +196,7 @@
 
         {{-- Validation du formulaire --}}
         <div class="w-4/5 lg:w-1/2 text-center mb-10 mx-auto">
-            <button type="button" class="bg-veryummy-secondary text-4xl p-2 rounded-sm w-full"><span class="text-white"
-                    onclick="insertStep()">
+            <button class="bg-veryummy-secondary text-4xl p-2 rounded-sm w-full"><span class="text-white">
                     CREER LA RECETTE</span></button>
         </div>
 
