@@ -40,7 +40,7 @@ $totalUsers = 443;
 @endphp
 
 <body class="antialiased">
-    <div>
+    <div id="entire-page">
         {{-- Menu de navigation --}}
         <x-navigation.menu />
         {{-- Titre de la page --}}
