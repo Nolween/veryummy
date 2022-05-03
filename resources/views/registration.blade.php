@@ -34,7 +34,7 @@
 <script>
     // Activation du bouton de validation de formulaire si acceptation des règles
     function setValidButton() {
-        const button = document.getElementById('inscription-button');
+        const button = document.getElementById('registration-button');
         // Tailwind sépare le button en 2 éléments, il faut donc aussi modifier le parent.
         const button2 = button.parentNode;
         const checkbox = document.getElementById('rules');
@@ -98,7 +98,7 @@
                 </div>
                 <div class="text-center mb-5">
                     <button class="bg-gray-500 text-4xl p-2 rounded-sm" disabled><span class="text-white"
-                            id="inscription-button">
+                            id="registration-button">
                             INSCRIPTION</span></button>
                 </div>
             </div>

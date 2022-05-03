@@ -2,10 +2,10 @@
     <div class="basis-1/3 sm:flex-1"><a href="{{ route('home') }}" class="cursor-pointer">ACCUEIL</a></div>
     <div class="basis-1/3 sm:flex-1"><a href="{{ route('exploration.list') }}" class="cursor-pointer">EXPLORATION</a>
     </div>
+    {{-- <div class="basis-1/3 sm:flex-1"><a href="{{ route('my-notebook.list') }}" class="cursor-pointer">MON CARNET</a></div> --}}
+    <div class="basis-1/3 sm:flex-1"><a href="{{ route('myaccount') }}" class="cursor-pointer">MON COMPTE</a></div>
     <div class="basis-1/3 sm:flex-1"><span class="cursor-pointer" onclick="openDialogConnexion()">CONNEXION</span></div>
-    {{-- <div class="basis-1/3 sm:flex-1"><a href="{{ route('my-notebook.list') }}" class="cursor-pointer">MON CARNET</a></div>
-    <div class="basis-1/3 sm:flex-1"><a href="{{ route('home') }}" class="cursor-pointer">MON COMPTE</a></div>
-    <div class="basis-1/3 sm:flex-1"><a href="{{ route('home') }}" class="cursor-pointer">DECONNEXION</a></div> --}}
+    {{-- <div class="basis-1/3 sm:flex-1"><a href="{{ route('home') }}" class="cursor-pointer">DECONNEXION</a></div> --}}
 
 </div>
 {{-- OVERLAY POUR LA MODAL DE CONNEXION --}}
@@ -29,7 +29,7 @@
             </div>
         </form>
         <div class="text-center text-7xl text-veryummy-ternary">
-            <a href="{{ route('inscription') }}">
+            <a href="{{ route('registration') }}">
                 <p>PAS ENCORE DE COMPTE?</p>
                 <p>INSCRIVEZ-VOUS ICI!</p>
             </a>
