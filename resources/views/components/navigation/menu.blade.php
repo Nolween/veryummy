@@ -16,11 +16,11 @@
         <div class="flex justify-between items-center"><span class="md:pl-32 lg:pl-60 xl:pl-80 text-5xl md:text-8xl text-veryummy-secondary pl-3">CONNEXION</span> <span class="cursor-pointer"><x-far-window-close onclick="closeDialogConnexion()" class="text-veryummy-secondary bg-white pr-3 pb-2"/></span></div>
         <form action="/connexion" method="GET">
             <div class="w-full mx-auto justify-center text-center mb-5">
-                <input placeholder="MAIL" type="text" name="mail"
+                <input placeholder="MAIL" type="email" name="mail"
                     class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
             </div>
             <div class="w-full mx-auto justify-center text-center mb-5">
-                <input placeholder="MOT DE PASSE" type="text" name="password"
+                <input placeholder="MOT DE PASSE" type="password" name="password"
                     class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
             </div>
             <div class="text-center mb-5">

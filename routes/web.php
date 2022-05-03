@@ -35,6 +35,6 @@ Route::get('/recipe/edit/{id}', function ($id) {
     return view('recipeedit');
 })->name('my-recipes.edit');
 
-Route::get('/inscription', function ($id) {
+Route::get('/inscription', function () {
     return view('inscription');
 })->name('inscription');
