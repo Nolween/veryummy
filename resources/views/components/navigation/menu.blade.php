@@ -5,6 +5,7 @@
     {{-- <div class="basis-1/3 sm:flex-1"><a href="{{ route('my-notebook.list') }}" class="cursor-pointer">MON CARNET</a></div> --}}
     <div class="basis-1/3 sm:flex-1"><a href="{{ route('myaccount') }}" class="cursor-pointer">MON COMPTE</a></div>
     <div class="basis-1/3 sm:flex-1"><span class="cursor-pointer" onclick="openDialogConnexion()">CONNEXION</span></div>
+    <div class="basis-1/3 sm:flex-1"><span class="cursor-pointer"><a href="{{ route('admin-ingredientslist') }}" class="cursor-pointer">ADMIN</a></span></div>
     {{-- <div class="basis-1/3 sm:flex-1"><a href="{{ route('home') }}" class="cursor-pointer">DECONNEXION</a></div> --}}
 
 </div>

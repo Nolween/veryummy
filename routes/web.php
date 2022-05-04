@@ -40,3 +40,6 @@ Route::get('/registration', function () {
 Route::get('/my-account', function () {
     return view('myaccount');
 })->name('myaccount');
+Route::get('/admin/ingredients/list', function () {
+    return view('admin-ingredientslist');
+})->name('admin-ingredientslist');
