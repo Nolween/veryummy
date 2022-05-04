@@ -43,3 +43,6 @@ Route::get('/my-account', function () {
 Route::get('/admin/ingredients/list', function () {
     return view('admin-ingredientslist');
 })->name('admin-ingredientslist');
+Route::get('/admin/recipes/list', function () {
+    return view('admin-recipeslist');
+})->name('admin-recipeslist');

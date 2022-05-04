@@ -32,7 +32,14 @@
     </style>
 </head>
 @php
-$ingredients = [['author' => 'Frances Miller', 'name' => 'aut', 'date' => '1469748738'], ['author' => 'Kelly Jaskolski', 'name' => 'aspernatur', 'date' => '1050479899'], ['author' => 'Bobbie Lowe', 'name' => 'necessitatibus', 'date' => '1526462372'], ['author' => 'Milton Buckridge', 'name' => 'ipsam', 'date' => '1379404396'], ['author' => 'Jeannette Cremin', 'name' => 'quasi', 'date' => '1355965332'], ['author' => 'Franklin Skiles', 'name' => 'in', 'date' => '1713049999']];
+$recipes = [
+    ['author' => 'Frances Miller', 'reports' => ['Bernadette Collier', 'Julia Shields', 'Kristie Brekke'], 'name' => 'quia pariatur perferendis', 'date' => '1469748738', 'reportsCount' => 3],
+    ['author' => 'Kelly Jaskolski', 'reports' => ['Miss Melissa Bosco', 'Willie Kub', 'Marie Bradtke MD'], 'name' => 'consequatur eos pariatur', 'date' => '1050479899', 'reportsCount' => 3],
+    ['author' => 'Bobbie Lowe', 'reports' => ['Elbert Parisian', 'Bennie Gutkowski', 'Sarah Heidenreich', 'Darren Kris'], 'name' => 'quo occaecati recusandae', 'date' => '1526462372', 'reportsCount' => 4],
+    ['author' => 'Milton Buckridge', 'reports' => ['Jorge Feeney', 'Doyle Conroy'], 'name' => 'nihil quis odio', 'date' => '1379404396', 'reportsCount' => 2],
+    ['author' => 'Jeannette Cremin', 'reports' => ['Guadalupe Greenfelder', 'Francis Walker', 'Genevieve Cormier PhD'], 'name' => 'vel praesentium repellendus', 'date' => '1355965332', 'reportsCount' => 3],
+    ['author' => 'Franklin Skiles', 'reports' => ['Nelson Stamm', 'Bob Goodwin', 'Roland Monahan', 'Miss Darin McGlynn'], 'name' => 'ad ex voluptatem', 'date' => '1713049999', 'reportsCount' => 4],
+];
 @endphp
 <script>
 </script>
@@ -46,11 +53,11 @@ $ingredients = [['author' => 'Frances Miller', 'name' => 'aut', 'date' => '14697
             <h1 class="text-veryummy-secondary text-7xl sm:text-9xl w-full text-center">ADMINISTRATION</h1>
         </div>
         <div class="flex flex-wrap justify-around">
-            <button type="button"
-                class="bg-veryummy-primary text-5xl text-white py-2 px-5 w-56 mb-5">INGREDIENTS</button>
-            <a href="{{ route('admin-recipeslist') }}">
+            <a href="{{ route('admin-ingredientslist') }}">
                 <button type="button"
-                    class="bg-veryummy-secondary text-5xl text-white py-2 px-5 w-56 mb-5">RECETTES</button></a>
+                    class="bg-veryummy-secondary text-5xl text-white py-2 px-5 w-56 mb-5">INGREDIENTS</button>
+            </a>
+            <button type="button" class="bg-veryummy-primary text-5xl text-white py-2 px-5 w-56 mb-5">RECETTES</button>
             <button type="button"
                 class="bg-veryummy-secondary text-5xl text-white py-2 px-5 w-56 mb-5">UTILISATEURS</button>
         </div>
@@ -71,8 +78,8 @@ $ingredients = [['author' => 'Frances Miller', 'name' => 'aut', 'date' => '14697
         </form>
         {{-- Eléments --}}
         <div class="flex flex-wrap justify-center">
-            @foreach ($ingredients as $ingredientK => $ingredientV)
-                <x-elements.ingredient-report :author="$ingredientV['author']" :date="$ingredientV['date']" :name="$ingredientV['name']" />
+            @foreach ($recipes as $recipeK => $recipeV)
+                <x-elements.recipe-report :place="$recipeK" :author="$recipeV['author']" :date="$recipeV['date']" :name="$recipeV['name']" :reportscount="$recipeV['reportsCount']" :reports="$recipeV['reports']" />
             @endforeach
         </div>
     </div>
