@@ -46,3 +46,6 @@ Route::get('/admin/ingredients/list', function () {
 Route::get('/admin/recipes/list', function () {
     return view('admin-recipeslist');
 })->name('admin-recipeslist');
+Route::get('/admin/users/list', function () {
+    return view('admin-userslist');
+})->name('admin-userslist');

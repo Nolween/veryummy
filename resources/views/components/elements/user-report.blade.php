@@ -5,18 +5,19 @@
             {{ \Carbon\Carbon::createFromTimestamp($attributes->get('date'))->format('d/m/Y h:H') }}</div>
     </div>
     <div class="flex justify-between pr-3">
-        <div class="pl-3 text-veryummy-secondary text-4xl">{{ $attributes->get('name') }}</div>
+        <div class="pl-3 text-veryummy-secondary text-4xl">{{ $attributes->get('recipescount') }}
+            RECETTE{{ $attributes->get('recipescount') > 1 ? 'S' : '' }}</div>
     </div>
     <div class="flex justify-between mb-3 pr-3">
-        <div class="pl-3 text-veryummy-secondary text-4xl">{{ $attributes->get('reportscount') }} REPORTS
-            <x-fas-angle-down id="chevrondown{{ $attributes->get('place') }}" onclick="hideRepports({{ $attributes->get('place') }})"
+        <div class="pl-3 text-veryummy-secondary text-4xl">{{ $attributes->get('reportscount') }} REPORT{{ $attributes->get('reportscount') > 1 ? 'S' : '' }}
+            <x-fas-angle-down id="chevrondown{{ $attributes->get('place') }}"
+                onclick="hideRepports({{ $attributes->get('place') }})"
                 class="cursor-pointer hidden pb-2 h-9 w-9 text-veryummy-secondary" />
-            <x-fas-angle-right id="chevronright{{ $attributes->get('place') }}" onclick="showRepports({{ $attributes->get('place') }})"
+            <x-fas-angle-right id="chevronright{{ $attributes->get('place') }}"
+                onclick="showRepports({{ $attributes->get('place') }})"
                 class="cursor-pointer inline pb-2 h-9 w-9 text-veryummy-secondary" />
         </div>
         <div class="flex justify-end space-x-2">
-            <x-fas-link class="text-veryummy-secondary h-10 w-10 cursor-pointer" />
-            <x-fas-eye-slash class="text-veryummy-primary h-10 w-10 cursor-pointer" />
             <x-fas-trash-alt class="text-veryummy-ternary h-10 w-10 cursor-pointer" />
         </div>
     </div>

@@ -58,8 +58,10 @@ $recipes = [
                     class="bg-veryummy-secondary text-5xl text-white py-2 px-5 w-56 mb-5">INGREDIENTS</button>
             </a>
             <button type="button" class="bg-veryummy-primary text-5xl text-white py-2 px-5 w-56 mb-5">RECETTES</button>
-            <button type="button"
-                class="bg-veryummy-secondary text-5xl text-white py-2 px-5 w-56 mb-5">UTILISATEURS</button>
+            <a href="{{ route('admin-userslist') }}">
+                <button type="button"
+                    class="bg-veryummy-secondary text-5xl text-white py-2 px-5 w-56 mb-5">UTILISATEURS</button>
+            </a>
         </div>
         {{-- Formulaire --}}
         <form action="GET">
@@ -75,13 +77,50 @@ $recipes = [
                 </div>
 
             </div>
-        </form>
+            <div class="w-full mb-3 flex justify-center ">
+                <button type="button"
+                    class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                    <x-fas-angle-double-left class="h-6 w-6" />
+                </button>
+                <button type="button"
+                    class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                    <x-fas-angle-left class="h-6 w-6" />
+                </button>
+                <button type="button"
+                    class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                    <x-fas-angle-right class="h-6 w-6" />
+                </button>
+                <button type="button"
+                    class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                    <x-fas-angle-double-right class="h-6 w-6" />
+                </button>
+            </div>
         {{-- Eléments --}}
         <div class="flex flex-wrap justify-center">
             @foreach ($recipes as $recipeK => $recipeV)
-                <x-elements.recipe-report :place="$recipeK" :author="$recipeV['author']" :date="$recipeV['date']" :name="$recipeV['name']" :reportscount="$recipeV['reportsCount']" :reports="$recipeV['reports']" />
+                <x-elements.recipe-report :place="$recipeK" :author="$recipeV['author']" :date="$recipeV['date']" :name="$recipeV['name']"
+                    :reportscount="$recipeV['reportsCount']" :reports="$recipeV['reports']" />
             @endforeach
         </div>
+        <div class="w-full mb-3 flex justify-center ">
+            <button type="button"
+                class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                <x-fas-angle-double-left class="h-6 w-6" />
+            </button>
+            <button type="button"
+                class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                <x-fas-angle-left class="h-6 w-6" />
+            </button>
+            <button type="button"
+                class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                <x-fas-angle-right class="h-6 w-6" />
+            </button>
+            <button type="button"
+                class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
+                <x-fas-angle-double-right class="h-6 w-6" />
+            </button>
+        </div>
+    </form>
     </div>
 </body>
 
