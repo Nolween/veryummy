@@ -41,4 +41,34 @@ class Recipe extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Indique les étapes de la recette
+     *
+     * @return void
+     */
+    public function steps()
+    {
+        return $this->hasMany(RecipeStep::class);
+    }
+
+    /**
+     * Indique les ingrédients de la recette
+     *
+     * @return void
+     */
+    public function ingredients()
+    {
+        return $this->hasMany(RecipeIngredients::class);
+    }
+
+    /**
+     * Indique les opinions de la recette
+     *
+     * @return void
+     */
+    public function opinions()
+    {
+        return $this->hasMany(RecipeOpinion::class);
+    }
 }

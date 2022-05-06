@@ -18,13 +18,13 @@ return new class extends Migration
             $table->foreignId('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('recipe_type_id')->references('id')->on('recipe_types')->onUpdate('cascade')->onDelete('cascade');
             $table->string('name');
-            $table->string('image');
-            $table->boolean('is_accepted');
-            $table->boolean('vegan_compatible');
-            $table->boolean('vegetarian_compatible');
-            $table->boolean('gluten_free_compatible');
-            $table->boolean('halal_compatible');
-            $table->boolean('kosher_compatible');
+            $table->string('image')->nullable();
+            $table->boolean('is_accepted')->nullable();
+            $table->boolean('vegan_compatible')->nullable();
+            $table->boolean('vegetarian_compatible')->nullable();
+            $table->boolean('gluten_free_compatible')->nullable();
+            $table->boolean('halal_compatible')->nullable();
+            $table->boolean('kosher_compatible')->nullable();
             $table->timestamps();
         });
     }

@@ -44,13 +44,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    
+
     /**
      * Indique les recettes de l'utilisateur
      *
      * @return void
      */
-    public function recipes() {
+    public function recipes()
+    {
         return $this->hasMany(Recipe::class);
     }
 
@@ -59,17 +60,38 @@ class User extends Authenticatable
      *
      * @return void
      */
-    public function ingredients() {
+    public function ingredients()
+    {
         return $this->hasMany(Ingredient::class);
     }
 
     /**
-     * Indique le type de l'utilisateur
+     * Indique le rôle de l'utilisateur
      *
      * @return void
      */
-    public function role() {
+    public function role()
+    {
         return $this->belongsTo(Role::class);
     }
-    
+
+    /**
+     * Indique les dénonciations de commentaire de l'utilisateur
+     *
+     * @return void
+     */
+    public function reportedOpinions()
+    {
+        return $this->hasMany(OpinionReport::class);
+    }
+
+    /**
+     * Indique les commentaires / reports de l'utilisateur
+     *
+     * @return void
+     */
+    public function opinions()
+    {
+        return $this->hasMany(RecipeOpinion::class);
+    }
 }

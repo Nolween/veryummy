@@ -5,20 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RecipeIngredients extends Model
+class RecipeOpinion extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'recipe_id',
-        'unit_id',
-        'ingredient_id',
-        'quantity',
-        'order'
+        'comment',
+        'score',
+        'is_reported'
     ];
 
     /**
-     * A quelle recette appartient cette ligne
+     * La recette auquel le commentaire appartient
      *
      * @return void
      */
@@ -28,12 +28,12 @@ class RecipeIngredients extends Model
     }
 
     /**
-     * A quelle ingredient appartient cette ligne
+     * L'utilisateur auquel le commentaire appartient
      *
      * @return void
      */
-    public function ingredient()
+    public function user()
     {
-        return $this->belongsTo(Ingredient::class);
+        return $this->belongsTo(User::class);
     }
 }

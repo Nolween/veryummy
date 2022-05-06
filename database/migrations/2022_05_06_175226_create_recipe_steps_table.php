@@ -13,8 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->boolean('is_banned')->nullable();
+        Schema::create('recipe_steps', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('recipe_id')->references('id')->on('recipes')->onUpdate('cascade')->onDelete('cascade');
+            $table->tinyInteger('order');
+            $table->text('description');
         });
     }
 
@@ -25,8 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('is_banned');
-        });
+        Schema::dropIfExists('recipe_steps');
     }
 };
