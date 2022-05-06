@@ -3,9 +3,9 @@
     "version": "2.2.11",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -294.9999999999999,
-    "scrollLeft": -685,
-    "zoomLevel": 0.8,
+    "scrollTop": -419.9999999999999,
+    "scrollLeft": -541,
+    "zoomLevel": 0.7,
     "show": {
       "tableComment": true,
       "columnComment": true,
@@ -677,7 +677,7 @@
             "id": "77aa240c-10d3-44ad-a462-effdfe5e2fe9"
           },
           {
-            "name": "photo",
+            "name": "image",
             "comment": "",
             "dataType": "VARCHAR",
             "default": "",
@@ -700,7 +700,7 @@
             "id": "c85a5d33-c514-4052-a787-03585596e84e"
           },
           {
-            "name": "accepted",
+            "name": "is_accepted",
             "comment": "",
             "dataType": "BOOLEAN",
             "default": "",
@@ -715,7 +715,7 @@
               "pk": false,
               "fk": false,
               "pfk": false,
-              "widthName": 60,
+              "widthName": 72.472900390625,
               "widthComment": 60,
               "widthDataType": 62.98297119140625,
               "widthDefault": 60
@@ -888,7 +888,7 @@
           "active": false,
           "left": 770.8298,
           "top": 358.4879,
-          "zIndex": 2,
+          "zIndex": 34,
           "widthName": 60,
           "widthComment": 60
         },
@@ -896,7 +896,7 @@
         "id": "6714522f-f86c-4136-b53f-7abf80d2dc7d"
       },
       {
-        "name": "recipes_type",
+        "name": "recipe_types",
         "comment": "Type de recette",
         "columns": [
           {
@@ -950,7 +950,7 @@
           "active": false,
           "left": 1334.1677,
           "top": 145.8529,
-          "zIndex": 4,
+          "zIndex": 27,
           "widthName": 78.01087951660156,
           "widthComment": 95.74285888671875
         },
@@ -1077,7 +1077,7 @@
             "id": "d203a166-0fa6-4ffc-80f9-dbb3e97e9670"
           },
           {
-            "name": "reported",
+            "name": "is_reported",
             "comment": "",
             "dataType": "BOOLEAN",
             "default": "",
@@ -1092,7 +1092,7 @@
               "pk": false,
               "fk": false,
               "pfk": false,
-              "widthName": 60,
+              "widthName": 71.04289245605469,
               "widthComment": 60,
               "widthDataType": 62.98297119140625,
               "widthDefault": 60
@@ -1150,7 +1150,7 @@
           "active": false,
           "left": 132.2995,
           "top": 643.8994,
-          "zIndex": 8,
+          "zIndex": 41,
           "widthName": 97.86186218261719,
           "widthComment": 120
         },

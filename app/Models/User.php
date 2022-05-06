@@ -32,6 +32,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'role_id',
     ];
 
     /**
@@ -43,5 +44,32 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    
+    /**
+     * Indique les recettes de l'utilisateur
+     *
+     * @return void
+     */
+    public function recipes() {
+        return $this->hasMany(Recipe::class);
+    }
+
+    /**
+     * Indique les ingredients de l'utilisateur
+     *
+     * @return void
+     */
+    public function ingredients() {
+        return $this->hasMany(Ingredient::class);
+    }
+
+    /**
+     * Indique le type de l'utilisateur
+     *
+     * @return void
+     */
+    public function role() {
+        return $this->belongsTo(Role::class);
+    }
     
 }
