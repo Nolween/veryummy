@@ -3,9 +3,9 @@
     "version": "2.2.11",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -918.5,
-    "scrollLeft": -436,
-    "zoomLevel": 1,
+    "scrollTop": -294.9999999999999,
+    "scrollLeft": -685,
+    "zoomLevel": 0.8,
     "show": {
       "tableComment": true,
       "columnComment": true,
@@ -68,6 +68,29 @@
               "widthDefault": 60
             },
             "id": "597da074-c366-4bae-aab3-97c8c50c7671"
+          },
+          {
+            "name": "role_id",
+            "comment": "",
+            "dataType": "BIGINT",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": true,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "dad031b0-e9f4-4dca-be14-527a8da01ce3"
           },
           {
             "name": "name",
@@ -256,9 +279,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 847.4256,
-          "top": 1403.2291,
-          "zIndex": 272,
+          "left": 792.9031,
+          "top": 970.1339,
+          "zIndex": 24,
           "widthName": 60,
           "widthComment": 71.43289184570312
         },
@@ -362,7 +385,7 @@
             "id": "5720800c-47ca-4fbc-b1c4-9177c0057530"
           },
           {
-            "name": "accepted",
+            "name": "is_accepted",
             "comment": "",
             "dataType": "BOOLEAN",
             "default": "",
@@ -377,7 +400,7 @@
               "pk": false,
               "fk": false,
               "pfk": false,
-              "widthName": 60,
+              "widthName": 72.472900390625,
               "widthComment": 60,
               "widthDataType": 62.98297119140625,
               "widthDefault": 60
@@ -548,9 +571,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 1478.8182,
-          "top": 1510.2171,
-          "zIndex": 271,
+          "left": 1529.6516,
+          "top": 861.0507,
+          "zIndex": 7,
           "widthName": 71.45890808105469,
           "widthComment": 72.51191711425781
         },
@@ -863,9 +886,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 830.8299,
-          "top": 828.488,
-          "zIndex": 248,
+          "left": 770.8298,
+          "top": 358.4879,
+          "zIndex": 2,
           "widthName": 60,
           "widthComment": 60
         },
@@ -925,9 +948,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 1460,
-          "top": 634.1868,
-          "zIndex": 111,
+          "left": 1334.1677,
+          "top": 145.8529,
+          "zIndex": 4,
           "widthName": 78.01087951660156,
           "widthComment": 95.74285888671875
         },
@@ -1125,9 +1148,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 207.2996,
-          "top": 903.8993,
-          "zIndex": 191,
+          "left": 132.2995,
+          "top": 643.8994,
+          "zIndex": 8,
           "widthName": 97.86186218261719,
           "widthComment": 120
         },
@@ -1233,9 +1256,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 875.6064,
-          "top": 439.2103,
-          "zIndex": 109,
+          "left": 818.9402,
+          "top": 85.8774,
+          "zIndex": 1,
           "widthName": 77.60787963867188,
           "widthComment": 120
         },
@@ -1364,9 +1387,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 598.75,
-          "top": 1767.25,
-          "zIndex": 273,
+          "left": 462.0841,
+          "top": 1384.7505,
+          "zIndex": 9,
           "widthName": 98.86286926269531,
           "widthComment": 120
         },
@@ -1426,9 +1449,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 1553.25,
-          "top": 912,
-          "zIndex": 270,
+          "left": 1579.917,
+          "top": 286.1662,
+          "zIndex": 6,
           "widthName": 60,
           "widthComment": 109.41885375976562
         },
@@ -1580,14 +1603,76 @@
         ],
         "ui": {
           "active": false,
-          "left": 1526.8971,
-          "top": 1161.9721,
-          "zIndex": 269,
+          "left": 1570.23,
+          "top": 521.1393,
+          "zIndex": 5,
           "widthName": 114.59283447265625,
           "widthComment": 120
         },
         "visible": true,
         "id": "d3ed6dac-618b-4c9d-bcd1-800674dabe70"
+      },
+      {
+        "name": "roles",
+        "comment": "Rôles des utilisateurs",
+        "columns": [
+          {
+            "name": "id",
+            "comment": "",
+            "dataType": "BIGINT",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": true,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": true,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "e89cb5ae-9fa9-412e-8fcb-0e6ab1c76cc6"
+          },
+          {
+            "name": "name",
+            "comment": "",
+            "dataType": "VARCHAR",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "d11a571a-d36c-4326-b049-aa92061f84ef"
+          }
+        ],
+        "ui": {
+          "active": false,
+          "left": 1338.4716,
+          "top": 1405.471,
+          "zIndex": 23,
+          "widthName": 60,
+          "widthComment": 120
+        },
+        "visible": true,
+        "id": "06d706db-c4cb-435b-a55d-a3d25bb93c5f"
       }
     ],
     "indexes": []
@@ -1606,8 +1691,8 @@
           "columnIds": [
             "597da074-c366-4bae-aab3-97c8c50c7671"
           ],
-          "x": 1253.3274096923828,
-          "y": 1529.9791,
+          "x": 1198.8049096923828,
+          "y": 1038.6339,
           "direction": "right"
         },
         "end": {
@@ -1615,8 +1700,8 @@
           "columnIds": [
             "50c60b50-7e6b-4429-9fc4-88210fdaa281"
           ],
-          "x": 1478.8182,
-          "y": 1667.7171,
+          "x": 1529.6516,
+          "y": 1018.5507,
           "direction": "left"
         },
         "constraintName": "fk_users_to_ingredients",
@@ -1632,8 +1717,8 @@
           "columnIds": [
             "597da074-c366-4bae-aab3-97c8c50c7671"
           ],
-          "x": 1050.3765048461914,
-          "y": 1403.2291,
+          "x": 995.8540048461914,
+          "y": 970.1339,
           "direction": "top"
         },
         "end": {
@@ -1641,8 +1726,8 @@
           "columnIds": [
             "9e1f41a0-86fa-40ec-a4dd-24b5f1931907"
           ],
-          "x": 1054.1192905639648,
-          "y": 1163.988,
+          "x": 994.1191905639648,
+          "y": 693.9879000000001,
           "direction": "bottom"
         },
         "constraintName": "fk_users_to_recipes",
@@ -1658,8 +1743,8 @@
           "columnIds": [
             "e98d40f7-bbd7-46d3-aa5b-46f419b25bb1"
           ],
-          "x": 1460,
-          "y": 689.1868,
+          "x": 1334.1677,
+          "y": 200.8529,
           "direction": "left"
         },
         "end": {
@@ -1667,8 +1752,8 @@
           "columnIds": [
             "7f39622e-7387-4226-9779-7fef9b948bc3"
           ],
-          "x": 1277.4086811279296,
-          "y": 912.363,
+          "x": 1217.4085811279297,
+          "y": 442.3629,
           "direction": "right"
         },
         "constraintName": "fk_recipes_type_to_recipes",
@@ -1684,8 +1769,8 @@
           "columnIds": [
             "c5a5ca5a-bbc3-4879-b4c8-926746bdc940"
           ],
-          "x": 830.8299,
-          "y": 996.238,
+          "x": 770.8298,
+          "y": 526.2379000000001,
           "direction": "left"
         },
         "end": {
@@ -1693,8 +1778,8 @@
           "columnIds": [
             "a34d75e8-eadf-49d3-be70-157715b09c6c"
           ],
-          "x": 579.4665006347657,
-          "y": 962.1493,
+          "x": 504.4664006347656,
+          "y": 702.1494,
           "direction": "right"
         },
         "constraintName": "fk_recipes_to_recipe_opinions",
@@ -1710,8 +1795,8 @@
           "columnIds": [
             "597da074-c366-4bae-aab3-97c8c50c7671"
           ],
-          "x": 847.4256,
-          "y": 1529.9791,
+          "x": 792.9031,
+          "y": 1107.1339,
           "direction": "left"
         },
         "end": {
@@ -1719,8 +1804,8 @@
           "columnIds": [
             "388ddf2d-9343-4a0d-8d89-7d626457fbb9"
           ],
-          "x": 579.4665006347657,
-          "y": 1078.6493,
+          "x": 504.4664006347656,
+          "y": 818.6494,
           "direction": "right"
         },
         "constraintName": "fk_users_to_recipe_opinions",
@@ -1736,8 +1821,8 @@
           "columnIds": [
             "c5a5ca5a-bbc3-4879-b4c8-926746bdc940"
           ],
-          "x": 1054.1192905639648,
-          "y": 828.488,
+          "x": 994.1191905639648,
+          "y": 358.4879,
           "direction": "top"
         },
         "end": {
@@ -1745,8 +1830,8 @@
           "columnIds": [
             "0154513a-cd59-4ae1-9491-cd26a99d2854"
           ],
-          "x": 1054.3353505004884,
-          "y": 590.2103,
+          "x": 997.6691505004883,
+          "y": 236.8774,
           "direction": "bottom"
         },
         "constraintName": "fk_recipes_to_recipe_steps",
@@ -1762,8 +1847,8 @@
           "columnIds": [
             "597da074-c366-4bae-aab3-97c8c50c7671"
           ],
-          "x": 1050.3765048461914,
-          "y": 1656.7291,
+          "x": 995.8540048461914,
+          "y": 1244.1339,
           "direction": "bottom"
         },
         "end": {
@@ -1771,8 +1856,8 @@
           "columnIds": [
             "52a0ee0a-f6f2-4d81-9162-16ca51d69d46"
           ],
-          "x": 970.9169006347656,
-          "y": 1853,
+          "x": 834.2510006347657,
+          "y": 1470.5005,
           "direction": "right"
         },
         "constraintName": "fk_users_to_opinion_reports",
@@ -1788,8 +1873,8 @@
           "columnIds": [
             "d97f5ac5-e065-4463-a619-85817ec6e168"
           ],
-          "x": 393.3830503173828,
-          "y": 1136.8993,
+          "x": 318.3829503173828,
+          "y": 876.8994,
           "direction": "bottom"
         },
         "end": {
@@ -1797,8 +1882,8 @@
           "columnIds": [
             "d65d8186-3327-4bb3-ac60-71d9dc7c8baf"
           ],
-          "x": 784.8334503173828,
-          "y": 1767.25,
+          "x": 648.1675503173828,
+          "y": 1384.7505,
           "direction": "top"
         },
         "constraintName": "fk_recipe_opinions_to_opinion_reports",
@@ -1814,8 +1899,8 @@
           "columnIds": [
             "2b564a0f-8f7e-467e-b92d-4d8dc187b0db"
           ],
-          "x": 1726.75,
-          "y": 1022,
+          "x": 1753.417,
+          "y": 396.1662,
           "direction": "bottom"
         },
         "end": {
@@ -1823,8 +1908,8 @@
           "columnIds": [
             "60914678-6809-4499-861c-24bad3f9c64c"
           ],
-          "x": 1711.5735450073241,
-          "y": 1161.9721,
+          "x": 1754.9064450073242,
+          "y": 521.1393,
           "direction": "top"
         },
         "constraintName": "fk_units_to_recipe_ingredients",
@@ -1840,8 +1925,8 @@
           "columnIds": [
             "c5a5ca5a-bbc3-4879-b4c8-926746bdc940"
           ],
-          "x": 1277.4086811279296,
-          "y": 1080.113,
+          "x": 1217.4085811279297,
+          "y": 610.1129000000001,
           "direction": "right"
         },
         "end": {
@@ -1849,8 +1934,8 @@
           "columnIds": [
             "55833686-7778-4184-8e1e-b01d837a6172"
           ],
-          "x": 1526.8971,
-          "y": 1257.9721,
+          "x": 1570.23,
+          "y": 617.1393,
           "direction": "left"
         },
         "constraintName": "fk_recipes_to_recipe_ingredients",
@@ -1866,8 +1951,8 @@
           "columnIds": [
             "bab6f96d-a29f-4cd2-89e7-ee400bccb697"
           ],
-          "x": 1702.1075905639648,
-          "y": 1510.2171,
+          "x": 1752.9409905639648,
+          "y": 861.0507,
           "direction": "top"
         },
         "end": {
@@ -1875,13 +1960,39 @@
           "columnIds": [
             "42725ca7-f51e-4b1c-a30b-261b29d03aef"
           ],
-          "x": 1711.5735450073241,
-          "y": 1353.9721,
+          "x": 1754.9064450073242,
+          "y": 713.1393,
           "direction": "bottom"
         },
         "constraintName": "fk_ingredients_to_recipe_ingredients",
         "visible": true,
         "id": "38078c3e-87c8-4480-a785-3af7d97670de"
+      },
+      {
+        "identification": false,
+        "relationshipType": "OneN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "06d706db-c4cb-435b-a55d-a3d25bb93c5f",
+          "columnIds": [
+            "e89cb5ae-9fa9-412e-8fcb-0e6ab1c76cc6"
+          ],
+          "x": 1338.4716,
+          "y": 1460.471,
+          "direction": "left"
+        },
+        "end": {
+          "tableId": "ec0699c0-1103-402f-b875-4913b71df2de",
+          "columnIds": [
+            "dad031b0-e9f4-4dca-be14-527a8da01ce3"
+          ],
+          "x": 1198.8049096923828,
+          "y": 1175.6339,
+          "direction": "right"
+        },
+        "constraintName": "fk_roles_to_users",
+        "visible": true,
+        "id": "0ce39189-841d-4d12-ae0c-151ebb23755f"
       }
     ]
   }
