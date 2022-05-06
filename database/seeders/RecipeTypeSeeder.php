@@ -15,15 +15,24 @@ class RecipeTypeSeeder extends Seeder
      */
     public function run()
     {
-        // Création des principaux types de plats
-        RecipeType::create(['name' => 'Entrée']);
-        RecipeType::create(['name' => 'Plat']);
-        RecipeType::create(['name' => 'Dessert']);
-        RecipeType::create(['name' => 'Amuse Gueule']);
-        RecipeType::create(['name' => 'Sauce']);
-        RecipeType::create(['name' => 'Accompagnement']);
-        RecipeType::create(['name' => 'Boisson']);
-        RecipeType::create(['name' => 'Confiserie']);
-        RecipeType::create(['name' => 'Conseil']);
+        
+        $source = [
+            ['name' => 'Entrée'],
+            ['name' => 'Plat'],
+            ['name' => 'Dessert'],
+            ['name' => 'Amuse Gueule'],
+            ['name' => 'Sauce'],
+            ['name' => 'Accompagnement'],
+            ['name' => 'Boisson'],
+            ['name' => 'Confiserie'],
+            ['name' => 'Conseil'],
+        ];
+
+        foreach ($source as $item) {
+            $role = new RecipeType(['name' => $item['name']]);
+            $role->timestamps = false;
+            $role->save();
+        }
+
     }
 }

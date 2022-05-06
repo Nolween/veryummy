@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Unit;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -14,21 +15,27 @@ class UnitSeeder extends Seeder
      */
     public function run()
     {
-        // Création des unités de mesure principales
-        Unit::create(['name' => 'Unité']);
-        Unit::create(['name' => 'Gramme']);
-        Unit::create(['name' => 'Kilo']);
-        Unit::create(['name' => 'Cuillère à soupe']);
-        Unit::create(['name' => 'Cuillère à café']);
-        Unit::create(['name' => 'Centilitre']);
-        Unit::create(['name' => 'Litre']);
-        Unit::create(['name' => 'Pincée']);
-        Unit::create(['name' => 'Sachet']);
-        Unit::create(['name' => 'Boîte']);
-        Unit::create(['name' => 'Botte']);
-        Unit::create(['name' => 'Tige']);
-        Unit::create(['name' => 'Grappe']);
-        Unit::create(['name' => 'Gousse']);
-        Unit::create(['name' => 'Tablette']);
+        $source = [
+            ['name' => 'Unité'],
+            ['name' => 'Gramme'],
+            ['name' => 'Kilo'],
+            ['name' => 'Cuillère à soupe'],
+            ['name' => 'Cuillère à café'],
+            ['name' => 'Centilitre'],
+            ['name' => 'Litre'],
+            ['name' => 'Pincée'],
+            ['name' => 'Sachet'],
+            ['name' => 'Boîte'],
+            ['name' => 'Botte'],
+            ['name' => 'Tige'],
+            ['name' => 'Grappe'],
+            ['name' => 'Gousse'],
+            ['name' => 'Tablette'],
+        ];
+        foreach ($source as $item) {
+            $unit = new Unit(['name' => $item['name']]);
+            $unit->timestamps = false;
+            $unit->save();
+        }
     }
 }

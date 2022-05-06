@@ -15,8 +15,12 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-        // Création des 2 principaux roles de l'application
-        Role::create(['name' => 'Administrator']);
-        Role::create(['name' => 'User']);
+        $source = [['name' => 'Administrateur'], ['name' => 'Utilisateur']];
+        
+        foreach ($source as $item) {
+            $role = new Role(['name' => $item['name']]);
+            $role->timestamps = false;
+            $role->save();
+        }
     }
 }
