@@ -3,9 +3,9 @@
     "version": "2.2.11",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -419.9999999999999,
-    "scrollLeft": -541,
-    "zoomLevel": 0.7,
+    "scrollTop": -241,
+    "scrollLeft": -923,
+    "zoomLevel": 0.8,
     "show": {
       "tableComment": true,
       "columnComment": true,
@@ -1509,29 +1509,6 @@
             "id": "55833686-7778-4184-8e1e-b01d837a6172"
           },
           {
-            "name": "quantity",
-            "comment": "",
-            "dataType": "FLOAT",
-            "default": "",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": false
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 60,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            },
-            "id": "d71c4956-8ca9-42df-a92a-181ddb0aff6c"
-          },
-          {
             "name": "unit_id",
             "comment": "",
             "dataType": "BIGINT",
@@ -1578,6 +1555,29 @@
             "id": "42725ca7-f51e-4b1c-a30b-261b29d03aef"
           },
           {
+            "name": "quantity",
+            "comment": "",
+            "dataType": "FLOAT",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "d71c4956-8ca9-42df-a92a-181ddb0aff6c"
+          },
+          {
             "name": "order",
             "comment": "",
             "dataType": "TINYINT",
@@ -1605,7 +1605,7 @@
           "active": false,
           "left": 1570.23,
           "top": 521.1393,
-          "zIndex": 5,
+          "zIndex": 43,
           "widthName": 114.59283447265625,
           "widthComment": 120
         },
