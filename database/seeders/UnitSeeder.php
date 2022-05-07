@@ -30,6 +30,9 @@ class UnitSeeder extends Seeder
             ['name' => 'Tige'],
             ['name' => 'Grappe'],
             ['name' => 'Gousse'],
+            ['name' => 'Tranche'],
+            ['name' => 'Filet'],
+            ['name' => 'Verre'],
             ['name' => 'Tablette'],
         ];
         foreach ($source as $item) {
