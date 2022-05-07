@@ -9,6 +9,8 @@ class RecipeStep extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+    
     protected $fillable = ['recipe_id', 'order', 'description'];
 
     /**
