@@ -33,10 +33,8 @@
 </head>
 
 @php
-$recipes = [['name' => 'Hamburger du Nord', 'stepCount' => 3, 'cookingTime' => 20, 'makingTime' => 30, 'score' => 4.2, 'photo' => '2.avif', 'ingredientsCount' => 6], ['name' => 'Raclette', 'stepCount' => 5, 'cookingTime' => 30, 'makingTime' => 50, 'score' => 4.6, 'photo' => '3.avif', 'ingredientsCount' => 7], ['name' => 'Tartiflette', 'stepCount' => 10, 'cookingTime' => 50, 'makingTime' => 20, 'score' => 4.8, 'photo' => '4.avif', 'ingredientsCount' => 8], ['name' => 'Tiramisu', 'stepCount' => 5, 'cookingTime' => 0, 'makingTime' => 20, 'score' => 4.9, 'photo' => '5.avif', 'ingredientsCount' => 9]];
-$totalRecipes = 2547;
-$totalIngredients = 1097;
-$totalUsers = 443;
+// dd($recipes);
+// $recipes = [['name' => 'Hamburger du Nord', 'stepCount' => 3, 'cookingTime' => 20, 'makingTime' => 30, 'score' => 4.2, 'photo' => '2.avif', 'ingredientsCount' => 6], ['name' => 'Raclette', 'stepCount' => 5, 'cookingTime' => 30, 'makingTime' => 50, 'score' => 4.6, 'photo' => '3.avif', 'ingredientsCount' => 7], ['name' => 'Tartiflette', 'stepCount' => 10, 'cookingTime' => 50, 'makingTime' => 20, 'score' => 4.8, 'photo' => '4.avif', 'ingredientsCount' => 8], ['name' => 'Tiramisu', 'stepCount' => 5, 'cookingTime' => 0, 'makingTime' => 20, 'score' => 4.9, 'photo' => '5.avif', 'ingredientsCount' => 9]];
 @endphp
 
 <body class="antialiased">
@@ -52,16 +50,16 @@ $totalUsers = 443;
             @foreach ($recipes as $recipeK => $recipeV)
                 <div class="mb-4 mx-3">
                     <x-elements.recipe-thumbnail :photo="$recipeV['photo']" :recipeName="$recipeV['name']" :cookingTime="$recipeV['cookingTime']" :makingTime="$recipeV['makingTime']"
-                        :stepCount="$recipeV['stepCount']" :score="$recipeV['score']" :ingredientsCount="$recipeV['ingredientsCount']"/>
+                        :stepCount="$recipeV['steps_count']" :score="$recipeV['score']" :ingredientsCount="$recipeV['ingredients_count']"/>
                 </div>
             @endforeach
         </div>
         {{-- Compteurs --}}
         <div class="my-8">
-            <h2 class="h-14 text-veryummy-secondary text-7xl w-full text-center">{{ $totalRecipes }} RECETTES</h2>
-            <h2 class="h-14 text-veryummy-secondary text-7xl w-full text-center">{{ $totalIngredients }} INGREDIENTS
+            <h2 class="h-14 text-veryummy-secondary text-7xl w-full text-center">{{ $counts['totalRecipes'] }} RECETTES</h2>
+            <h2 class="h-14 text-veryummy-secondary text-7xl w-full text-center">{{ $counts['totalIngredients'] }} INGREDIENTS
             </h2>
-            <h2 class="h-14 text-veryummy-secondary text-7xl w-full text-center">{{ $totalUsers }} UTILISATEURS</h2>
+            <h2 class="h-14 text-veryummy-secondary text-7xl w-full text-center">{{ $counts['totalUsers'] }} UTILISATEURS</h2>
         </div>
         <div class="px-4 divide-y-4 divide-dotted divide-gray-200">
             <div class="flex mb-3 flex-wrap justify-center">

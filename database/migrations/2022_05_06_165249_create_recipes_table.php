@@ -19,6 +19,9 @@ return new class extends Migration
             $table->foreignId('recipe_type_id')->references('id')->on('recipe_types')->onUpdate('cascade')->onDelete('cascade');
             $table->string('name');
             $table->string('image')->nullable();
+            $table->float('score')->nullable();
+            $table->smallInteger('cooking_time')->nullable();
+            $table->smallInteger('making_time')->nullable();
             $table->boolean('is_accepted')->nullable();
             $table->boolean('vegan_compatible')->nullable();
             $table->boolean('vegetarian_compatible')->nullable();

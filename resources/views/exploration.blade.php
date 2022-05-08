@@ -33,7 +33,7 @@
 </head>
 @php
 $recipes = [
-    ['name' => 'Gâteau au chocolat', 'stepCount' => 9, 'cookingTime' => 32, 'makingTime' => 86, 'score' => 2, 'photo' => '1.jpg', 'ingredientsCount' => 4],
+    ['name' => 'Gâteau au chocolat', 'stepCount' => 9, 'cookingTime' => 32, 'makingTime' => 86, 'score' => 2, 'photo' => '1.avif', 'ingredientsCount' => 4],
     ['name' => 'Hamburger du Nord', 'stepCount' => 7, 'cookingTime' => 7, 'makingTime' => 58, 'score' => 3.75, 'photo' => '2.avif', 'ingredientsCount' => 3],
     ['name' => 'Raclette', 'stepCount' => 4, 'cookingTime' => 30, 'makingTime' => 4, 'score' => 2.75, 'photo' => '3.avif', 'ingredientsCount' => 7],
     ['name' => 'Tartiflette', 'stepCount' => 4, 'cookingTime' => 50, 'makingTime' => 32, 'score' => 1.34, 'photo' => '4.avif', 'ingredientsCount' => 6],

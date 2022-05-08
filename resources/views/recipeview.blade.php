@@ -71,7 +71,7 @@ $yourComment = 'Rerum similique dolor repellendus. In consequatur aut voluptas m
                     <li>PREPARATION: {{ $recipe['makingTime'] }} MINUTES</li>
                     <li>CUISSON: {{ $recipe['cookingTime'] }} MINUTES</li>
                     <li>{{ $recipe['stepCount'] }} ETAPES</li>
-                    <li class="flex text-yellow-300 justify-between md:justify-end mb-4">
+                    <li class="flex text-veryummy-ternary justify-between md:justify-end mb-4">
                         <span class="">{{ $recipe['score'] }}/5</span>
 
                         {{-- Définition des 5 étoiles de note --}}
@@ -82,18 +82,18 @@ $yourComment = 'Rerum similique dolor repellendus. In consequatur aut voluptas m
                             @switch($test)
                                 {{-- Etoile pleine --}}
                                 @case($test > 0)
-                                    <x-fas-star class="text-yellow-300 w-10 h-10 md:ml-2" />
+                                    <x-fas-star class="text-veryummy-ternary w-10 h-10 md:ml-2" />
                                 @break
 
                                 {{-- Moitié d'étoile --}}
                                 @case($test >= -0.5)
-                                    <x-fas-star-half-alt class="text-yellow-300 w-10 h-10 md:ml-2" />
+                                    <x-fas-star-half-alt class="text-veryummy-ternary w-10 h-10 md:ml-2" />
                                 @break
 
                                 {{-- Etoile vide --}}
 
                                 @default
-                                    <x-far-star class="text-yellow-300 w-10 h-10 md:ml-2" />
+                                    <x-far-star class="text-veryummy-ternary w-10 h-10 md:ml-2" />
                             @endswitch
                         @endfor
                     </li>
@@ -197,7 +197,7 @@ $yourComment = 'Rerum similique dolor repellendus. In consequatur aut voluptas m
                     <p class="mb-1 text-gray-400 text-justify text-4xl">
                         {{ $commentV['comment'] }}</p>
 
-                    <p class="flex text-yellow-300 justify-end mb-4">
+                    <p class="flex text-veryummy-ternary justify-end mb-4">
                         <span class="text-5xl pt-3 pr-2">{{ $commentV['score'] }}/5</span>
 
                         {{-- Définition des 5 étoiles de note --}}
@@ -208,18 +208,18 @@ $yourComment = 'Rerum similique dolor repellendus. In consequatur aut voluptas m
                             @switch($test)
                                 {{-- Etoile pleine --}}
                                 @case($test > 0)
-                                    <x-fas-star class="text-yellow-300 mr-2 my-auto h-7 w-7" />
+                                    <x-fas-star class="text-veryummy-ternary mr-2 my-auto h-7 w-7" />
                                 @break
 
                                 {{-- Moitié d'étoile --}}
                                 @case($test >= -0.5)
-                                    <x-fas-star-half-alt class="text-yellow-300 mr-2 my-auto h-7 w-7" />
+                                    <x-fas-star-half-alt class="text-veryummy-ternary mr-2 my-auto h-7 w-7" />
                                 @break
 
                                 {{-- Etoile vide --}}
 
                                 @default
-                                    <x-far-star class="text-yellow-300 mr-2 my-auto h-7 w-7" />
+                                    <x-far-star class="text-veryummy-ternary mr-2 my-auto h-7 w-7" />
                             @endswitch
                         @endfor
                         </li>

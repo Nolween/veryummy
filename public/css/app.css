@@ -596,6 +596,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 .w-1\/2 {
   width: 50%;
 }
+.w-12 {
+  width: 3rem;
+}
 .basis-1\/3 {
   flex-basis: 33.333333%;
 }

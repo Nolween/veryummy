@@ -3,9 +3,9 @@
     "version": "2.2.11",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -501,
-    "scrollLeft": -1100,
-    "zoomLevel": 0.8,
+    "scrollTop": -340,
+    "scrollLeft": -690,
+    "zoomLevel": 1,
     "show": {
       "tableComment": true,
       "columnComment": true,
@@ -863,7 +863,7 @@
           {
             "name": "kosher_compatible",
             "comment": "",
-            "dataType": "BOOLEANa",
+            "dataType": "BOOLEAN",
             "default": "",
             "option": {
               "autoIncrement": false,
@@ -878,17 +878,86 @@
               "pfk": false,
               "widthName": 117.81684875488281,
               "widthComment": 60,
-              "widthDataType": 70.27597045898438,
+              "widthDataType": 62.98297119140625,
               "widthDefault": 60
             },
             "id": "6a2b7b70-163d-4131-a84b-3bd02652518e"
+          },
+          {
+            "name": "cooking_time",
+            "comment": "",
+            "dataType": "TINYINT",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 83.60089111328125,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "80cd3034-dc55-46a8-a5e0-dda8ac234dad"
+          },
+          {
+            "name": "making_time",
+            "comment": "",
+            "dataType": "TINYINT",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 81.07891845703125,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "a76c272e-5f6b-4410-a653-5a7c377785f1"
+          },
+          {
+            "name": "score",
+            "comment": "",
+            "dataType": "TINYINT",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "cdb75c42-1bc5-4af5-b355-5c8b8d1b919a"
           }
         ],
         "ui": {
-          "active": false,
+          "active": true,
           "left": 770.8298,
           "top": 358.4879,
-          "zIndex": 7,
+          "zIndex": 13,
           "widthName": 60,
           "widthComment": 60
         },
@@ -1150,7 +1219,7 @@
           "active": false,
           "left": 132.2995,
           "top": 643.8994,
-          "zIndex": 9,
+          "zIndex": 8,
           "widthName": 97.86186218261719,
           "widthComment": 120
         },
@@ -1389,7 +1458,7 @@
           "active": false,
           "left": 462.0841,
           "top": 1383.6394,
-          "zIndex": 10,
+          "zIndex": 9,
           "widthName": 98.86286926269531,
           "widthComment": 120
         },
@@ -1605,7 +1674,7 @@
           "active": false,
           "left": 1570.23,
           "top": 521.1393,
-          "zIndex": 8,
+          "zIndex": 7,
           "widthName": 114.59283447265625,
           "widthComment": 120
         },
@@ -1727,7 +1796,7 @@
             "9e1f41a0-86fa-40ec-a4dd-24b5f1931907"
           ],
           "x": 994.1191905639648,
-          "y": 693.9879000000001,
+          "y": 755.4879000000001,
           "direction": "bottom"
         },
         "constraintName": "fk_users_to_recipes",
@@ -1753,7 +1822,7 @@
             "7f39622e-7387-4226-9779-7fef9b948bc3"
           ],
           "x": 1217.4085811279297,
-          "y": 442.3629,
+          "y": 656.2379000000001,
           "direction": "right"
         },
         "constraintName": "fk_recipes_type_to_recipes",
@@ -1770,7 +1839,7 @@
             "c5a5ca5a-bbc3-4879-b4c8-926746bdc940"
           ],
           "x": 770.8298,
-          "y": 526.2379000000001,
+          "y": 556.9879000000001,
           "direction": "left"
         },
         "end": {
@@ -1926,7 +1995,7 @@
             "c5a5ca5a-bbc3-4879-b4c8-926746bdc940"
           ],
           "x": 1217.4085811279297,
-          "y": 610.1129000000001,
+          "y": 457.7379,
           "direction": "right"
         },
         "end": {

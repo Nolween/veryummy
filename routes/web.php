@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,9 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+// Regroupement des méthods du controller de la page d'accueil
+Route::controller(WelcomeController::class)->group(function() {
+    Route::get('/', 'index')->name('home');
+});
 Route::get('/exploration', function () {
     return view('exploration');
 })->name('exploration.list');
