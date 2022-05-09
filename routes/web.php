@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth'])->name('dashboard');
+
+
 // Regroupement des méthods du controller de la page d'accueil
 Route::controller(WelcomeController::class)->group(function() {
     Route::get('/', 'index')->name('home');
@@ -51,3 +56,7 @@ Route::get('/admin/recipes/list', function () {
 Route::get('/admin/users/list', function () {
     return view('admin-userslist');
 })->name('admin-userslist');
+
+
+
+require __DIR__.'/auth.php';
