@@ -52,17 +52,27 @@ class Recipe extends Model
      */
     public function steps()
     {
-        return $this->hasMany(RecipeStep::class);
+        return $this->hasMany(RecipeStep::class)->orderBy('order');
     }
 
     /**
-     * Indique les ingrédients de la recette
+     * Indique les avis de la recette
+     *
+     * @return void
+     */
+    public function comments()
+    {
+        return $this->hasMany(RecipeOpinion::class);
+    }
+
+    /**
+     * Indique les ingrédients de la recette et son type d'unité
      *
      * @return void
      */
     public function ingredients()
     {
-        return $this->hasMany(RecipeIngredients::class);
+        return $this->hasMany(RecipeIngredients::class)->with('ingredient')->with('unit')->orderBy('order');
     }
 
     /**
@@ -72,6 +82,6 @@ class Recipe extends Model
      */
     public function opinions()
     {
-        return $this->hasMany(RecipeOpinion::class);
+        return $this->hasMany(RecipeOpinion::class)->with('user');
     }
 }

@@ -1,7 +1,7 @@
 <div {{ $attributes }} class="w-full cursor-pointer">
 
     <a
-        href="{{ Route::currentRouteName() === 'my-recipes.list'? route('my-recipes.edit', ['54']): route('my-recipes.view', ['54']) }}">
+        href="{{ Route::currentRouteName() === 'my-recipes.list'? route('my-recipes.edit', [$attributes->get('recipeId')]): route('recipe.show', [$attributes->get('recipeId')]) }}">
         <div><img class="w-60 h-40 object-cover rounded-sm mb-2 mx-auto" src="{{ asset('/img/' . $attributes->get('photo')) }}"
             alt="test">
         </div>

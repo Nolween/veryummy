@@ -38,4 +38,14 @@ class RecipeIngredients extends Model
     {
         return $this->belongsTo(Ingredient::class);
     }
+
+    /**
+     * A quelle unité appartient cette ligne
+     *
+     * @return void
+     */
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
+    }
 }

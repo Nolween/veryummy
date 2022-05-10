@@ -11,7 +11,7 @@ class WelcomeController extends Controller
 {
 
     /**
-     * Paghe d'accueil
+     * Page d'accueil
      *
      * @return \Illuminate\View\View
      */
@@ -19,7 +19,7 @@ class WelcomeController extends Controller
     {
         $response = [];
         // Récupération de 4 recettes au hasard
-        $response['recipes'] = Recipe::select('name', 'cooking_time as cookingTime', 'making_time as makingTime', 'image as photo', 'score')
+        $response['recipes'] = Recipe::select('id', 'name', 'cooking_time as cookingTime', 'making_time as makingTime', 'image as photo', 'score')
         ->withCount('steps') // Nombre d'étapes possède la recette
         ->withCount('ingredients') // Nombre d'ingrédients dans la recette 
         ->where('score', '>', 4) // Avec une note supérieure à 4

@@ -49,7 +49,7 @@
         <div class="flex flex-wrap px-4 justify-center">
             @foreach ($recipes as $recipeK => $recipeV)
                 <div class="mb-4 mx-3">
-                    <x-elements.recipe-thumbnail :photo="$recipeV['photo']" :recipeName="$recipeV['name']" :cookingTime="$recipeV['cookingTime']" :makingTime="$recipeV['makingTime']"
+                    <x-elements.recipe-thumbnail :recipeId="$recipeV['id']" :photo="$recipeV['photo']" :recipeName="$recipeV['name']" :cookingTime="$recipeV['cookingTime']" :makingTime="$recipeV['makingTime']"
                         :stepCount="$recipeV['steps_count']" :score="$recipeV['score']" :ingredientsCount="$recipeV['ingredients_count']"/>
                 </div>
             @endforeach
@@ -76,7 +76,7 @@
                     </a>
                 </div>
             </div>
-            <div class="pt-4 flex flex-wrap justify-center">
+            <div class="pt-4 flex flex-wrap justify-center mb-12">
                 <div class="w-full sm:w-1/2  lg:w-1/3 my-auto ">
                     <a href="{{ route('my-recipes.list') }}" class="cursor-pointer">
                         <p

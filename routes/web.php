@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RecipeCardController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,10 @@ use Illuminate\Support\Facades\Route;
 Route::controller(WelcomeController::class)->group(function() {
     Route::get('/', 'index')->name('home');
 });
+// Regroupement des méthods du controller de la page recette
+Route::controller(RecipeCardController::class)->group(function() {
+    Route::get('/recipe/show/{id}', 'show')->name('recipe.show');
+});
 Route::get('/exploration', function () {
     return view('exploration');
 })->name('exploration.list');
@@ -32,9 +37,6 @@ Route::get('/my-notebook', function () {
 Route::get('/my-recipes', function () {
     return view('myrecipes');
 })->name('my-recipes.list');
-Route::get('/recipe/view/{id}', function ($i) {
-    return view('recipeview');
-})->name('my-recipes.view');
 Route::get('/recipe/new', function () {
     return view('recipenew');
 })->name('my-recipes.new');
