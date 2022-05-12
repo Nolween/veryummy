@@ -31,8 +31,32 @@
 
     </style>
 </head>
+<script>
+    function updateFavStatus(favStatus) {
+        // On remet les inputs hidden du formulaire à vide
+        let reportInput = document.getElementById("report-input");
+        reportInput.value = null;
+        let favInput = document.getElementById("fav-input");
+        favInput.value = favStatus;
+        document.getElementById("status-form").submit();
+    }
+
+    function updateReportStatus(reportStatus) {
+        // On remet les inputs hidden du formulaire à vide
+        let favInput = document.getElementById("fav-input");
+        favInput.value = null;
+        let reportInput = document.getElementById("report-input");
+        reportInput.value = reportStatus;
+        document.getElementById("status-form").submit();
+    }
+
+    function scoreControl() {
+        let scoreInput = document.getElementById("score-input");
+        scoreInput.value = scoreInput.value > 5 ? 5 : scoreInput.value < 1 ? 1 : scoreInput.value;
+    }
+</script>
 @php
-// dd($comments[0]->updated_at);
+// dd($opinion);
 // $recipe = ['name' => 'Hamburger du Nord', 'steps_count' => 7, 'cookingTime' => 7, 'makingTime' => 58, 'score' => 3.75, 'image' => '2.avif', 'ingredients_count' => 3];
 // $ingredients = [['name' => 'abondance', 'svg' => 'abondance', 'quantity' => 10, 'unit' => 2], ['name' => 'anguille', 'svg' => 'anguille', 'quantity' => 300, 'unit' => 2], ['name' => 'arachide', 'svg' => 'arachide', 'quantity' => 5, 'unit' => 3], ['name' => 'cêpes', 'svg' => 'cepes', 'quantity' => 10, 'unit' => 1], ['name' => 'chou cru', 'svg' => 'chou-cru', 'quantity' => 3, 'unit' => 4]];
 // $steps = ['aliquid assumenda quia', 'Eligendi saepe veritatis cumque. Cum quaerat illum modi nostrum omnis consectetur alias. Dolorum voluptas sequi unde veniam maiores nulla velit. Sapiente omnis id sapiente eaque iusto odio. Qui esse quae fugit explicabo nihil rem dolor.', 'Explicabo ipsum nisi vitae libero alias dolor. Dolorem laboriosam fugiat quam ut.', 'Est et nobis. Amet quisquam cum ullam aspernatur est optio iure fuga. Soluta aut aliquam et et. Quidem consequuntur aliquid voluptatum voluptas ut veritatis iste earum.', 'Eum sit nobis eos cupiditate sint et culpa ipsam. Aut doloribus id facilis cum vel suscipit.'];
@@ -42,7 +66,6 @@
 //     ['author' => 'Caleb Fisher', 'comment' => 'Voluptate praesentium nihil perferendis. Quod nostrum illum. Et illo in ut numquam nobis.', 'date' => '1597363200', 'score' => '4'],
 //     ['author' => 'Estelle Bailey', 'comment' => 'Dignissimos distinctio autem quia eius consequuntur inventore dicta dicta et. Molestiae ratione nisi amet et et. Est sint aperiam recusandae ut sed. Eos nihil doloremque assumenda dolorum et error ipsam consectetur asperiores. Quidem rerum nostrum minus magnam sunt error. Excepturi id reprehenderit facere explicabo ad laudantium vero sit.', 'date' => '1642723200', 'score' => '3'],
 // ];
-$yourComment = 'Rerum similique dolor repellendus. In consequatur aut voluptas molestias. Dicta ducimus et sed omnis tempora dolores consequuntur voluptatem dolore. Facere sint blanditiis recusandae dignissimos placeat nihil eum omnis fugiat. Eaque ipsam reiciendis architecto. Est quam animi in ullam sed dolor.';
 @endphp
 
 <body class="antialiased">
@@ -65,22 +88,48 @@ $yourComment = 'Rerum similique dolor repellendus. In consequatur aut voluptas m
                 class="my-auto w-full lg:w-1/2 px-8 md:px-4 text-4xl sm:text-5xl lg:text-5xl text-center md:text-left bg-gray-100 drop-shadow-md rounded-lg">
                 <ul class="text-gray-400">
                     @auth
-                    <li class="flex justify-between">
-                        <x-far-heart class="text-veryummy-ternary cursor-pointer" />
-                        <x-fas-exclamation-triangle class="text-red-500 cursor-pointer" />
-                    </li>
+                        <form id="status-form" action="{{ route('recipe.status', $recipe->id) }}" method="POST">
+                            @csrf
+                            @method('POST')
+                            <input id="fav-input" type="hidden" name="is_favorite" value="">
+                            <input id="report-input" type="hidden" name="is_reported" value="">
+                            <li class="flex justify-between">
+                                @if ($opinion && $opinion->is_favorite == true)
+                                    <div title="Retirer du carnet">
+                                        <x-fas-heart class="text-veryummy-ternary cursor-pointer"
+                                            onclick="updateFavStatus(0)" />
+                                    </div>
+                                @else
+                                    <div title="Ajouter à mon carnet">
+                                        <x-far-heart class="text-veryummy-ternary cursor-pointer"
+                                            onclick="updateFavStatus(1)" />
+                                    </div>
+                                @endif
+                                @if ($opinion && $opinion->is_reported == true)
+                                    <div title="Retirer le signalement">
+                                        <x-far-check-circle class="text-red-500 cursor-pointer"
+                                            onclick="updateReportStatus(0)" />
+                                    </div>
+                                @else
+                                    <div title="Signaler la recette">
+                                        <x-fas-exclamation-triangle class="text-red-500 cursor-pointer"
+                                            onclick="updateReportStatus(1)" />
+                                    </div>
+                                @endif
+                            </li>
+                        </form>
                     @endauth
                     <li>{{ $recipe['ingredients_count'] }} INGREDIENTS</li>
                     <li>PREPARATION: {{ $recipe['makingTime'] }} MINUTES</li>
                     <li>CUISSON: {{ $recipe['cookingTime'] }} MINUTES</li>
                     <li>{{ $recipe['steps_count'] }} ETAPES</li>
                     <li class="flex text-veryummy-ternary justify-between md:justify-end mb-4">
-                        <span class="">{{ $recipe['score'] }}/5</span>
+                        <span class="">{{ $recipe->score }}/5</span>
 
                         {{-- Définition des 5 étoiles de note --}}
                         @for ($e = 1; $e <= 5; $e++)
                             @php
-                                $test = $recipe['score'] - $e;
+                                $test = $recipe->score - $e;
                             @endphp
                             @switch($test)
                                 {{-- Etoile pleine --}}
@@ -137,27 +186,60 @@ $yourComment = 'Rerum similique dolor repellendus. In consequatur aut voluptas m
         <div class="mb-4 pt-20 sm:pt-10">
             <h2 class="text-veryummy-secondary text-4xl sm:text-6xl md:text-7xl w-full text-center">COMMENTAIRES</h2>
         </div>
-
         @auth
-            {{-- Ajouter un commentaire --}}
-            <form method="POST" action="/comment">
-                @csrf
-                @method('POST')
-                <div class="w-3/4 mx-auto mb-8">
-                    <span class="text-veryummy-primary text-4xl text-center">Votre commentaire</span>
-                    <textarea type="text" placeholder="ECRIVEZ VOTRE COMMENTAIRE" name="comment"
-                        class="caret-gray-400 border-gray-100 border-2 text-4xl w-full pl-4 text-gray-400 rounded-sm focus:border-gray-400 focus:outline-none mb-1 h-40">{{ $yourComment }}</textarea>
-                    <div class="text-right my-auto">
-                        @if ($yourComment !== null)
-                            <button type="button" class="text-3xl p-2 rounded-sm my-auto bg-veryummy-ternary">
-                                <span class="text-white">SUPPRIMER</span> </button>
+            {{-- Si ce n'est pas la recette de l'utilisateur --}}
+            @if ($userId !== $recipe->user_id)
+                {{-- Ajouter un commentaire --}}
+                <form id="comment-form" action="{{ route('recipe.comment', $recipe->id) }}" method="POST">
+                    @csrf
+                    @method('POST')
+                    <div class="w-3/4 mx-auto mb-3 flex justify-center">
+                        <input id="score-input" type="number" min="1" max="5" step="0.5" placeholder="Note"
+                            value="{{ $opinion->score ?? null }}" onchange="scoreControl()" name="score" required
+                            class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full  md:w-1/3 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
+                        @if (!empty($opinion->score))
+                            <span class="w-full md:w-1/3 text-center flex justify-center my-auto">
+                                {{-- Définition des 5 étoiles de note --}}
+                                @for ($e = 1; $e <= 5; $e++)
+                                    @php
+                                        $testOpinion = $opinion->score - $e;
+                                    @endphp
+                                    @switch($testOpinion)
+                                        {{-- Etoile pleine --}}
+                                        @case($testOpinion > 0)
+                                            <x-fas-star class="text-veryummy-ternary mr-2 my-auto h-10 w-10" />
+                                        @break
+
+                                        {{-- Moitié d'étoile --}}
+                                        @case($testOpinion >= -0.5)
+                                            <x-fas-star-half-alt class="text-veryummy-ternary mr-2 my-auto h-10 w-10" />
+                                        @break
+
+                                        {{-- Etoile vide --}}
+
+                                        @default
+                                            <x-far-star class="text-veryummy-ternary mr-2 my-auto h-10 w-10" />
+                                    @endswitch
+                                @endfor
+                            </span>
                         @endif
-                        <button type="button" class="text-3xl p-2 rounded-sm my-auto bg-veryummy-primary">
-                            <span class="text-white">ENVOYER</span>
-                        </button>
                     </div>
-                </div>
-            @endauth
+                    <div class="w-3/4 mx-auto mb-8">
+                        <span class="text-veryummy-primary text-4xl text-center">Votre commentaire</span>
+                        <textarea required type="text" placeholder="ECRIVEZ VOTRE COMMENTAIRE" name="comment"
+                            class="caret-gray-400 border-gray-100 border-2 text-4xl w-full pl-4 text-gray-400 rounded-sm focus:border-gray-400 focus:outline-none mb-1 h-40">{{ $opinion->comment ?? null }}</textarea>
+                        <div class="text-right my-auto">
+                            @if (!empty($opinion->comment))
+                                <button type="button" class="text-3xl p-2 rounded-sm my-auto px-4 bg-veryummy-ternary">
+                                    <span class="text-white">SUPPRIMER</span> </button>
+                            @endif
+                            <button type="submit" class="text-3xl p-2 rounded-sm my-auto px-4 bg-veryummy-primary">
+                                <span class="text-white">ENVOYER</span>
+                            </button>
+                        </div>
+                    </div>
+            @endif
+        @endauth
 
         </form>
         {{-- Commentaires existants --}}
@@ -167,7 +249,7 @@ $yourComment = 'Rerum similique dolor repellendus. In consequatur aut voluptas m
                     <div class="flex justify-between mb-2">
                         <span class="text-veryummy-secondary text-5xl">De {{ $commentV->user->name }}</span>
                         <span
-                            class="text-veryummy-secondary text-5xl">{{ \Carbon\Carbon::parse($commentV->updated_at)->format('d/m/Y h:H') }}</span>
+                            class="text-veryummy-secondary text-5xl">{{ \Carbon\Carbon::parse($commentV->updated_at)->format('d/m/Y H:i:s') }}</span>
                     </div>
                     <p class="mb-1 text-gray-400 text-justify text-4xl">
                         {{ $commentV->comment }}</p>

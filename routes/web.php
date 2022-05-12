@@ -27,6 +27,8 @@ Route::controller(WelcomeController::class)->group(function() {
 // Regroupement des méthods du controller de la page recette
 Route::controller(RecipeCardController::class)->group(function() {
     Route::get('/recipe/show/{id}', 'show')->name('recipe.show');
+    Route::post('/recipe/status/{id}', 'status')->name('recipe.status');
+    Route::post('/recipe/comment/{id}', 'comment')->name('recipe.comment');
 });
 Route::get('/exploration', function () {
     return view('exploration');

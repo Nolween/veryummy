@@ -18,7 +18,8 @@ return new class extends Migration
             $table->foreignId('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('recipe_id')->references('id')->on('recipes')->onUpdate('cascade')->onDelete('cascade');
             $table->text('comment')->nullable();
-            $table->tinyInteger('score')->nullable();
+            $table->float('score', 3, 2)->nullable();
+            $table->boolean('is_favorite')->nullable();
             $table->boolean('is_reported')->nullable();
             $table->timestamps();
         });

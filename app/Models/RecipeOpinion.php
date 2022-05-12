@@ -14,7 +14,8 @@ class RecipeOpinion extends Model
         'recipe_id',
         'comment',
         'score',
-        'is_reported'
+        'is_reported',
+        'is_favorite'
     ];
 
     /**

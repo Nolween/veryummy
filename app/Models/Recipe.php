@@ -84,4 +84,5 @@ class Recipe extends Model
     {
         return $this->hasMany(RecipeOpinion::class)->with('user');
     }
+
 }

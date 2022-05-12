@@ -16,12 +16,14 @@ class RecipeOpinionFactory extends Factory
      */
     public function definition()
     {
+        $isFavorite = $this->faker->boolean(30);
         return [
             'user_id' => rand(1, 21),
             'recipe_id' => rand(1, 100),
             'comment' => $this->faker->paragraph(),
             'score' => rand(1, 5),
-            'is_reported' => $this->faker->boolean(10),
+            'is_favorite' => $isFavorite,
+            'is_reported' => $isFavorite == true ? false : $this->faker->boolean(30),
             'created_at' => now(),
             'updated_at' => now()
         ];

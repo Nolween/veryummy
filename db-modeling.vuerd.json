@@ -3,9 +3,9 @@
     "version": "2.2.11",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -340,
-    "scrollLeft": -690,
-    "zoomLevel": 1,
+    "scrollTop": -492,
+    "scrollLeft": 0,
+    "zoomLevel": 0.7,
     "show": {
       "tableComment": true,
       "columnComment": true,
@@ -954,10 +954,10 @@
           }
         ],
         "ui": {
-          "active": true,
+          "active": false,
           "left": 770.8298,
           "top": 358.4879,
-          "zIndex": 13,
+          "zIndex": 10,
           "widthName": 60,
           "widthComment": 60
         },
@@ -1146,6 +1146,29 @@
             "id": "d203a166-0fa6-4ffc-80f9-dbb3e97e9670"
           },
           {
+            "name": "is_favorite",
+            "comment": "",
+            "dataType": "BOOLEAN",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 64.33489990234375,
+              "widthComment": 60,
+              "widthDataType": 62.98297119140625,
+              "widthDefault": 60
+            },
+            "id": "0d8367f9-5136-431c-89a9-c42190ef2c8f"
+          },
+          {
             "name": "is_reported",
             "comment": "",
             "dataType": "BOOLEAN",
@@ -1219,7 +1242,7 @@
           "active": false,
           "left": 132.2995,
           "top": 643.8994,
-          "zIndex": 8,
+          "zIndex": 15,
           "widthName": 97.86186218261719,
           "widthComment": 120
         },
@@ -1848,7 +1871,7 @@
             "a34d75e8-eadf-49d3-be70-157715b09c6c"
           ],
           "x": 504.4664006347656,
-          "y": 702.1494,
+          "y": 707.2744,
           "direction": "right"
         },
         "constraintName": "fk_recipes_to_recipe_opinions",
@@ -1874,7 +1897,7 @@
             "388ddf2d-9343-4a0d-8d89-7d626457fbb9"
           ],
           "x": 504.4664006347656,
-          "y": 818.6494,
+          "y": 834.0244,
           "direction": "right"
         },
         "constraintName": "fk_users_to_recipe_opinions",
@@ -1943,7 +1966,7 @@
             "d97f5ac5-e065-4463-a619-85817ec6e168"
           ],
           "x": 318.3829503173828,
-          "y": 876.8994,
+          "y": 897.3994,
           "direction": "bottom"
         },
         "end": {
