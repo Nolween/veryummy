@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ExplorationController;
+use App\Http\Controllers\MyNotebookController;
 use App\Http\Controllers\MyRecipesController;
 use App\Http\Controllers\RecipeCardController;
 use App\Http\Controllers\WelcomeController;
@@ -41,9 +42,10 @@ Route::controller(ExplorationController::class)->group(function() {
 Route::controller(MyRecipesController::class)->group(function() {
     Route::get('/my-recipes', 'list')->name('my-recipes.list');
 });
-Route::get('/my-notebook', function () {
-    return view('mynotebook');
-})->name('my-notebook.list');
+// Regroupement des méthods du controller des recettes enregistrées par l'utilisateur
+Route::controller(MyNotebookController::class)->group(function() {
+    Route::get('/my-notebook', 'list')->name('my-notebook.list');
+});
 Route::get('/recipe/new', function () {
     return view('recipenew');
 })->name('my-recipes.new');
