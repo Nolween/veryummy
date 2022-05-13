@@ -42,12 +42,13 @@ class RecipeCardController extends Controller
      * @param Request $request
      * @return void
      */
-    public function status(Request $request) {
+    public function status(Request $request)
+    {
         // Quelle est l'ID de la recette?
         $recipeId = $request->route('id');
         // Récupération de l'utilisateur
         $user = Auth::user();
-        
+
         $test = $request->validate([
             'is_favorite' => ['boolean', 'nullable'],
             'is_reported' => ['boolean', 'nullable'],
@@ -68,12 +69,13 @@ class RecipeCardController extends Controller
      * @param Request $request
      * @return void
      */
-    public function comment(Request $request) {
+    public function comment(Request $request)
+    {
         // Quelle est l'ID de la recette?
         $recipeId = $request->route('id');
         // Récupération de l'utilisateur
         $user = Auth::user();
-        
+
         $test = $request->validate([
             'score' => [new Score, 'required'], // Le socre doit passer la règle Score de App/Rules/Score
             'comment' => ['string', 'required'],
@@ -90,6 +92,35 @@ class RecipeCardController extends Controller
         $average = RecipeOpinion::whereBelongsTo($recipe)->avg('score');
         $recipe->score = $average;
         $recipe->save();
+
+        return redirect("/recipe/show/$recipeId");
+    }
+
+    /**
+     * Supprimer l'opinion et la note de l'utilisateur
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function emptyOpinion(Request $request)
+    {
+        // Quelle est l'ID de la recette?
+        $recipeId = $request->route('id');
+        // Récupération de l'utilisateur
+        $user = Auth::user();
+        $recipe = Recipe::findOrFail($recipeId);
+        // Trouver l'opinion de la recette par l'utilisateur
+        $recipeOpinion = RecipeOpinion::whereBelongsTo($recipe)->whereBelongsTo($user)->first();
+        if ($recipeOpinion) {
+            // Réinitialisation du commentaire et de la note de l'avis sur la recette
+            $recipeOpinion->score = null;
+            $recipeOpinion->comment = null;
+            $recipeOpinion->save();
+            // Définition de la nouvelle moyenne
+            $average = RecipeOpinion::whereBelongsTo($recipe)->avg('score');
+            $recipe->score = $average;
+            $recipe->save();
+        }
 
         return redirect("/recipe/show/$recipeId");
     }

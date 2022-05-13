@@ -29,6 +29,7 @@ Route::controller(RecipeCardController::class)->group(function() {
     Route::get('/recipe/show/{id}', 'show')->name('recipe.show');
     Route::post('/recipe/status/{id}', 'status')->name('recipe.status');
     Route::post('/recipe/comment/{id}', 'comment')->name('recipe.comment');
+    Route::patch('/recipe/opinion/empty/{id}', 'emptyOpinion')->name('recipe-opinion.empty');
 });
 Route::get('/exploration', function () {
     return view('exploration');

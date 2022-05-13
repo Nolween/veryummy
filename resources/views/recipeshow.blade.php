@@ -224,24 +224,32 @@
                             </span>
                         @endif
                     </div>
-                    <div class="w-3/4 mx-auto mb-8">
+                    <div class="w-3/4 mx-auto mb-6 text-center flex flex-wrap justify-center">
                         <span class="text-veryummy-primary text-4xl text-center">Votre commentaire</span>
                         <textarea required type="text" placeholder="ECRIVEZ VOTRE COMMENTAIRE" name="comment"
-                            class="caret-gray-400 border-gray-100 border-2 text-4xl w-full pl-4 text-gray-400 rounded-sm focus:border-gray-400 focus:outline-none mb-1 h-40">{{ $opinion->comment ?? null }}</textarea>
+                            class="caret-gray-400 border-gray-100 border-2 text-4xl w-full pl-4 text-gray-400 rounded-sm focus:border-gray-400 focus:outline-none mb-4 h-40">{{ $opinion->comment ?? null }}</textarea>
                         <div class="text-right my-auto">
-                            @if (!empty($opinion->comment))
-                                <button type="button" class="text-3xl p-2 rounded-sm my-auto px-4 bg-veryummy-ternary">
-                                    <span class="text-white">SUPPRIMER</span> </button>
-                            @endif
                             <button type="submit" class="text-3xl p-2 rounded-sm my-auto px-4 bg-veryummy-primary">
                                 <span class="text-white">ENVOYER</span>
                             </button>
                         </div>
                     </div>
+
+                </form>
+                
+                @if (!empty($opinion->comment))
+                <div class="w-3/4 mx-auto mb-8 flex justify-center">
+                    <form id="delete-form" action="{{ route('recipe-opinion.empty', $recipe->id) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="text-3xl p-2 rounded-sm my-auto px-4 bg-veryummy-ternary">
+                            <span class="text-white">SUPPRIMER</span> </button>
+                    </form>
+                </div>
+                @endif
+                {{-- FIN Si ce n'est pas la recette de l'utilisateur --}}
             @endif
         @endauth
-
-        </form>
         {{-- Commentaires existants --}}
         <div class="w-3/4 justify-center mx-auto">
             @foreach ($comments as $commentK => $commentV)
