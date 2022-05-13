@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ExplorationController;
+use App\Http\Controllers\MyRecipesController;
 use App\Http\Controllers\RecipeCardController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
@@ -32,16 +33,17 @@ Route::controller(RecipeCardController::class)->group(function() {
     Route::post('/recipe/comment/{id}', 'comment')->name('recipe.comment');
     Route::patch('/recipe/opinion/empty/{id}', 'emptyOpinion')->name('recipe-opinion.empty');
 });
-// Regroupement des méthods du controller de la page recette
+// Regroupement des méthods du controller d'exploration des recettes
 Route::controller(ExplorationController::class)->group(function() {
     Route::get('/exploration', 'list')->name('exploration.list');
+});
+// Regroupement des méthods du controller des recettes crées
+Route::controller(MyRecipesController::class)->group(function() {
+    Route::get('/my-recipes', 'list')->name('my-recipes.list');
 });
 Route::get('/my-notebook', function () {
     return view('mynotebook');
 })->name('my-notebook.list');
-Route::get('/my-recipes', function () {
-    return view('myrecipes');
-})->name('my-recipes.list');
 Route::get('/recipe/new', function () {
     return view('recipenew');
 })->name('my-recipes.new');

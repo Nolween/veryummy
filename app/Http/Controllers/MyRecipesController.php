@@ -4,17 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Recipe;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-/**
- * Page d'accueil
- *
- * @return \Illuminate\View\View
- */
-class ExplorationController extends Controller
+class MyRecipesController extends Controller
 {
-    
     /**
-     * Listes des recettes
+     * Listes des recettes de l'utilisateur
      *
      * @param Request $request
      * @return void
@@ -23,14 +18,19 @@ class ExplorationController extends Controller
     {
         $response = [];
 
+        // Récupération des infos de l'utilisateur connecté
+        $user = Auth::user();
+
+        // Validation du formulaire
         $test = $request->validate([
             'name' => ['string', 'nullable'],
             'type' => ['integer', 'nullable'],
         ]);
 
-        $recipes = Recipe::select('id', 'name', 'score', 'making_time', 'cooking_time', 'image')
-            ->where('is_accepted', true)
+        // Début de la requête
+        $recipes = Recipe::select('id', 'name', 'score', 'making_time', 'cooking_time', 'image', 'is_accepted')
             ->where('name', 'like', "%{$request->name}%")
+            ->where('user_id', '=', $user->id)
             ->withCount('ingredients')
             ->withCount('steps');
 
@@ -70,6 +70,6 @@ class ExplorationController extends Controller
         $response['search'] = $request->name ?? null;
         $response['type'] = $request->type ?? null;
 
-        return view('exploration', $response);
+        return view('myrecipes', $response);
     }
 }
