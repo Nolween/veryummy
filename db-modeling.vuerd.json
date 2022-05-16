@@ -3,9 +3,9 @@
     "version": "2.2.11",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -510,
-    "scrollLeft": -445,
-    "zoomLevel": 0.5,
+    "scrollTop": -252,
+    "scrollLeft": -541,
+    "zoomLevel": 1,
     "show": {
       "tableComment": true,
       "columnComment": true,
@@ -281,7 +281,7 @@
           "active": false,
           "left": 842.9027,
           "top": 990.1344,
-          "zIndex": 11,
+          "zIndex": 10,
           "widthName": 60,
           "widthComment": 71.43289184570312
         },
@@ -951,13 +951,36 @@
               "widthDefault": 60
             },
             "id": "cdb75c42-1bc5-4af5-b355-5c8b8d1b919a"
+          },
+          {
+            "name": "",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "ce671e8e-a440-4807-b6b8-8cbe48d3113c"
           }
         ],
         "ui": {
           "active": false,
-          "left": 770.8298,
+          "left": 771.8298,
           "top": 358.4879,
-          "zIndex": 9,
+          "zIndex": 31,
           "widthName": 60,
           "widthComment": 60
         },
@@ -1019,7 +1042,7 @@
           "active": false,
           "left": 1334.1677,
           "top": 145.8529,
-          "zIndex": 6,
+          "zIndex": 5,
           "widthName": 78.01087951660156,
           "widthComment": 95.74285888671875
         },
@@ -1242,7 +1265,7 @@
           "active": false,
           "left": 132.2995,
           "top": 643.8994,
-          "zIndex": 10,
+          "zIndex": 9,
           "widthName": 97.86186218261719,
           "widthComment": 120
         },
@@ -1481,7 +1504,7 @@
           "active": false,
           "left": 462.0841,
           "top": 1383.6394,
-          "zIndex": 8,
+          "zIndex": 7,
           "widthName": 98.86286926269531,
           "widthComment": 120
         },
@@ -1697,7 +1720,7 @@
           "active": false,
           "left": 1570.23,
           "top": 521.1393,
-          "zIndex": 7,
+          "zIndex": 6,
           "widthName": 114.59283447265625,
           "widthComment": 120
         },
@@ -1818,8 +1841,8 @@
           "columnIds": [
             "9e1f41a0-86fa-40ec-a4dd-24b5f1931907"
           ],
-          "x": 994.1191905639648,
-          "y": 755.4879000000001,
+          "x": 995.1191905639648,
+          "y": 775.9879000000001,
           "direction": "bottom"
         },
         "constraintName": "fk_users_to_recipes",
@@ -1844,9 +1867,9 @@
           "columnIds": [
             "7f39622e-7387-4226-9779-7fef9b948bc3"
           ],
-          "x": 1217.4085811279297,
-          "y": 656.2379000000001,
-          "direction": "right"
+          "x": 995.1191905639649,
+          "y": 358.4879,
+          "direction": "top"
         },
         "constraintName": "fk_recipes_type_to_recipes",
         "visible": true,
@@ -1861,8 +1884,8 @@
           "columnIds": [
             "c5a5ca5a-bbc3-4879-b4c8-926746bdc940"
           ],
-          "x": 770.8298,
-          "y": 556.9879000000001,
+          "x": 771.8298,
+          "y": 567.2379000000001,
           "direction": "left"
         },
         "end": {
@@ -1913,7 +1936,7 @@
           "columnIds": [
             "c5a5ca5a-bbc3-4879-b4c8-926746bdc940"
           ],
-          "x": 994.1191905639648,
+          "x": 846.259596854655,
           "y": 358.4879,
           "direction": "top"
         },
@@ -2017,8 +2040,8 @@
           "columnIds": [
             "c5a5ca5a-bbc3-4879-b4c8-926746bdc940"
           ],
-          "x": 1217.4085811279297,
-          "y": 457.7379,
+          "x": 1218.4085811279297,
+          "y": 567.2379000000001,
           "direction": "right"
         },
         "end": {

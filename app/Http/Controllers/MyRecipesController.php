@@ -21,6 +21,13 @@ class MyRecipesController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
 
+        // Si pas d'utilisateur
+        if(!$user) {
+            // Déconnexion de l'utilisateur
+            Auth::logout();
+            return redirect("/");
+        }
+        
         // Validation du formulaire
         $test = $request->validate([
             'name' => ['string', 'nullable'],

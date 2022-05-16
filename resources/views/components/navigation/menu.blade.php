@@ -8,7 +8,7 @@
     @auth
         <div class="basis-1/3 sm:flex-1"><a href="{{ route('my-notebook.list') }}" class="cursor-pointer">MON CARNET</a>
         </div>
-        <div class="basis-1/3 sm:flex-1"><a href="{{ route('myaccount') }}" class="cursor-pointer">MON COMPTE</a></div>
+        <div class="basis-1/3 sm:flex-1"><a href="{{ route('my-account.show') }}" class="cursor-pointer">MON COMPTE</a></div>
         <div class="basis-1/3 sm:flex-1"><span class="cursor-pointer"><a href="{{ route('admin-ingredientslist') }}"
                     class="cursor-pointer">ADMIN</a></span></div>
         <form method="POST" action="{{ route('logout') }}">

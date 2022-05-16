@@ -32,7 +32,7 @@ class RecipeCardController extends Controller
         // Tous les avis de la recette sauf celui de l'utilisateur connecté
         $response['comments'] =  Recipe::findOrFail($id)->comments->where('user_id', '!=', $response['userId']);
         // Si utilisateur connecté, récupération de son avis sur la recette (+ fav + report)
-        $response['opinion'] = !empty($user) ? RecipeOpinion::whereBelongsTo($user)->where('recipe_id', $id)->first() : [];
+        $response['opinion'] = !empty($user) ? RecipeOpinion::whereBelongsTo($user)->where('recipe_id', $id)->firstOrFail() : [];
         return view('recipeshow', $response);
     }
 
@@ -49,6 +49,12 @@ class RecipeCardController extends Controller
         // Récupération de l'utilisateur
         $user = Auth::user();
 
+        // Si pas d'utilisateur
+        if(!$user) {
+            // Déconnexion de l'utilisateur
+            Auth::logout();
+            return redirect("/");
+        }
         $test = $request->validate([
             'is_favorite' => ['boolean', 'nullable'],
             'is_reported' => ['boolean', 'nullable'],
@@ -76,6 +82,12 @@ class RecipeCardController extends Controller
         // Récupération de l'utilisateur
         $user = Auth::user();
 
+        // Si pas d'utilisateur
+        if(!$user) {
+            // Déconnexion de l'utilisateur
+            Auth::logout();
+            return redirect("/");
+        }
         $test = $request->validate([
             'score' => [new Score, 'required'], // Le socre doit passer la règle Score de App/Rules/Score
             'comment' => ['string', 'required'],
@@ -108,9 +120,15 @@ class RecipeCardController extends Controller
         $recipeId = $request->route('id');
         // Récupération de l'utilisateur
         $user = Auth::user();
+        // Si pas d'utilisateur
+        if(!$user) {
+            // Déconnexion de l'utilisateur
+            Auth::logout();
+            return redirect("/");
+        }
         $recipe = Recipe::findOrFail($recipeId);
         // Trouver l'opinion de la recette par l'utilisateur
-        $recipeOpinion = RecipeOpinion::whereBelongsTo($recipe)->whereBelongsTo($user)->first();
+        $recipeOpinion = RecipeOpinion::whereBelongsTo($recipe)->whereBelongsTo($user)->firstOrFail();
         if ($recipeOpinion) {
             // Réinitialisation du commentaire et de la note de l'avis sur la recette
             $recipeOpinion->score = null;

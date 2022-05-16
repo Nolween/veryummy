@@ -32,14 +32,38 @@
     </style>
 </head>
 <script>
-
-function openDialogDeletion() {
+    function openDialogDeletion() {
         let modal = document.getElementById("deletion-overlay");
         modal.classList.remove('hidden');
     }
+
     function closeDialogDeletion() {
         let modal = document.getElementById("deletion-overlay");
         modal.classList.add('hidden');
+    }
+    // Contrôle de modification à valide
+    function checkModifications() {
+        const email = document.getElementById("email-input").value;
+        const name = document.getElementById("name-input").value;
+        const currentPassword = document.getElementById("current-password-input").value;
+        const password = document.getElementById("password-input").value;
+        const confirmation = document.getElementById("confirmation-input").value;
+        const editionButton = document.getElementById("edition-button");
+        // Si le mail ou le pseudo est modifié, ou qu'on a renseigné un nouveau mot de passe avec conformation égale
+        if (email !== "{{ $informations['email'] }}" ||
+            name !== "{{ $informations['name'] }}" ||
+            (currentPassword && password && confirmation && password === confirmation)) {
+            editionButton.disabled = false;
+            editionButton.classList.remove('bg-gray-400');
+            editionButton.classList.add('bg-veryummy-primary');
+        }
+        // Si pas de modification ou retour au précédent
+        else {
+            editionButton.disabled = true;
+            editionButton.classList.remove('bg-veryummy-primary');
+            editionButton.classList.add('bg-gray-400');
+        }
+
     }
 </script>
 
@@ -52,35 +76,67 @@ function openDialogDeletion() {
             <h1 class="text-veryummy-secondary text-7xl sm:text-9xl w-full text-center">MON COMPTE</h1>
         </div>
 
+        {{-- @if ($errors->any())
+            <div>
+                {{ $errors }}
+            </div>
+        @endif --}}
+
+        @if (session('userUpdateSuccess'))
+            <div class="w-full text-center text-veryummy-primary text-3xl">{{ session('userUpdateSuccess')}}</div>
+        @endif
         {{-- Formulaire --}}
-        <form action="POST" action="/account">
+        <form method="POST" action="{{ route('my-account.edit') }}">
             @method('PUT')
+            @csrf
 
             <div class=" bg-white rounded-sm justify-center flex flex-wrap">
+                @error('email')
+                    <div class="w-full text-center text-veryummy-ternary text-3xl">{{ $message }}</div>
+                @enderror
                 <div class="w-full mx-auto justify-center text-center mb-5 px-3 md:px-0">
-                    <input placeholder="MAIL" type="email" name="mail"
-                        class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full  md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
+                    <input autocomplete="email" placeholder="MAIL" type="email" name="email"
+                        value="{{ $informations['email'] }}" onkeyup="checkModifications()" id="email-input"
+                        class="caret-gray-400 border-gray-100 @error('email') border-veryummy-ternary @enderror text-gray-400 border-2 text-4xl w-full  md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
+                </div>
+                @error('name')
+                    <div class="w-full text-center text-veryummy-ternary text-3xl">{{ $message }}</div>
+                @enderror
+                <div class="w-full mx-auto justify-center text-center mb-5 px-3 md:px-0">
+                    <input autocomplete="username" placeholder="PSEUDO" onkeyup="checkModifications()" type="text"
+                        name="name" value="{{ $informations['name'] }}" id="name-input"
+                        class="caret-gray-400 border-gray-100 @error('name') border-veryummy-ternary @enderror text-gray-400 border-2 text-4xl w-full  md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
+                </div>
+                @error('current-password')
+                    <div class="w-full text-center text-veryummy-ternary text-3xl">{{ $message }}</div>
+                @enderror
+                <div class="w-full mx-auto justify-center text-center mb-5 px-3 md:px-0">
+                    <input autocomplete="current-password" placeholder="MOT DE PASSE ACTUEL"
+                        onkeyup="checkModifications()" type="password" name="current-password"
+                        id="current-password-input"
+                        class="caret-gray-400 border-gray-100 @error('current-password') border-veryummy-ternary @enderror text-gray-400 border-2 text-4xl w-full md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
+                </div>
+                @error('password')
+                    <div class="w-full text-center text-veryummy-ternary text-3xl">{{ $message }}</div>
+                @enderror
+                <div class="w-full mx-auto justify-center text-center mb-5 px-3 md:px-0">
+                    <input autocomplete="new-password" placeholder="MOT DE PASSE" onkeyup="checkModifications()"
+                        type="password" name="password" id="password-input"
+                        class="caret-gray-400 border-gray-100 @error('password') border-veryummy-ternary @enderror text-gray-400 border-2 text-4xl w-full md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
                 </div>
                 <div class="w-full mx-auto justify-center text-center mb-5 px-3 md:px-0">
-                    <input placeholder="PSEUDO" type="text" name="login"
-                        class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full  md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
-                </div>
-                <div class="w-full mx-auto justify-center text-center mb-5 px-3 md:px-0">
-                    <input placeholder="MOT DE PASSE" type="password" name="password"
-                        class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
-                </div>
-                <div class="w-full mx-auto justify-center text-center mb-5 px-3 md:px-0">
-                    <input placeholder="CONFIRMATION" type="password" name="confirmation"
+                    <input autocomplete="new-password" placeholder="CONFIRMATION" type="password"
+                        onkeyup="checkModifications()" name="confirmation" id="confirmation-input"
                         class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
                 </div>
                 <div class="text-center mb-5 w-full">
-                    <button class="bg-veryummy-primary text-4xl p-2 rounded-sm px-7" ><span class="text-white"
-                            id="edition-button">
+                    <button disabled id="edition-button" class="bg-gray-400 text-4xl p-2 rounded-sm px-7"><span
+                            class="text-white">
                             MODIFICATION</span></button>
                 </div>
                 <div class="text-center mb-5 w-full">
-                    <button type="button"class="bg-veryummy-ternary text-4xl p-2 rounded-sm px-7" onclick="openDialogDeletion()"><span class="text-white"
-                            id="deletion-button">
+                    <button type="button" class="bg-veryummy-ternary text-4xl p-2 rounded-sm px-7"
+                        onclick="openDialogDeletion()"><span class="text-white" id="deletion-button">
                             SUPPRIMER MON COMPTE</span></button>
                 </div>
             </div>
@@ -93,7 +149,8 @@ function openDialogDeletion() {
 
             <div class=" bg-white rounded-sm block w-3/4 inset-0 px-2">
                 <div class="flex justify-between items-center"><span
-                        class="md:pl-32 lg:pl-60 xl:pl-80 text-3xl sm:text-5xl md:text-6xl text-veryummy-secondary pl-3">SUPPRESSION DU COMPTE</span>
+                        class="md:pl-32 lg:pl-60 xl:pl-80 text-3xl sm:text-5xl md:text-6xl text-veryummy-secondary pl-3">SUPPRESSION
+                        DU COMPTE</span>
                     <span class="cursor-pointer">
                         <x-far-window-close onclick="closeDialogDeletion()"
                             class="text-veryummy-secondary bg-white pr-3 pb-2" />
@@ -105,7 +162,8 @@ function openDialogDeletion() {
                     <p>Toutes vos informations seront perdues</p>
                 </div>
                 <div class="flex flex-wrap justify-center sm:justify-between mb-5">
-                    <button onclick="closeDialogDeletion()" class="mx-3 text-4xl px-5 py-2 text-white bg-gray-400 mb-3">ANNULER</button>
+                    <button onclick="closeDialogDeletion()"
+                        class="mx-3 text-4xl px-5 py-2 text-white bg-gray-400 mb-3">ANNULER</button>
                     <button class="mx-3 text-4xl px-5 py-2 text-white bg-veryummy-ternary mb-3">SUPPRIMER</button>
                 </div>
             </div>

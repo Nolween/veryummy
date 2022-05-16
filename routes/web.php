@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ExplorationController;
 use App\Http\Controllers\MyNotebookController;
 use App\Http\Controllers\MyRecipesController;
@@ -46,6 +47,11 @@ Route::controller(MyRecipesController::class)->group(function() {
 Route::controller(MyNotebookController::class)->group(function() {
     Route::get('/my-notebook', 'list')->name('my-notebook.list');
 });
+// Regroupement des méthods du controller des informations utilisateur
+Route::controller(AccountController::class)->group(function() {
+    Route::get('/my-account', 'show')->name('my-account.show');
+    Route::put('/my-account/edit', 'edit')->name('my-account.edit');
+});
 Route::get('/recipe/new', function () {
     return view('recipenew');
 })->name('my-recipes.new');
@@ -55,9 +61,6 @@ Route::get('/recipe/edit/{id}', function ($id) {
 Route::get('/registration', function () {
     return view('registration');
 })->name('registration');
-Route::get('/my-account', function () {
-    return view('myaccount');
-})->name('myaccount');
 Route::get('/admin/ingredients/list', function () {
     return view('admin-ingredientslist');
 })->name('admin-ingredientslist');
