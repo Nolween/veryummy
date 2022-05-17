@@ -1,20 +1,24 @@
-<div class="drop-shadow-md z-40 fixed w-full text-4xl bg-white  text-veryummy-primary flex flex-wrap text-center mb-4">
-    <div class="basis-1/3 sm:flex-1"><a href="{{ route('home') }}" class="cursor-pointer">ACCUEIL</a></div>
-    <div class="basis-1/3 sm:flex-1"><a href="{{ route('exploration.list') }}" class="cursor-pointer">EXPLORATION</a>
+<div
+    class="drop-shadow-md z-40 fixed w-full text-4xl bg-white  text-veryummy-primary flex flex-wrap text-center mb-4 justify-center">
+    <div class="px-1 basis-1/3 sm:flex-1"><a href="{{ route('home') }}" class="cursor-pointer">ACCUEIL</a></div>
+    <div class="px-1 basis-1/3 sm:flex-1"><a href="{{ route('exploration.list') }}" class="cursor-pointer">EXPLORATION</a>
     </div>
     @guest
-        <div class="basis-1/3 sm:flex-1"><span class="cursor-pointer" onclick="openDialogConnexion()">CONNEXION</span></div>
+        <div class="px-1 basis-1/3 sm:flex-1"><span class="cursor-pointer" onclick="openDialogConnexion()">CONNEXION</span></div>
     @endguest
     @auth
-        <div class="basis-1/3 sm:flex-1"><a href="{{ route('my-notebook.list') }}" class="cursor-pointer">MON CARNET</a>
+        <div class="px-1 basis-1/3 sm:flex-1"><a href="{{ route('my-notebook.list') }}" class="cursor-pointer">MON CARNET</a>
         </div>
-        <div class="basis-1/3 sm:flex-1"><a href="{{ route('my-account.show') }}" class="cursor-pointer">MON COMPTE</a></div>
-        <div class="basis-1/3 sm:flex-1"><span class="cursor-pointer"><a href="{{ route('admin-ingredientslist') }}"
+        <div class="px-1 basis-1/3 sm:flex-1"><a href="{{ route('my-account.show') }}" class="cursor-pointer">MON COMPTE</a>
+        </div>
+        <div class="px-1 basis-1/3 sm:flex-1"><span class="cursor-pointer"><a href="{{ route('admin-ingredientslist') }}"
                     class="cursor-pointer">ADMIN</a></span></div>
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button class="basis-1/3 sm:flex-1"><span class="cursor-pointer">DECONNEXION</span></button>
-        </form>
+        <div class="px-1 basis-1/3 sm:flex-1">
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button><span class="cursor-pointer">DECONNEXION</span></button>
+            </form>
+        </div>
     @endauth
 
 </div>

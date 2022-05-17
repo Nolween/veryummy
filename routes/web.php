@@ -51,6 +51,7 @@ Route::controller(MyNotebookController::class)->group(function() {
 Route::controller(AccountController::class)->group(function() {
     Route::get('/my-account', 'show')->name('my-account.show');
     Route::put('/my-account/edit', 'edit')->name('my-account.edit');
+    Route::delete('/my-account/delete', 'delete')->name('my-account.delete');
 });
 Route::get('/recipe/new', function () {
     return view('recipenew');

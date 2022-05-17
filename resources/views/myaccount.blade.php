@@ -76,15 +76,21 @@
             <h1 class="text-veryummy-secondary text-7xl sm:text-9xl w-full text-center">MON COMPTE</h1>
         </div>
 
-        {{-- @if ($errors->any())
-            <div>
-                {{ $errors }}
-            </div>
-        @endif --}}
-
+        {{-- NOTIFICATIONS --}}
         @if (session('userUpdateSuccess'))
-            <div class="w-full text-center text-veryummy-primary text-3xl">{{ session('userUpdateSuccess')}}</div>
+            <div class="my-3 w-full text-center p-2 text-white bg-veryummy-primary text-3xl">
+                {{ session('userUpdateSuccess') }}</div>
         @endif
+        @if (session('userUpdateError'))
+            <div class="my-3 w-full text-center p-2 text-white bg-veryummy-ternary text-3xl">
+                {{ session('userUpdateError') }}</div>
+        @endif
+        @if (session('transactionError'))
+            <div class="my-3 w-full text-center p-2 text-white bg-veryummy-ternary text-3xl">
+                {{ session('transactionError') }}</div>
+        @endif
+        {{-- FIN NOTIFICATIONS --}}
+
         {{-- Formulaire --}}
         <form method="POST" action="{{ route('my-account.edit') }}">
             @method('PUT')
@@ -144,7 +150,7 @@
         </form>
 
         {{-- OVERLAY POUR LA MODAL DE CONNEXION --}}
-        <div class="h-screen bg-black bg-opacity-50 fixed inset-0 z-50 hidden flex justify-center items-center"
+        <div class="h-screen bg-black bg-opacity-50 fixed inset-0 z-50 @if (!$errors->first('delete-account-password')) hidden @endif flex justify-center items-center"
             id="deletion-overlay">
 
             <div class=" bg-white rounded-sm block w-3/4 inset-0 px-2">
@@ -161,11 +167,24 @@
                     <p>Voulez-vous vraiment supprimer votre compte?</p>
                     <p>Toutes vos informations seront perdues</p>
                 </div>
-                <div class="flex flex-wrap justify-center sm:justify-between mb-5">
-                    <button onclick="closeDialogDeletion()"
-                        class="mx-3 text-4xl px-5 py-2 text-white bg-gray-400 mb-3">ANNULER</button>
-                    <button class="mx-3 text-4xl px-5 py-2 text-white bg-veryummy-ternary mb-3">SUPPRIMER</button>
-                </div>
+                {{-- Formulaire --}}
+                <form method="POST" action="{{ route('my-account.delete') }}">
+                    @method('DELETE')
+                    @csrf
+                    @error('delete-account-password')
+                        <div class="w-full text-center text-veryummy-ternary text-3xl">{{ $message }}</div>
+                    @enderror
+                    <div class="w-full mx-auto justify-center text-center mb-5 px-3 md:px-0">
+                        <input autocomplete="current-password" placeholder="MOT DE PASSE ACTUEL" type="password"
+                            name="delete-account-password" id="delete-account-password-input"
+                            class="caret-gray-400 border-gray-100 @error('delete-account-password') border-veryummy-ternary @enderror text-gray-400 border-2 text-4xl w-full md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
+                    </div>
+                    <div class="flex flex-wrap justify-center sm:justify-between mb-5">
+                        <button onclick="closeDialogDeletion()"
+                            class="mx-3 text-4xl px-5 py-2 text-white bg-gray-400 mb-3">ANNULER</button>
+                        <button class="mx-3 text-4xl px-5 py-2 text-white bg-veryummy-ternary mb-3">SUPPRIMER</button>
+                    </div>
+                </form>
             </div>
 
         </div>
