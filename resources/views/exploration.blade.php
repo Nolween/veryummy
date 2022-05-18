@@ -44,25 +44,25 @@
         <div class="mb-4 pt-20 sm:pt-10">
             <h1 class="text-veryummy-secondary text-9xl w-full text-center">EXPLORATION</h1>
         </div>
-        <form method="GET" action="{{route('exploration.list')}}">
+        <form method="GET" action="{{ route('exploration.list') }}">
             @csrf
             @method('GET')
             <div class="flex flex-wrap px-4 lg:px-8">
                 {{-- Formulaire de recherche --}}
                 <div class="w-full lg:w-2/5 lg:pr-2 mb-3">
-                    <input type="text" placeholder="RECHERCHER UNE RECETTE" name="name" value="{{$search}}"
+                    <input type="text" placeholder="RECHERCHER UNE RECETTE" name="name" value="{{ $search }}"
                         class="text-gray-400 caret-gray-400 border-gray-100 border-2 text-4xl w-full pl-4 rounded-sm focus:border-gray-400 focus:outline-none">
                 </div>
                 {{-- Sélection d'un type de recette --}}
                 <div class="w-full lg:w-2/5 lg:pl-2 mb-3">
                     <select name="type" id="type-select"
                         class="text-gray-400 border-gray-100 border-2 text-4xl w-full pl-4 rounded-sm focus:border-gray-400 focus:outline-none">
-                        <option {{$type == 0 ? 'selected' : ''}} value="0">TOUS</option>
-                        <option {{$type == 1 ? 'selected' : ''}} value="1">VEGETARIEN</option>
-                        <option {{$type == 2 ? 'selected' : ''}} value="2">VEGAN</option>
-                        <option {{$type == 3 ? 'selected' : ''}} value="3">SANS GLUTEN</option>
-                        <option {{$type == 4 ? 'selected' : ''}} value="4">HALAL</option>
-                        <option {{$type == 5 ? 'selected' : ''}} value="5">CASHER</option>
+                        <option {{ $type == 0 ? 'selected' : '' }} value="0">TOUS</option>
+                        <option {{ $type == 1 ? 'selected' : '' }} value="1">VEGETARIEN</option>
+                        <option {{ $type == 2 ? 'selected' : '' }} value="2">VEGAN</option>
+                        <option {{ $type == 3 ? 'selected' : '' }} value="3">SANS GLUTEN</option>
+                        <option {{ $type == 4 ? 'selected' : '' }} value="4">HALAL</option>
+                        <option {{ $type == 5 ? 'selected' : '' }} value="5">CASHER</option>
                     </select>
                 </div>
                 <div class="w-full lg:w-1/5 pt-1 pl-3 text-center">

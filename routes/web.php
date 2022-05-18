@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ExplorationController;
+use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\MyNotebookController;
 use App\Http\Controllers\MyRecipesController;
 use App\Http\Controllers\RecipeCardController;
@@ -53,6 +54,13 @@ Route::controller(AccountController::class)->group(function() {
     Route::put('/my-account/edit', 'edit')->name('my-account.edit');
     Route::delete('/my-account/delete', 'delete')->name('my-account.delete');
 });
+// Regroupement des méthods du controller des recettes enregistrées par l'utilisateur
+Route::controller(IngredientController::class)->group(function() {
+    Route::get('/admin/ingredients/list/{type}', 'list')->name('admin-ingredientslist');
+    Route::post('/admin/ingredients/allow', 'allow')->name('admin-ingredients-allow');
+});
+
+
 Route::get('/recipe/new', function () {
     return view('recipenew');
 })->name('my-recipes.new');
@@ -62,9 +70,6 @@ Route::get('/recipe/edit/{id}', function ($id) {
 Route::get('/registration', function () {
     return view('registration');
 })->name('registration');
-Route::get('/admin/ingredients/list', function () {
-    return view('admin-ingredientslist');
-})->name('admin-ingredientslist');
 Route::get('/admin/recipes/list', function () {
     return view('admin-recipeslist');
 })->name('admin-recipeslist');

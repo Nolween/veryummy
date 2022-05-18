@@ -31,11 +31,6 @@
 
     </style>
 </head>
-@php
-$ingredients = [['author' => 'Frances Miller', 'name' => 'aut', 'date' => '1469748738'], ['author' => 'Kelly Jaskolski', 'name' => 'aspernatur', 'date' => '1050479899'], ['author' => 'Bobbie Lowe', 'name' => 'necessitatibus', 'date' => '1526462372'], ['author' => 'Milton Buckridge', 'name' => 'ipsam', 'date' => '1379404396'], ['author' => 'Jeannette Cremin', 'name' => 'quasi', 'date' => '1355965332'], ['author' => 'Franklin Skiles', 'name' => 'in', 'date' => '1713049999']];
-@endphp
-<script>
-</script>
 
 <body class="antialiased">
     <div id="entire-page">
@@ -59,60 +54,59 @@ $ingredients = [['author' => 'Frances Miller', 'name' => 'aut', 'date' => '14697
         {{-- Formulaire --}}
         <form action="GET">
             <div class="flex flex-wrap justify-center mb-7">
-                <div class="w-full md:w-2/4 lg:w-2/3 mb-5 px-3 text-center">
+                <div class="w-full  lg:w-2/3 mb-5 px-3 text-center">
                     <input placeholder="RECHERCHER" type="text" name="search"
                         class="pl-3  caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-4/5 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
-                </div>
-                <div class="w-full md:w-1/4 lg:w-1/3 mb-5 text-center">
-                    <button class="bg-veryummy-primary text-4xl p-2 rounded-sm"><span class="text-white"
+                        <button class="bg-veryummy-primary text-4xl p-2 rounded-sm"><span class="text-white"
                             id="registration-button">
                             RECHERCHER</span></button>
                 </div>
+                <div class="w-full lg:w-1/3 mb-5 text-center">
+                    <a href="{{route('admin-ingredientslist', 0)}}"><button type="button" class="bg-veryummy-secondary text-4xl p-2 rounded-sm"><span class="text-white"
+                        id="registration-button">
+                        EN COURS</span></button></a>
+                    <a href="{{route('admin-ingredientslist', 1)}}"><button type="button" class="bg-veryummy-primary text-4xl p-2 rounded-sm"><span class="text-white"
+                        id="registration-button">
+                        ACCEPTES</span></button></a>
+                    <a href="{{route('admin-ingredientslist', 2)}}"><button type="button" class="bg-veryummy-ternary text-4xl p-2 rounded-sm"><span class="text-white"
+                        id="registration-button">
+                        REFUSES</span></button></a>
+                </div>
 
             </div>
-            <div class="w-full mb-3 flex justify-center ">
-                <button type="button"
-                    class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
-                    <x-fas-angle-double-left class="h-6 w-6" />
-                </button>
-                <button type="button"
-                    class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
-                    <x-fas-angle-left class="h-6 w-6" />
-                </button>
-                <button type="button"
-                    class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
-                    <x-fas-angle-right class="h-6 w-6" />
-                </button>
-                <button type="button"
-                    class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
-                    <x-fas-angle-double-right class="h-6 w-6" />
-                </button>
-            </div>
-            {{-- Eléments --}}
+
+        </form>
+        <div class="flex flex-wrap justify-center w-full text-center">
+            @if (session('ingredientAllowError'))
+                <div class=" text-center bg-veryummy-ternary text-white text-3xl w-full mx-2 p-2 mb-2">
+                    {{ session('ingredientAllowError') }}</div>
+            @endif
+            @if (session('ingredientAllowSuccess'))
+                <div class=" text-center bg-veryummy-primary text-white text-3xl w-full mx-2 p-2 mb-2">
+                    {{ session('ingredientAllowSuccess') }}</div>
+            @endif
+        </div>
+        {{-- Eléments --}}
+        <div class="flex justify-center mb-5">
+            {{ $ingredients->links() }}
+        </div>
+        <form id="allow-form" name="allowForm" action="{{ route('admin-ingredients-allow') }}" method="POST">
+            @csrf
+            @method('POST')
             <div class="flex flex-wrap justify-center">
+                <input id="ingredient-id-input" type="hidden" value="0" name="ingredientid">
+                <input id="allow-input" type="hidden" value="0" name="allow">
+                <input id="list-type" type="hidden" value="{{ $typeList }}" name="typeList">
                 @foreach ($ingredients as $ingredientK => $ingredientV)
-                    <x-elements.ingredient-report :author="$ingredientV['author']" :date="$ingredientV['date']" :name="$ingredientV['name']" />
+                    <x-elements.ingredient-report :ingredientid="$ingredientV->id" :author="$ingredientV->user->name" :date="$ingredientV->updated_at"
+                        :name="$ingredientV->name" />
                 @endforeach
             </div>
-            <div class="w-full mb-3 flex justify-center ">
-                <button type="button"
-                    class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
-                    <x-fas-angle-double-left class="h-6 w-6" />
-                </button>
-                <button type="button"
-                    class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
-                    <x-fas-angle-left class="h-6 w-6" />
-                </button>
-                <button type="button"
-                    class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
-                    <x-fas-angle-right class="h-6 w-6" />
-                </button>
-                <button type="button"
-                    class="bg-veryummy-secondary rounded-sm text-4xl text-white text-center px-3 mr-3 py-2">
-                    <x-fas-angle-double-right class="h-6 w-6" />
-                </button>
-            </div>
         </form>
+
+        <div class="flex justify-center mb-5">
+            {{ $ingredients->links() }}
+        </div>
     </div>
 </body>
 
