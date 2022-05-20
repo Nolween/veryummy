@@ -66,7 +66,7 @@
                 type="button">
                 <x-far-check-square class="text-veryummy-primary h-10 w-10 cursor-pointer" />
             </button>
-            <button title="Désactiver la recette" onclick="allowRecipe(0, {{ $attributes->get('recipeid') }})"
+            <button title="Supprimer la recette" onclick="allowRecipe(0, {{ $attributes->get('recipeid') }})"
                 type="button">
                 <x-fas-trash-alt class="text-veryummy-ternary h-10 w-10 cursor-pointer" />
             </button>

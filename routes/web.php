@@ -65,6 +65,7 @@ Route::controller(IngredientController::class)->group(function() {
 Route::controller(RecipeController::class)->group(function() {
     Route::get('/admin/recipes/list/{type}', 'list')->name('admin-recipes.list');
     Route::post('/admin/recipes/allow}', 'allow')->name('admin-recipes-allow');
+    Route::post('/recipe/status', 'status')->name('recipes.status');
 });
 
 Route::get('/recipe/new', function () {

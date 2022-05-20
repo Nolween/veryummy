@@ -61,7 +61,7 @@ class RecipeController extends Controller
         return view('adminrecipeslist', $response);
     }
 
-    
+
     public function allow(Request $request)
     {
 
@@ -95,10 +95,9 @@ class RecipeController extends Controller
             if ($request->allow == true) {
                 RecipeOpinion::where('recipe_id', (int)$request->recipeid)->where('is_reported', true)->update(array('is_reported' => false));
             }
-            // Si 
+            // Si on supprime la recette
             elseif ($request->allow == false) {
-                $recipe->is_accepted = false;
-                $recipe->save();
+                Recipe::destroy($recipe->id);
             }
 
 
@@ -118,6 +117,52 @@ class RecipeController extends Controller
         catch (QueryException $e) {
             DB::rollback();
             return back()->with('recipeAllowError', "Erreur dans la modération de la recette");
+        }
+    }
+
+    public function status(Request $request)
+    {
+
+        // Récupération des infos de l'utilisateur connecté
+        $user = Auth::user();
+        // Si pas d'utilisateur
+        if (!$user || $user->role_id !== 1) {
+            // Déconnexion de l'utilisateur
+            Auth::logout();
+            return redirect("/");
+        }
+        // Validation du formulaire
+        $request->validate([
+            'is_favorite' => ['boolean', 'nullable'],
+            'is_reported' => ['boolean', 'nullable'],
+            'recipeid' => ['integer', 'required']
+        ]);
+        // return dd($test);
+
+        // Transaction pour rollback si erreur
+        DB::beginTransaction();
+        try {
+            RecipeOpinion::updateOrCreate(
+                ['user_id' => $user->id, 'recipe_id' => $request->recipeid],
+                ['is_favorite' => $request->is_favorite, 'is_reported' => $request->is_reported]
+            );
+
+
+            // Définition du message de retour
+            if ($request->is_reported == null) {
+                $message = $request->is_favorite == 1 ? "La recette a été ajoutée à vos favoris" : "La recette a été retirée de vos favoris";
+            } else if ($request->is_favorite == null) {
+                $message = $request->is_reported == 1 ? "La recette a été signalée" : "La recette a été retirée des signalements";
+            }
+
+            // Validation de la transaction
+            DB::commit();
+            return back()->with('statusSuccess', $message);
+        }
+        // Si erreur dans la transaction
+        catch (QueryException $e) {
+            DB::rollback();
+            return redirect('/')->with('statusError', 'Erreur dans la mise à jour du statut');
         }
     }
 }

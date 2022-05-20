@@ -35,7 +35,7 @@ class MyRecipesController extends Controller
         ]);
 
         // Début de la requête
-        $recipes = Recipe::select('id', 'name', 'score', 'making_time', 'cooking_time', 'image', 'is_accepted')
+        $recipes = Recipe::select('id', 'name', 'score', 'making_time', 'cooking_time', 'image')
             ->where('name', 'like', "%{$request->name}%")
             ->where('user_id', '=', $user->id)
             ->withCount('ingredients')

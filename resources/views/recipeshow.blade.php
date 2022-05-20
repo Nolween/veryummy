@@ -56,16 +56,6 @@
     }
 </script>
 @php
-// dd($opinion);
-// $recipe = ['name' => 'Hamburger du Nord', 'steps_count' => 7, 'cookingTime' => 7, 'makingTime' => 58, 'score' => 3.75, 'image' => '2.avif', 'ingredients_count' => 3];
-// $ingredients = [['name' => 'abondance', 'svg' => 'abondance', 'quantity' => 10, 'unit' => 2], ['name' => 'anguille', 'svg' => 'anguille', 'quantity' => 300, 'unit' => 2], ['name' => 'arachide', 'svg' => 'arachide', 'quantity' => 5, 'unit' => 3], ['name' => 'cêpes', 'svg' => 'cepes', 'quantity' => 10, 'unit' => 1], ['name' => 'chou cru', 'svg' => 'chou-cru', 'quantity' => 3, 'unit' => 4]];
-// $steps = ['aliquid assumenda quia', 'Eligendi saepe veritatis cumque. Cum quaerat illum modi nostrum omnis consectetur alias. Dolorum voluptas sequi unde veniam maiores nulla velit. Sapiente omnis id sapiente eaque iusto odio. Qui esse quae fugit explicabo nihil rem dolor.', 'Explicabo ipsum nisi vitae libero alias dolor. Dolorem laboriosam fugiat quam ut.', 'Est et nobis. Amet quisquam cum ullam aspernatur est optio iure fuga. Soluta aut aliquam et et. Quidem consequuntur aliquid voluptatum voluptas ut veritatis iste earum.', 'Eum sit nobis eos cupiditate sint et culpa ipsam. Aut doloribus id facilis cum vel suscipit.'];
-// $comments = [
-//     ['author' => 'Edward Cronin Jr.', 'comment' => 'Pariatur et omnis qui magnam ducimus ipsum sit sit. Aperiam sint adipisci. Accusantium occaecati voluptas voluptatem et. Voluptate quibusdam perspiciatis itaque aut sunt.', 'date' => '1651190400', 'score' => '1'],
-//     ['author' => 'Kellie Rosenbaum', 'comment' => 'Beatae nostrum odit quia a minima et. Nam voluptate laudantium assumenda aut incidunt tenetur commodi voluptatibus. Fugit iure nulla neque.', 'date' => '1518048000', 'score' => '3'],
-//     ['author' => 'Caleb Fisher', 'comment' => 'Voluptate praesentium nihil perferendis. Quod nostrum illum. Et illo in ut numquam nobis.', 'date' => '1597363200', 'score' => '4'],
-//     ['author' => 'Estelle Bailey', 'comment' => 'Dignissimos distinctio autem quia eius consequuntur inventore dicta dicta et. Molestiae ratione nisi amet et et. Est sint aperiam recusandae ut sed. Eos nihil doloremque assumenda dolorum et error ipsam consectetur asperiores. Quidem rerum nostrum minus magnam sunt error. Excepturi id reprehenderit facere explicabo ad laudantium vero sit.', 'date' => '1642723200', 'score' => '3'],
-// ];
 @endphp
 
 <body class="antialiased">

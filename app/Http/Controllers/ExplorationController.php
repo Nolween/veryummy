@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Recipe;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Page d'accueil
@@ -12,7 +13,7 @@ use Illuminate\Http\Request;
  */
 class ExplorationController extends Controller
 {
-    
+
     /**
      * Listes des recettes
      *
@@ -23,16 +24,22 @@ class ExplorationController extends Controller
     {
         $response = [];
 
+        $userId = Auth::id() ?? null;
+
         $test = $request->validate([
             'name' => ['string', 'nullable'],
             'type' => ['integer', 'nullable'],
         ]);
 
         $recipes = Recipe::select('id', 'name', 'score', 'making_time', 'cooking_time', 'image')
-            ->where('is_accepted', true)
             ->where('name', 'like', "%{$request->name}%")
             ->withCount('ingredients')
             ->withCount('steps');
+        // Si utilisateur connecté, on ne poublie pas ses recettes
+        if ($userId) {
+            $recipes->where('user_id', '!=', $userId)->with('user')
+            ->with('opinion');
+        }
 
         // Si on a un filtre sur le type de recette
         if ($request->type && $request->type > 0) {

@@ -136,7 +136,7 @@ class AccountController extends Controller
             // Mise à jour de toutes les recettes de l'utilisateur vers le compte d'archives
             $recipesWithFavorite->toQuery()->update(array('user_id' => 1));
             // Suppression de l'utilisateur
-            $userDestroy =  User::destroy($$userDelete);
+            $userDestroy =  User::destroy($userDelete);
             // Validation de la transaction
             DB::commit();
         }

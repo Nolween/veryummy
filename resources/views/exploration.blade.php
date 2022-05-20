@@ -32,7 +32,8 @@
     </style>
 </head>
 @php
-// dd($recipes[0]);
+// dd($recipes[0]->opinion->is_reported);
+//         dd($attributes->get('isfavorite') == 1);
 @endphp
 
 <body class="antialiased">
@@ -42,7 +43,7 @@
 
         {{-- Titre de la page --}}
         <div class="mb-4 pt-20 sm:pt-10">
-            <h1 class="text-veryummy-secondary text-9xl w-full text-center">EXPLORATION</h1>
+            <h1 class="text-veryummy-secondary text-8xl md:text-9xl w-full text-center">EXPLORATION</h1>
         </div>
         <form method="GET" action="{{ route('exploration.list') }}">
             @csrf
@@ -76,19 +77,39 @@
                         RECETTE{{ $total > 1 ? 'S' : '' }}</span>
                 </div>
             </div>
+            {{-- NOTIFICATIONS --}}
+            <div class="flex justify-center">
+                @if (session('statusSuccess'))
+                    <div class="bg-veryummy-primary text-center mb-3 p-2 w-full md:w-1/2">
+                        <div class="text-3xl text-white">{{ session('statusSuccess') }}</div>
+                    </div>
+                @elseif (session('statusError'))
+                    <div class="bg-veryummy-ternary text-center mb-3 p-2 w-full md:w-1/2">
+                        <div class="text-3xl text-white">{{ session('statusError') }}</div>
+                    </div>
+                @endif
+            </div>
             <div class="flex justify-center mb-5">
                 {{ $recipes->links() }}
             </div>
         </form>
-        {{-- RECETTES --}}
-        <div class="flex flex-wrap mx-8 justify-center">
-            @foreach ($recipes as $recipeK => $recipeV)
-                <div class="mb-4 mx-3">
-                    <x-elements.recipe-thumbnail :recipeId="$recipeV['id']" :photo="$recipeV['image']" :recipeName="$recipeV['name']" :cookingTime="$recipeV['cooking_time']"
-                        :makingTime="$recipeV['making_time']" :stepCount="$recipeV['step_count']" :score="$recipeV['score']" :ingredientsCount="$recipeV['ingredients_count']" />
-                </div>
-            @endforeach
-        </div>
+        {{-- Formulaire pour l'ajout en favori --}}
+        <form id="status-form" name="status-form" action="{{ route('recipes.status') }}" method="POST">
+            @csrf
+            @method('POST')
+            <input id="recipe-id-input" type="hidden" value="0" name="recipeid">
+            <input id="fav-input" type="hidden" name="is_favorite" value="">
+            <input id="report-input" type="hidden" name="is_reported" value="">
+            <div class="flex flex-wrap mx-8 justify-center">
+                @foreach ($recipes as $recipeK => $recipeV)
+                    <div class="mb-4 mx-3">
+                        <x-elements.recipe-thumbnail :recipeId="$recipeV->id" :photo="$recipeV->image" :recipeName="$recipeV->name"
+                            :cookingTime="$recipeV->cooking_time" :makingTime="$recipeV->making_time" :stepCount="$recipeV->steps_count" :score="$recipeV->score" :ingredientsCount="$recipeV->ingredients_count"
+                            :isfavorite="$recipeV->opinion->is_favorite ?? null" :isreported="$recipeV->opinion->is_reported ?? null" />
+                    </div>
+                @endforeach
+            </div>
+        </form>
         <div class="flex justify-center mb-5">
             {{ $recipes->links() }}
         </div>

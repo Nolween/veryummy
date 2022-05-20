@@ -38,7 +38,6 @@ class MyNotebookController extends Controller
         $recipes = RecipeOpinion::join('recipes', 'recipe_opinions.recipe_id', '=', 'recipes.id')
             ->where('recipes.name', 'like', "%{$request->name}%")
             ->where('recipe_opinions.user_id', '=', $user->id)
-            ->where('recipes.is_accepted', true)
             ->where('recipe_opinions.is_favorite', true);
 
         // Si on a un filtre sur le type de recette

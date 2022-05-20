@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Recipe extends Model
 {
@@ -83,6 +84,23 @@ class Recipe extends Model
     public function opinions()
     {
         return $this->hasMany(RecipeOpinion::class)->with('user');
+    }
+
+    
+    /**
+     * Indique l'avis de l'utilisateur sur la recette
+     *
+     * @return void
+     */
+    public function opinion()
+    {
+        return $this->hasOne(RecipeOpinion::class)->ofMany([
+            'updated_at' => 'max',
+            'id' => 'max',
+        ], function ($query) {
+            $query->where('user_id', '=', Auth::id());
+        });
+        // return $this->hasMany(RecipeOpinion::class)->with('user')->where('user_id', );
     }
 
 }
