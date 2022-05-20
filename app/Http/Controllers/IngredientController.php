@@ -46,7 +46,7 @@ class IngredientController extends Controller
         $response['typeList'] = (int)$type;
         // dd( $response['ingredients']);
 
-        return view('admin-ingredientslist', $response);
+        return view('adminingredientslist', $response);
     }
 
     public function allow(Request $request)

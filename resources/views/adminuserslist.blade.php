@@ -53,11 +53,11 @@ $users = [
             <h1 class="text-veryummy-secondary text-7xl sm:text-9xl w-full text-center">ADMINISTRATION</h1>
         </div>
         <div class="flex flex-wrap justify-around">
-            <a href="{{ route('admin-ingredientslist') }}">
+            <a href="{{ route('admin-ingredients.list', 0) }}">
                 <button type="button"
                     class="bg-veryummy-secondary text-5xl text-white py-2 px-5 w-56 mb-5">INGREDIENTS</button>
             </a>
-            <a href="{{ route('admin-recipeslist') }}">
+            <a href="{{ route('admin-recipes.list', 0) }}">
                 <button type="button"
                     class="bg-veryummy-secondary text-5xl text-white py-2 px-5 w-56 mb-5">RECETTES</button>
             </a>

@@ -43,10 +43,10 @@
         <div class="flex flex-wrap justify-around">
             <button type="button"
                 class="bg-veryummy-primary text-5xl text-white py-2 px-5 w-56 mb-5">INGREDIENTS</button>
-            <a href="{{ route('admin-recipeslist') }}">
+            <a href="{{ route('admin-recipes.list', 0) }}">
                 <button type="button"
                     class="bg-veryummy-secondary text-5xl text-white py-2 px-5 w-56 mb-5">RECETTES</button></a>
-            <a href="{{ route('admin-userslist') }}">
+            <a href="{{ route('admin-userslist', 0) }}">
                 <button type="button"
                     class="bg-veryummy-secondary text-5xl text-white py-2 px-5 w-56 mb-5">UTILISATEURS</button>
             </a>
@@ -57,20 +57,23 @@
                 <div class="w-full  lg:w-2/3 mb-5 px-3 text-center">
                     <input placeholder="RECHERCHER" type="text" name="search"
                         class="pl-3  caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-4/5 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
-                        <button class="bg-veryummy-primary text-4xl p-2 rounded-sm"><span class="text-white"
+                    <button class="bg-veryummy-primary text-4xl p-2 rounded-sm"><span class="text-white"
                             id="registration-button">
                             RECHERCHER</span></button>
                 </div>
                 <div class="w-full lg:w-1/3 mb-5 text-center">
-                    <a href="{{route('admin-ingredientslist', 0)}}"><button type="button" class="bg-veryummy-secondary text-4xl p-2 rounded-sm"><span class="text-white"
-                        id="registration-button">
-                        EN COURS</span></button></a>
-                    <a href="{{route('admin-ingredientslist', 1)}}"><button type="button" class="bg-veryummy-primary text-4xl p-2 rounded-sm"><span class="text-white"
-                        id="registration-button">
-                        ACCEPTES</span></button></a>
-                    <a href="{{route('admin-ingredientslist', 2)}}"><button type="button" class="bg-veryummy-ternary text-4xl p-2 rounded-sm"><span class="text-white"
-                        id="registration-button">
-                        REFUSES</span></button></a>
+                    <a href="{{ route('admin-ingredients.list', 0) }}"><button type="button"
+                            class="bg-veryummy-secondary text-4xl p-2 rounded-sm"><span class="text-white"
+                                id="registration-button">
+                                EN COURS</span></button></a>
+                    <a href="{{ route('admin-ingredients.list', 1) }}"><button type="button"
+                            class="bg-veryummy-primary text-4xl p-2 rounded-sm"><span class="text-white"
+                                id="registration-button">
+                                ACCEPTES</span></button></a>
+                    <a href="{{ route('admin-ingredients.list', 2) }}"><button type="button"
+                            class="bg-veryummy-ternary text-4xl p-2 rounded-sm"><span class="text-white"
+                                id="registration-button">
+                                REFUSES</span></button></a>
                 </div>
 
             </div>
@@ -86,10 +89,11 @@
                     {{ session('ingredientAllowSuccess') }}</div>
             @endif
         </div>
-        {{-- Eléments --}}
+        {{-- Pagination --}}
         <div class="flex justify-center mb-5">
             {{ $ingredients->links() }}
         </div>
+        {{-- Eléments --}}
         <form id="allow-form" name="allowForm" action="{{ route('admin-ingredients-allow') }}" method="POST">
             @csrf
             @method('POST')
@@ -99,7 +103,7 @@
                 <input id="list-type" type="hidden" value="{{ $typeList }}" name="typeList">
                 @foreach ($ingredients as $ingredientK => $ingredientV)
                     <x-elements.ingredient-report :ingredientid="$ingredientV->id" :author="$ingredientV->user->name" :date="$ingredientV->updated_at"
-                        :name="$ingredientV->name" />
+                        :name="$ingredientV->name"/>
                 @endforeach
             </div>
         </form>

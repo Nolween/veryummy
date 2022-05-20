@@ -8,6 +8,6 @@
         Aller sur le site
     @endcomponent
 
-    Merci à vous!
+    Salutations,
     {{ config('app.name') }}
 @endcomponent

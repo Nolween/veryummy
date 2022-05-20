@@ -32,7 +32,8 @@ class RecipeCardController extends Controller
         // Tous les avis de la recette sauf celui de l'utilisateur connecté
         $response['comments'] =  Recipe::findOrFail($id)->comments->where('user_id', '!=', $response['userId']);
         // Si utilisateur connecté, récupération de son avis sur la recette (+ fav + report)
-        $response['opinion'] = !empty($user) ? RecipeOpinion::whereBelongsTo($user)->where('recipe_id', $id)->firstOrFail() : [];
+        $response['opinion'] = !empty($user) ? RecipeOpinion::whereBelongsTo($user)->where('recipe_id', $id)->first() : [];
+
         return view('recipeshow', $response);
     }
 

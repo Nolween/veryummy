@@ -11,7 +11,7 @@
         </div>
         <div class="px-1 basis-1/3 sm:flex-1"><a href="{{ route('my-account.show') }}" class="cursor-pointer">MON COMPTE</a>
         </div>
-        <div class="px-1 basis-1/3 sm:flex-1"><span class="cursor-pointer"><a href="{{ route('admin-ingredientslist', 0) }}"
+        <div class="px-1 basis-1/3 sm:flex-1"><span class="cursor-pointer"><a href="{{ route('admin-ingredients.list', 0) }}"
                     class="cursor-pointer">ADMIN</a></span></div>
         <div class="px-1 basis-1/3 sm:flex-1">
             <form method="POST" action="{{ route('logout') }}">
