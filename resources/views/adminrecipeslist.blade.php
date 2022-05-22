@@ -65,10 +65,12 @@
         </div>
 
         {{-- Formulaire --}}
-        <form action="GET">
+        <form action="{{ route('admin-recipes.list', $typeList) }}" method="GET">
+            @csrf
+            @method('GET')
             <div class="flex flex-wrap justify-center mb-7">
                 <div class="w-full  lg:w-2/3 mb-5 px-3 text-center">
-                    <input placeholder="RECHERCHER" type="text" name="search"
+                    <input placeholder="RECHERCHER" type="text" name="search" value="{{ $search }}"
                         class="pl-3  caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-4/5 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
                     <button class="bg-veryummy-primary text-4xl p-2 rounded-sm"><span class="text-white"
                             id="registration-button">
@@ -76,11 +78,11 @@
                 </div>
                 <div class="w-full lg:w-1/3 mb-5 text-center">
                     <a href="{{ route('admin-recipes.list', 0) }}"><button type="button"
-                            class="bg-veryummy-secondary text-4xl p-2 rounded-sm"><span class="text-white"
+                            class="{{ $typeList == 0 ? 'bg-veryummy-primary' : 'bg-veryummy-secondary'}} text-4xl w-28 p-2 rounded-sm"><span class="text-white"
                                 id="registration-button">
-                                EN COURS</span></button></a>
+                                SIGNALLEES</span></button></a>
                     <a href="{{ route('admin-recipes.list', 1) }}"><button type="button"
-                            class="bg-veryummy-primary text-4xl p-2 rounded-sm"><span class="text-white"
+                            class="{{ $typeList == 1 ? 'bg-veryummy-primary' : 'bg-veryummy-secondary'}} text-4xl w-28 p-2 rounded-sm"><span class="text-white"
                                 id="registration-button">
                                 ACCEPTES</span></button></a>
                 </div>

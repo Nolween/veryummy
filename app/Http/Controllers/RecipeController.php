@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\URL;
 class RecipeController extends Controller
 {
 
-    public function list(int $type)
+    public function list(int $type, Request $request)
     {
         $response = [];
 
@@ -28,27 +28,43 @@ class RecipeController extends Controller
             return redirect("/");
         }
 
+        // Champ de recherche
+        $request->validate([
+            'search' => ['string', 'nullable']
+        ]);
+
         switch ($type) {
             case 0:
                 // Récupération des ingrédients
-                $response['recipes'] = Recipe::having('opinions_count', ">", 0)
+                $recipes = Recipe::having('opinions_count', ">", 0)
                     ->with('user')
                     ->with(['opinions' => function ($query) {
                         $query->where('is_reported', '=', true);
                     }])
                     ->withCount(['opinions' => function (Builder $query) {
                         $query->where('is_reported', '=', true);
-                    }])
-                    ->paginate(20);
+                    }]);
+
+                    // Si recherche
+                    if(!empty($request->search)) {
+                        $recipes->where('name', 'like', "%{$request->search}%");
+                    }
+                    $response['recipes'] = $recipes->paginate(20);
                 break;
             case 1:
                 // Récupération des ingrédients
-                $response['recipes'] = Recipe::having('opinions_count', "=", 0)
+                $recipes = Recipe::having('opinions_count', "=", 0)
                     ->with('user')
                     ->withCount(['opinions' => function (Builder $query) {
                         $query->where('is_reported', '=', true);
-                    }])
-                    ->paginate(20);
+                    }]);
+
+                    // Si recherche
+                    if(!empty($request->search)) {
+                        $recipes->where('name', 'like', "%{$request->search}%");
+                    }
+
+                    $response['recipes'] = $recipes->paginate(20);
                 break;
             default:
                 $type = null;
@@ -56,6 +72,7 @@ class RecipeController extends Controller
         }
 
         $response['typeList'] = (int)$type;
+        $response['search'] = $request->search;
         // dd( $response['recipes']);
 
         return view('adminrecipeslist', $response);

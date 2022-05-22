@@ -154,7 +154,7 @@ class AccountController extends Controller
         return redirect('/')->with('userDeletionSuccess', 'Votre compte a bien été supprimé!');
     }
 
-    public function list(int $type)
+    public function list(int $type, Request $request)
     {
 
         $response = [];
@@ -168,6 +168,14 @@ class AccountController extends Controller
             return redirect("/");
         }
 
+
+        // Champ de recherche
+        $request->validate([
+            'search' => ['string', 'nullable']
+        ]);
+        
+        $response['search'] = $request->search ?? null;
+
         switch ($type) {
                 // Les utilisateurs ayant des commentaires signalés (au moins un)
             case 0:
@@ -176,13 +184,17 @@ class AccountController extends Controller
                     ->with('reports')
                     ->withCount('reports')->pluck('id');
 
-                $response['users'] = User::having('reported_opinions_by_other_count', '>', 0)
+                $users = User::having('reported_opinions_by_other_count', '>', 0)
                     ->where('is_banned', 0)
                     ->with(['opinions' => function ($query) use ($reportedOpinions) {
                         $query->whereIn('id', $reportedOpinions);
                     }])
-                    ->withCount('reportedOpinionsByOther')
-                    ->paginate(20);
+                    ->withCount('reportedOpinionsByOther');
+                // Si recherche
+                if (!empty($request->search)) {
+                    $users->where('name', 'like', "%{$request->search}%");
+                }
+                $response['users'] =  $users->paginate(20);
                 break;
                 // Tous les utilisateurs
             case 1:
@@ -191,12 +203,16 @@ class AccountController extends Controller
                     ->with('reports')
                     ->withCount('reports')->pluck('id');
 
-                $response['users'] = User::where('is_banned', 0)
+                $users = User::where('is_banned', 0)
                     ->with(['opinions' => function ($query) use ($reportedOpinions) {
                         $query->whereIn('id', $reportedOpinions);
                     }])
-                    ->withCount('reportedOpinionsByOther')
-                    ->paginate(20);
+                    ->withCount('reportedOpinionsByOther');
+                // Si recherche
+                if (!empty($request->search)) {
+                    $users->where('name', 'like', "%{$request->search}%");
+                }
+                $response['users'] =  $users->paginate(20);
                 break;
             default:
         }

@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\URL;
 
 class IngredientController extends Controller
 {
-    public function list(int $type)
+    public function list(int $type, Request $request)
     {
         $response = [];
 
@@ -26,6 +26,8 @@ class IngredientController extends Controller
             return redirect("/");
         }
 
+        $response['typeList'] = $type;
+        
         switch ($type) {
             case 0:
                 $type = null;
@@ -41,9 +43,20 @@ class IngredientController extends Controller
                 break;
         }
 
+        // Champ de recherche
+        $request->validate([
+            'search' => ['string', 'nullable']
+        ]);
+
         // Récupération des ingrédients
-        $response['ingredients'] = Ingredient::where('is_accepted', $type)->with('user')->paginate(20);
-        $response['typeList'] = (int)$type;
+        $ingredients = Ingredient::where('is_accepted', $type)->with('user');
+        // Si on a quelque chose dans la recherche
+        if (!empty($request->search)) {
+            $ingredients->where('name', 'like', "%{$request->search}%");
+        }
+
+        $response['ingredients'] = $ingredients->paginate(20);
+        $response['search'] = $request->search ?? null;
         // dd( $response['ingredients']);
 
         return view('adminingredientslist', $response);
