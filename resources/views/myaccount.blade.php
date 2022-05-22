@@ -149,7 +149,7 @@
 
         </form>
 
-        {{-- OVERLAY POUR LA MODAL DE CONNEXION --}}
+        {{-- OVERLAY POUR LA CONFIRMATION DE SUPPRESSION DE COMPTE --}}
         <div class="h-screen bg-black bg-opacity-50 fixed inset-0 z-50 @if (!$errors->first('delete-account-password')) hidden @endif flex justify-center items-center"
             id="deletion-overlay">
 

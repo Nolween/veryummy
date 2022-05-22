@@ -54,6 +54,9 @@ Route::controller(AccountController::class)->group(function() {
     Route::get('/my-account', 'show')->name('my-account.show');
     Route::put('/my-account/edit', 'edit')->name('my-account.edit');
     Route::delete('/my-account/delete', 'delete')->name('my-account.delete');
+    Route::get('/admin/users/list/{type}', 'list')->name('admin-users.list');
+    Route::delete('/admin/users/ban/', 'ban')->name('admin-users.ban');
+    Route::delete('/admin/users/moderate/', 'moderate')->name('admin-users.moderate');
 });
 // Regroupement des méthods du controller des ingrédients enregistrés par l'utilisateur
 Route::controller(IngredientController::class)->group(function() {
@@ -61,12 +64,15 @@ Route::controller(IngredientController::class)->group(function() {
     Route::post('/admin/ingredients/allow', 'allow')->name('admin-ingredients-allow');
 });
 
-// Regroupement des méthods du controller des recettes enregistrées par l'utilisateur
+// Regroupement des methods du controller des recettes enregistrées par l'utilisateur
 Route::controller(RecipeController::class)->group(function() {
     Route::get('/admin/recipes/list/{type}', 'list')->name('admin-recipes.list');
     Route::post('/admin/recipes/allow}', 'allow')->name('admin-recipes-allow');
     Route::post('/recipe/status', 'status')->name('recipes.status');
 });
+
+// Regroupement des methods du controller de gestion des utilisateurs
+
 
 Route::get('/recipe/new', function () {
     return view('recipenew');
@@ -77,9 +83,6 @@ Route::get('/recipe/edit/{id}', function ($id) {
 Route::get('/registration', function () {
     return view('registration');
 })->name('registration');
-Route::get('/admin/users/list', function () {
-    return view('adminuserslist');
-})->name('admin-userslist');
 
 
 

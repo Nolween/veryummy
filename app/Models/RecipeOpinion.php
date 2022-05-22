@@ -37,4 +37,16 @@ class RecipeOpinion extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Les signalements concernant le commentaire d'un utilisateur
+     *
+     * @return void
+     */
+    public function reports()
+    {
+        return $this->hasMany(OpinionReport::class, 'opinion_id');
+    }
+
+
 }

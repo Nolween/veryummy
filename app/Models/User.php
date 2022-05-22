@@ -76,7 +76,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Indique les dénonciations de commentaire de l'utilisateur
+     * Indique les signalements qu'a fait l'utilisateur
      *
      * @return void
      */
@@ -93,5 +93,22 @@ class User extends Authenticatable
     public function opinions()
     {
         return $this->hasMany(RecipeOpinion::class);
+    }
+
+    /**
+     * Indique les commentaires de l'utilisateur signalés par les autres
+     *
+     * @return void
+     */
+    public function reportedOpinionsByOther()
+    {
+        return $this->hasManyThrough(
+            OpinionReport::class,
+            RecipeOpinion::class,
+            'user_id',
+            'opinion_id',
+            'id',
+            'id'
+        );
     }
 }

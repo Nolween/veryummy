@@ -46,7 +46,7 @@
             <a href="{{ route('admin-recipes.list', 0) }}">
                 <button type="button"
                     class="bg-veryummy-secondary text-5xl text-white py-2 px-5 w-56 mb-5">RECETTES</button></a>
-            <a href="{{ route('admin-userslist', 0) }}">
+            <a href="{{ route('admin-users.list', 0) }}">
                 <button type="button"
                     class="bg-veryummy-secondary text-5xl text-white py-2 px-5 w-56 mb-5">UTILISATEURS</button>
             </a>
