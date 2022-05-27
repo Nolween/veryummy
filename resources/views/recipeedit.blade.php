@@ -103,7 +103,7 @@
 
 @php
 $name = 'LES SCOUBIDOUS';
-$photo = '1.jpg';
+$photo = '1.avif';
 $cookingTime = 30;
 $makingTime = 20;
 $ingredients = [['name' => 'Pommes', 'unit' => 1, 'quantity' => 5], ['name' => 'Poires', 'unit' => 1, 'quantity' => 4], ['name' => 'Scoubidoubidou', 'unit' => 3, 'quantity' => 3]];
@@ -127,7 +127,7 @@ $steps = ['Prenez les pommes', 'Prenez les poires', 'Prenez le scoubidoubidou', 
         <div class="w-3/4 lg:w-1/2 mb-3 px-4 mx-auto" id="photo-div">
             <label for="photo-input">
                 <img class="w-full h-full max-h-80 object-cover rounded-sm mb-2 cursor-pointer" id="photo"
-                    src="{{ asset('img/' . $photo) }}" alt="test">
+                    src="{{ asset('img/full/' . $photo) }}" alt="test">
             </label>
             <input id="photo-input" type="file" accept="image/*" name="image" id="photo-input"
                 onchange="loadFile(event)" style="display: none;" />

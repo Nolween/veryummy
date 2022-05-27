@@ -39,7 +39,7 @@
                     </div>
                 @else
                     <div title="Mettre en favori"">
-                                <span onclick=" updateFavStatus(1, {{ $attributes->get('recipeId') }})">
+                                    <span onclick=" updateFavStatus(1, {{ $attributes->get('recipeId') }})">
                         <x-far-heart
                             class="text-veryummy-ternary h-8 cursor-pointer absolute invisible group-hover:visible top-1 z-50" />
                         </span>
@@ -55,7 +55,7 @@
                     </div>
                 @else
                     <div title="Signaler la recette"">
-                                        <span onclick=" updateReportStatus(1, {{ $attributes->get('recipeId') }})">
+                                            <span onclick=" updateReportStatus(1, {{ $attributes->get('recipeId') }})">
                         <x-fas-exclamation-triangle
                             class=" text-veryummy-ternary h-8 cursor-pointer absolute invisible group-hover:visible left-48 top-1 z-50" />
                         </span>
@@ -69,28 +69,29 @@
         href="{{ Route::currentRouteName() === 'my-recipes.list' ? route('my-recipes.edit', [$attributes->get('recipeId')]) : route('recipe.show', [$attributes->get('recipeId')]) }}">
         <div>
             <img class="w-60 h-40 object-cover rounded-sm mb-2 mx-auto"
-                src="{{ asset('/img/' . $attributes->get('photo')) }}" alt="test">
+                src="{{ asset('/img/thumbnail/' . $attributes->get('photo')) }}" alt="test">
         </div>
         <div class="bg-gray-100 drop-shadow-md rounded-sm w-60">
             <p class="my-0 text-center"><span
-                    class="leading-none text-veryummy-primary text-3xl">{{ $attributes->get('recipeName') }}</span>
+                    class="leading-none text-veryummy-primary text-3xl">{!! $attributes->get('recipeName') !!}</span>
             </p>
-                <p class="my-0"><span
-                        class="leading-none pl-4 text-veryummy-secondary text-left text-3xl">{{ $attributes->get('stepCount') }}
-                        ETAPES
-                        - {{ $attributes->get('ingredientsCount') }}
-                        INGREDIENTS</span>
-                </p>
-                <p class="my-0"><span
-                        class="leading-none pl-4 text-veryummy-secondary text-left text-3xl">PREPARATION:
-                        {{ $attributes->get('makingTime') }} MINUTES</span>
-                </p>
-                <p class="my-0">
-                    @if ($attributes->get('cookingTime') > 0)
-                        <span class="leading-none pl-4 text-veryummy-secondary text-left text-3xl">CUISSON:
-                            {{ $attributes->get('cookingTime') }} MINUTES</span>
-                    @endif
-                </p>
+            <p class="my-0"><span
+                    class="leading-none pl-4 text-veryummy-secondary text-left text-3xl">{{ $attributes->get('stepCount') }}
+                    ETAPES
+                    - {{ $attributes->get('ingredientsCount') }}
+                    INGREDIENTS</span>
+            </p>
+            <p class="my-0"><span
+                    class="leading-none pl-4 text-veryummy-secondary text-left text-3xl">PREPARATION:
+                    {{ $attributes->get('makingTime') }} MINUTES</span>
+            </p>
+            <p class="my-0">
+                @if ($attributes->get('cookingTime') > 0)
+                    <span class="leading-none pl-4 text-veryummy-secondary text-left text-3xl">CUISSON:
+                        {{ $attributes->get('cookingTime') }} MINUTES</span>
+                @endif
+            </p>
+            @if ($attributes->get('score'))
                 <p class="my-0 leading-none">
                 <ul class="flex items-center gap-x-1 h-8">
                     <li class="pt-2"><span
@@ -121,6 +122,9 @@
                     @endfor
                 </ul>
                 </p>
+            @else
+                <p class="text-veryummy-ternary text-center text-3xl">PAS DE NOTE</p>
+            @endif
         </div>
     </a>
 </div>
