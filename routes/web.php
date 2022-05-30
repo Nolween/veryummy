@@ -71,14 +71,12 @@ Route::controller(RecipeController::class)->group(function() {
     Route::post('/recipe/status', 'status')->name('recipes.status');
     Route::get('/recipe/new', 'new')->name('my-recipes.new');
     Route::put('/recipe/create', 'create')->name('my-recipes.create');
+    Route::post('/recipe/update', 'update')->name('my-recipes.update');
+    Route::get('/recipe/edit/{id}', 'edit')->name('my-recipes.edit');
 });
 
 // Regroupement des methods du controller de gestion des utilisateurs
 
-
-Route::get('/recipe/edit/{id}', function ($id) {
-    return view('recipeedit');
-})->name('my-recipes.edit');
 Route::get('/registration', function () {
     return view('registration');
 })->name('registration');

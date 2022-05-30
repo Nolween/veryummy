@@ -95,7 +95,7 @@
             @foreach ($recipes as $recipeK => $recipeV)
                 <div class="mb-4 mx-3">
                     <x-elements.recipe-thumbnail :recipeId="$recipeV['id']" :photo="$recipeV['image']" :recipeName="$recipeV['name']" :cookingTime="$recipeV['cooking_time']"
-                        :makingTime="$recipeV['making_time']" :stepCount="$recipeV['step_count']" :score="$recipeV['score']" :ingredientsCount="$recipeV['ingredients_count']" />
+                        :makingTime="$recipeV['making_time']" :stepCount="$recipeV['steps_count']" :score="$recipeV['score']" :ingredientsCount="$recipeV['ingredients_count']" />
                 </div>
             @endforeach
         </div>

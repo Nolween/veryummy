@@ -156,9 +156,6 @@
         </div>
 
         @if ($errors->any())
-            <div class="font-medium text-red-600 text-4xl">
-                {{ __('Whoops! Something went wrong.') }}
-            </div>
 
             <ul class="mt-3 list-disc list-inside text-red-600 text-4xl">
                 @foreach ($errors->all() as $error)
@@ -182,7 +179,7 @@
                         <img class="w-full h-full max-h-full object-cover rounded-sm mb-2 cursor-pointer" id="photo"
                             src="{{ asset('img/full/ajout-photo.png') }}" alt="test">
                     </label>
-                    <input id="photo-input" type="file" accept="image/*" name="photoInput" onchange="loadFile(event)"
+                    <input id="photo-input" type="file" accept=".png, .jpg, .jpeg, .avif" name="photoInput" onchange="loadFile(event)"
                         style="display: none;" />
                 </div>
                 <div class="w-4/5 lg:w-2/5 xl:w-5/12 my-auto">
@@ -190,7 +187,6 @@
                     <div class="flex flex-wrap mb-3 px-4 justify-center items-center">
                         <div class="w-40"><span class="text-veryummy-primary text-5xl">TYPE</span></div>
                         <div class="my-auto">
-
                             <select name="type"
                                 class="text-gray-400 border-gray-100 border-2 text-4xl w-38 pl-4 rounded-sm focus:border-gray-400 focus:outline-none ml-2 mb-3">
                                 @foreach ($types as $type)
@@ -210,7 +206,7 @@
                         </div>
                     </div>
                     {{-- Cuisson --}}
-                    <div class="flex flex-wrap mb-8 px-4  justify-center">
+                    <div class="flex flex-wrap mb-8 px-4 justify-center">
                         <div class="w-40"><span class="text-veryummy-primary text-5xl">CUISSON</span>
                         </div>
                         <div class="my-auto">

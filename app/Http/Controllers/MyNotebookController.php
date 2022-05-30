@@ -35,10 +35,12 @@ class MyNotebookController extends Controller
         ]);
 
         // Début de la requête
-        $recipes = RecipeOpinion::join('recipes', 'recipe_opinions.recipe_id', '=', 'recipes.id')
+        $recipes = Recipe::join('recipe_opinions', 'recipe_opinions.recipe_id', '=', 'recipes.id')
             ->where('recipes.name', 'like', "%{$request->name}%")
             ->where('recipe_opinions.user_id', '=', $user->id)
-            ->where('recipe_opinions.is_favorite', true);
+            ->where('recipe_opinions.is_favorite', true)
+            ->withCount('ingredients')
+            ->withCount('steps');
 
         // Si on a un filtre sur le type de recette
         if ($request->type && $request->type > 0) {

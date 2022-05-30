@@ -22,11 +22,50 @@
             margin: 0
         }
 
+        body {
+            font-family: 'Jomhuria', sans-serif;
+        }
+
     </style>
 
     <style>
-        body {
-            font-family: 'Jomhuria', sans-serif;
+        /*the container must be positioned relative:*/
+        .autocomplete {
+            position: relative;
+            display: inline-block;
+        }
+
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-bottom: none;
+            border-top: none;
+            z-index: 99;
+            /*position the autocomplete items to be the same width as the container:*/
+            top: 100%;
+            left: 0;
+            right: 0;
+            font-size: 40px;
+            color: #62666b;
+            font-weight: 100;
+        }
+
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #d4d4d4;
+        }
+
+        /*when hovering an item:*/
+        .autocomplete-items div:hover {
+            background-color: #e9e9e9;
+        }
+
+        /*when navigating through the items using the arrow keys:*/
+        .autocomplete-active {
+            background-color: DodgerBlue !important;
+            color: #ffffff;
         }
 
     </style>
@@ -36,32 +75,39 @@
             var count = document.getElementById("ingredientCount")
             count.value = parseInt(count.value) + 1
 
-            var newIngredient = `
-            <div class="w-full xl:w-3/4 flex flex-wrap my-4 pt-8 px-4 mx-auto justify-center" id="ingredientInputs` +
-                count
-                .value + `">
-                <input type="text" placeholder="INGREDIENT" name="ingredient[` + count.value + `][name]"
-                    class="caret-gray-400 text-gray-400 border-gray-100 border-2 text-4xl w-full md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
-                <div class="text-center">
-                    <select name="ingredient[` + count.value + `][unit]"
-                        class="text-gray-400 border-gray-100 border-2 text-4xl w-38 pl-4 rounded-sm focus:border-gray-400 focus:outline-none ml-2 mb-3">
-                        <option value="1">UNITE(S)</option>
-                        <option value="2">GRAMME(S)</option>
-                        <option value="3">CUILLERE(S) A SOUPE</option>
-                        <option value="4">CUILLERE(S) A CAFE</option>
-                        <option value="5">CENTILITRE(S)</option>
-                        <option value="6">LITRE(S)</option>
-                    </select>
-                    <input type="number" name="ingredient[` + count.value + `][quantity]"
-                        class="caret-gray-400 border-gray-100 border-2 text-4xl text-gray-400 w-24 pl-4 mx-3 rounded-sm focus:border-gray-400 focus:outline-none">
-                    <button onclick="deleteIngredient(` + count.value + `)" type="button" class="bg-veryummy-ternary text-5xl p-2 rounded-sm  align-middle">
-                        <x-fas-trash-alt class="text-white h-6 w-6"/>
-                    </button>
-                </div>
-            </div>`
+            // Récupération des unités sous forme d'option de select
+            @php
+                $unitsOptions = '';
+                foreach ($units as $unit) {
+                    $unitsOptions .= '<option value="' . $unit->id . '" >' . $unit->name . '</option>';
+                }
+            @endphp
+
+            let unitsOptions = '{!! $unitsOptions !!}';
+
+
+            var newIngredient = `<div class="w-full xl:w-3/4 flex flex-wrap my-4 pt-8 px-4 mx-auto justify-center" id="ingredientInputs${count.value}"><div class="autocomplete">
+                    <input type="hidden" name="ingredients[${count.value}][ingredientId]" value="0" id="ingredientId${count.value}">
+                        <input id="ingredient${count.value}" type="text" name="ingredients[${count.value}][ingredientName]" placeholder="INGREDIENT"
+                            class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
+                    </div>
+                    <div class="text-center">
+                        <input type="number" name="ingredients[${count.value}][ingredientQuantity]"
+                            class="caret-gray-400 border-gray-100 border-2 text-4xl text-gray-400 w-24 pl-4 mx-3 rounded-sm focus:border-gray-400 focus:outline-none">
+                        <select name="ingredients[${count.value}][ingredientUnit]"
+                            class="text-gray-400 border-gray-100 border-2 text-4xl w-38 pl-4 rounded-sm focus:border-gray-400 focus:outline-none ml-2 mb-3">
+                            ${unitsOptions}
+                </select>
+                        <button onclick="deleteIngredient(${count.value})" type="button" class="bg-veryummy-ternary text-5xl p-2 rounded-sm  align-middle ml-2">
+                            <x-fas-trash-alt class="text-white h-6 w-6"/>
+                        </button>
+                    </div>
+                </div>`
 
             // On ajoute juste avant la fin du parent le nouvel ingrédient
             document.getElementById("ingredients").insertAdjacentHTML('beforeEnd', newIngredient);
+            // Ajout des fonctions d'autocomplete
+            autocomplete(document.getElementById("ingredient" + count.value), ingredients, count.value);
         }
         // Ajout d'une nouvelle étape
         function insertStep() {
@@ -69,11 +115,10 @@
             count.value = parseInt(count.value) + 1
 
             var newStep = `
-            <div class="w-full xl:w-3/4 flex flex-wrap my-4 pt-8 px-4 mx-auto justify-center" id="stepInputs` + count
-                .value + `">
+            <div class="w-full xl:w-3/4 flex flex-wrap my-4 pt-8 px-4 mx-auto justify-center" id="stepInputs${count.value}">
                 <textarea type="text" placeholder="ETAPE" name="step[0][description]"
                     class="caret-gray-400 border-gray-100 border-2 text-4xl w-3/4 pl-4 text-gray-400 rounded-sm focus:border-gray-400 focus:outline-none mb-3 mx-3"></textarea>
-                <button onclick="deleteStep(` + count.value + `)" type="button" class="bg-veryummy-ternary text-4xl p-2 rounded-sm align-middle my-auto">
+                <button onclick="deleteStep(${count.value})" type="button" class="bg-veryummy-ternary text-4xl p-2 rounded-sm align-middle my-auto">
                     <x-fas-trash-alt class="text-white h-5 w-5" />
                 </button>
             </div>`
@@ -102,12 +147,9 @@
 </head>
 
 @php
-$name = 'LES SCOUBIDOUS';
-$photo = '1.avif';
-$cookingTime = 30;
-$makingTime = 20;
-$ingredients = [['name' => 'Pommes', 'unit' => 1, 'quantity' => 5], ['name' => 'Poires', 'unit' => 1, 'quantity' => 4], ['name' => 'Scoubidoubidou', 'unit' => 3, 'quantity' => 3]];
-$steps = ['Prenez les pommes', 'Prenez les poires', 'Prenez le scoubidoubidou', 'Mélangez tout', 'Servez frais', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores doloribus, alias at id expedita natus earum. Perspiciatis dolor voluptates voluptate ad neque rem, accusantium magni commodi facere laborum at soluta.'];
+// dd($recipe->steps);
+// $ingredients = [['name' => 'Pommes', 'unit' => 1, 'quantity' => 5], ['name' => 'Poires', 'unit' => 1, 'quantity' => 4], ['name' => 'Scoubidoubidou', 'unit' => 3, 'quantity' => 3]];
+// $steps = ['Prenez les pommes', 'Prenez les poires', 'Prenez le scoubidoubidou', 'Mélangez tout', 'Servez frais', 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores doloribus, alias at id expedita natus earum. Perspiciatis dolor voluptates voluptate ad neque rem, accusantium magni commodi facere laborum at soluta.'];
 @endphp
 
 <body class="antialiased">
@@ -116,117 +158,167 @@ $steps = ['Prenez les pommes', 'Prenez les poires', 'Prenez le scoubidoubidou', 
         <x-navigation.menu />
         {{-- Titre de la page --}}
         <div class="mb-4 pt-20 sm:pt-10">
-            <h1 class="text-veryummy-secondary text-6xl sm:text-8xl md:text-9xl w-full text-center">NOUVELLE RECETTE</h1>
+            <h1 class="text-veryummy-secondary text-6xl sm:text-8xl md:text-9xl w-full text-center">
+                {!! $recipe->name !!}</h1>
         </div>
-        {{-- Nom de la recette --}}
-        <div class="w-3/4 lg:w-1/2 mb-3 px-4 mx-auto">
-            <input type="text" placeholder="NOM DE LA RECETTE" name="name" value="{{ $name }}"
-                class="caret-gray-400 border-gray-100 border-2 text-4xl w-full pl-4 rounded-sm text-gray-400 focus:border-gray-400 focus:outline-none">
-        </div>
-        {{-- Photo --}}
-        <div class="w-3/4 lg:w-1/2 mb-3 px-4 mx-auto" id="photo-div">
-            <label for="photo-input">
-                <img class="w-full h-full max-h-80 object-cover rounded-sm mb-2 cursor-pointer" id="photo"
-                    src="{{ asset('img/full/' . $photo) }}" alt="test">
-            </label>
-            <input id="photo-input" type="file" accept="image/*" name="image" id="photo-input"
-                onchange="loadFile(event)" style="display: none;" />
-        </div>
-        {{-- Résumé --}}
-        {{-- Préparation --}}
-        <div class="w-3/4 lg:w-1/2 flex flex-wrap mb-3 px-4 mx-auto justify-center">
-            <div class=" text-center lg:text-left"><span class="text-veryummy-primary text-5xl">PREPARATION</span></div>
-            <div class=" text-center lg:text-left my-auto">
-                <input type="number" name="making" value="{{ $makingTime }}"
-                    class="caret-gray-400 text-gray-400 border-gray-100 border-2 text-4xl w-24 pl-4 mx-3 rounded-sm focus:border-gray-400 focus:outline-none">
-                <span class="text-gray-400 text-5xl">MINUTES</span>
-            </div>
-        </div>
-        {{-- Cuisson --}}
-        <div class="w-3/4 lg:w-1/2 flex flex-wrap mb-8 px-4 mx-auto justify-center">
-            <div class=" text-center lg:text-left"><span class="text-veryummy-primary text-5xl">CUISSON</span></div>
-            <div class=" text-center lg:text-left my-auto">
-                <input type="number" name="cooking" value="{{ $cookingTime }}"
-                    class="caret-gray-400 text-gray-400 border-gray-100 border-2 text-4xl w-24 pl-4 mx-3 rounded-sm focus:border-gray-400 focus:outline-none">
-                <span class="text-gray-400 text-5xl">MINUTES</span>
-            </div>
-        </div>
-        {{-- Ingrédients --}}
-        <div class="h-14 text-veryummy-secondary text-7xl w-full text-center mb-7">INGREDIENTS</div>
 
-        <div id="ingredients" class=" divide-y-4 divide-dotted divide-gray-400 divide">
-            @foreach ($ingredients as $ingredientK => $ingredientV)
-                <div class="w-full xl:w-3/4 flex flex-wrap my-4 px-4 pt-4 mx-auto justify-center"
-                    id="ingredientInputs{{ $ingredientK }}">
-                    <input type="text" placeholder="INGREDIENT" name="ingredient[{{ $ingredientK }}][name]"
-                        value="{{ $ingredientV['name'] }}"
-                        class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
-                    <div class="text-center">
-                        <select name="ingredient[{{ $ingredientK }}][unit]"
-                            class="text-gray-400 border-gray-100 border-2 text-4xl w-38 pl-4 rounded-sm focus:border-gray-400 focus:outline-none ml-2 mb-3">
-                            <option value="1" {{ $ingredientV['unit'] === 1 ? 'selected' : '' }}>UNITE(S)</option>
-                            <option value="2" {{ $ingredientV['unit'] === 2 ? 'selected' : '' }}>GRAMME(S)
-                            </option>
-                            <option value="2" {{ $ingredientV['unit'] === 3 ? 'selected' : '' }}>CUILLERE(S) A SOUPE
-                            </option>
-                            <option value="3" {{ $ingredientV['unit'] === 4 ? 'selected' : '' }}>CUILLERE(S) A CAFE
-                            </option>
-                            <option value="4" {{ $ingredientV['unit'] === 5 ? 'selected' : '' }}>CENTILITRE(S)
-                            </option>
-                            <option value="5" {{ $ingredientV['unit'] === 6 ? 'selected' : '' }}>LITRE(S)</option>
-                        </select>
-                        <input type="number" name="ingredient[{{ $ingredientK }}][quantity]"
-                            value="{{ $ingredientV['quantity'] }}"
-                            class="caret-gray-400 border-gray-100 border-2 text-gray-400 text-4xl w-24 pl-4 mx-3 rounded-sm focus:border-gray-400 focus:outline-none">
-                        <button {{ $ingredientK !== 0 ? 'onclick=deleteIngredient(' . $ingredientK . ')' : '' }}
-                            type="button"
-                            class=" text-4xl p-2 rounded-sm disabled align-middle {{ $ingredientK === 0 ? 'disabled bg-gray-400' : 'bg-veryummy-ternary' }}">
+        @if ($errors->any())
+            <ul class="mt-3 list-disc list-inside text-red-600 text-4xl">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        @endif
+        <form action="{{ route('my-recipes.update') }}" enctype="multipart/form-data" method="POST">
+            @csrf
+            @method('POST')
+            <input type="hidden" name="recipeid" value="{{ $recipe->id }}">
+            {{-- Nom de la recette --}}
+            <div class="w-3/4 lg:w-1/2 mb-3 px-4 mx-auto">
+                <input type="text" placeholder="NOM DE LA RECETTE" name="name" value="{!! $recipe->name !!}"
+                    class="caret-gray-400 border-gray-100 border-2 text-4xl w-full pl-4 rounded-sm text-gray-400 focus:border-gray-400 focus:outline-none">
+            </div>
+            <div class="flex flex-wrap justify-center mb-5">
+                {{-- Photo --}}
+                <div class="w-3/4 lg:w-1/2 mb-3 px-4 mx-auto" id="photo-div">
+                    <label for="photo-input">
+                        <img class="w-full h-full object-cover rounded-sm mb-2 cursor-pointer" id="photo"
+                            src="{{ asset('img/full/' . $recipe->image) }}" alt="test">
+                    </label>
+                    <input id="photo-input" type="file" accept=".png, .jpg, .jpeg, .avif" name="photoInput" id="photo-input"
+                        onchange="loadFile(event)" style="display: none;" />
+                </div>
+
+                <div class="w-4/5 lg:w-2/5 xl:w-5/12 my-auto">
+                    {{-- Type --}}
+                    <div class="flex flex-wrap mb-3 px-4 justify-center items-center">
+                        <div class="w-40"><span class="text-veryummy-primary text-5xl">TYPE</span>
+                        </div>
+                        <div class="my-auto">
+                            <select name="type"
+                                class="text-gray-400 border-gray-100 border-2 text-4xl w-38 pl-4 rounded-sm focus:border-gray-400 focus:outline-none ml-2 mb-3">
+                                @foreach ($types as $type)
+                                    <option value="{{ $type->id }}">{{ $type->name }}
+                                        {{ $type->id == $recipe->type_id ? 'selected' : '' }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    {{-- Préparation --}}
+                    <div class="flex flex-wrap mb-3 px-4 justify-center items-center">
+                        <div class="w-40"><span class="text-veryummy-primary text-5xl">PREPARATION</span>
+                        </div>
+                        <div class="my-auto">
+                            <input min="0" step="1" type="number" name="making" value="{{ $recipe->making_time }}"
+                                class="caret-gray-400 text-gray-400 border-gray-100 border-2 text-4xl w-24 pl-4 mx-3 rounded-sm focus:border-gray-400 focus:outline-none">
+                            <span class="text-gray-400 text-5xl">MINUTES</span>
+                        </div>
+                    </div>
+                    {{-- Cuisson --}}
+                    <div class="flex flex-wrap mb-8 px-4  justify-center">
+                        <div class="w-40"><span class="text-veryummy-primary text-5xl">CUISSON</span>
+                        </div>
+                        <div class="my-auto">
+                            <input min="0" step="1" type="number" name="cooking" value="{{ $recipe->cooking_time }}"
+                                class="caret-gray-400 text-gray-400 border-gray-100 border-2 text-4xl w-24 pl-4 mx-3 rounded-sm focus:border-gray-400 focus:outline-none">
+                            <span class="text-gray-400 text-5xl">MINUTES</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{-- Résumé --}}
+            {{-- Ingrédients --}}
+            <div class="h-14 text-veryummy-secondary text-7xl w-full text-center mb-7">INGREDIENTS</div>
+
+            <div id="ingredients" class=" divide-y-4 divide-dotted divide-gray-400 divide">
+                @foreach ($recipe['ingredients'] as $ingredientK => $ingredientV)
+                    <div class="w-full xl:w-3/4 flex flex-wrap my-4 px-4 pt-4 mx-auto justify-center"
+                        id="ingredientInputs{{ $ingredientK }}">
+
+                        <div class="autocomplete">
+                            <input type="hidden" name="ingredients[{{ $ingredientK }}][ingredientId]"
+                                value="{{ $ingredientV->id }}" id="ingredientId{{ $ingredientK }}">
+                            <input type="text" placeholder="INGREDIENT" id="ingredient{{ $ingredientK }}"
+                                name="ingredients[{{ $ingredientK }}][ingredientName]"
+                                value="{{ $ingredientV->ingredient->name }}"
+                                class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
+                        </div>
+                        <div class="text-center">
+                            <select name="ingredients[{{ $ingredientK }}][ingredientUnit]"
+                                class="text-gray-400 border-gray-100 border-2 text-4xl w-38 pl-4 rounded-sm focus:border-gray-400 focus:outline-none ml-2 mb-3">
+                                @foreach ($units as $unit)
+                                    <option value="{{ $unit->id }}"
+                                        {{ $ingredientV->unit_id == $unit->id ? 'selected' : '' }}>
+                                        {{ $unit->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <input type="number" name="ingredients[{{ $ingredientK }}][ingredientQuantity]"
+                                value="{{ $ingredientV->quantity }}"
+                                class="caret-gray-400 border-gray-100 border-2 text-gray-400 text-4xl w-24 pl-4 mx-3 rounded-sm focus:border-gray-400 focus:outline-none">
+                            <button {{ $ingredientK !== 0 ? 'onclick=deleteIngredient(' . $ingredientK . ')' : '' }}
+                                type="button"
+                                class=" text-4xl p-2 rounded-sm disabled align-middle {{ $ingredientK === 0 ? 'disabled bg-gray-400' : 'bg-veryummy-ternary' }}">
+                                <x-fas-trash-alt class="text-white h-5 w-5" />
+                            </button>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            {{-- Ajouter un ingrédient --}}
+            <div class="w-full text-center mb-10">
+                <button type="button" class="bg-veryummy-primary text-4xl py-2 px-4 rounded-sm"><span
+                        class="text-white" onclick="insertIngredient()">
+                        AJOUTER UN INGREDIENT</span></button>
+            </div>
+            <input type="hidden" name="ingredientCount" value="{{ count($recipe['ingredients']) + 1 }}"
+                id="ingredientCount">
+
+
+            {{-- Etapes --}}
+            <div class="h-14 text-veryummy-secondary text-7xl w-full text-center mb-7">ETAPES</div>
+
+            <div id="steps" class=" divide-y-4 divide-dotted divide-gray-400 divide">
+                @foreach ($recipe->steps as $stepK => $stepV)
+                    <div class="w-full xl:w-3/4 flex flex-wrap my-4 pt-4 px-4 mx-auto justify-center"
+                        id="stepInputs{{ $stepK }}">
+                        <textarea type="text" placeholder="ETAPE" name="steps[{{ $stepK }}][stepDescription]"
+                            class="caret-gray-400 border-gray-100 border-2 text-4xl w-3/4 pl-4 text-gray-400 rounded-sm focus:border-gray-400 focus:outline-none mb-3 mx-3">{{ $stepV->description }}</textarea>
+                        <button {{ $stepK !== 0 ? 'onclick=deleteStep(' . $stepK . ')' : '' }} type="button"
+                            class="text-4xl p-2 rounded-sm disabled align-middle my-auto {{ $stepK === 0 ? 'disabled bg-gray-400' : 'bg-veryummy-ternary' }}">
                             <x-fas-trash-alt class="text-white h-5 w-5" />
                         </button>
                     </div>
-                </div>
-            @endforeach
-        </div>
-        {{-- Ajouter un ingrédient --}}
-        <div class="w-full text-center mb-10">
-            <button type="button" class="bg-veryummy-primary text-4xl p-2 rounded-sm"><span class="text-white"
-                    onclick="insertIngredient()">
-                    AJOUTER UN INGREDIENT</span></button>
-        </div>
-        <input type="hidden" name="ingredientCount" value="{{ count($ingredients) + 1 }}" id="ingredientCount">
+                @endforeach
+            </div>
+            {{-- Ajouter une étape --}}
+            <div class="w-full text-center mb-10">
+                <button type="button" class="bg-veryummy-primary text-4xl py-2 px-4 rounded-sm"><span
+                        class="text-white" onclick="insertStep()">
+                        AJOUTER UNE ETAPE</span></button>
+            </div>
+            <input type="hidden" name="stepCount" value="{{ count($recipe->steps) + 1 }}" id="stepCount">
 
-
-        {{-- Etapes --}}
-        <div class="h-14 text-veryummy-secondary text-7xl w-full text-center mb-7">ETAPES</div>
-
-        <div id="steps" class=" divide-y-4 divide-dotted divide-gray-400 divide">
-            @foreach ($steps as $stepK => $stepV)
-                <div class="w-full xl:w-3/4 flex flex-wrap my-4 pt-4 px-4 mx-auto justify-center"
-                    id="stepInputs{{ $stepK }}">
-                    <textarea type="text" placeholder="ETAPE" name="step[{{ $stepK }}][description]"
-                        class="caret-gray-400 border-gray-100 border-2 text-4xl w-3/4 pl-4 text-gray-400 rounded-sm focus:border-gray-400 focus:outline-none mb-3 mx-3">{{ $stepV }}</textarea>
-                    <button {{ $stepK !== 0 ? 'onclick=deleteStep(' . $stepK . ')' : '' }} type="button"
-                        class="text-4xl p-2 rounded-sm disabled align-middle my-auto {{ $stepK === 0 ? 'disabled bg-gray-400' : 'bg-veryummy-ternary' }}">
-                        <x-fas-trash-alt class="text-white h-5 w-5" />
-                    </button>
-                </div>
-            @endforeach
-        </div>
-        {{-- Ajouter une étape --}}
-        <div class="w-full text-center mb-10">
-            <button type="button" class="bg-veryummy-primary text-4xl p-2 rounded-sm"><span class="text-white"
-                    onclick="insertStep()">
-                    AJOUTER UNE ETAPE</span></button>
-        </div>
-        <input type="hidden" name="stepCount" value="{{ count($steps) + 1 }}" id="stepCount">
-
-        {{-- Validation du formulaire --}}
-        <div class="w-4/5 lg:w-1/2 text-center mb-10 mx-auto">
-            <button class="bg-veryummy-secondary text-4xl p-2 rounded-sm w-full"><span class="text-white">
-                    EDITER LA RECETTE</span></button>
-        </div>
-
+            {{-- Validation du formulaire --}}
+            <div class="w-4/5 lg:w-1/2 text-center mb-10 mx-auto">
+                <button class="bg-veryummy-secondary text-4xl p-2 rounded-sm w-full"><span class="text-white">
+                        EDITER LA RECETTE</span></button>
+            </div>
+        </form>
     </div>
+
+    {{-- Chargement du script d'auto completion --}}
+    <script src="{{ asset('js/auto-complete.js') }}"></script>
+    <script>
+        //Chargement des ingrédients
+        var ingredients = {{ Illuminate\Support\Js::from($ingredientsList) }};
+        @foreach ($recipe['ingredients'] as $ingredientK => $ingredientV)
+            {
+                autocomplete(document.getElementById('ingredient' + {{ $ingredientK }}), ingredients,
+                    {{ $ingredientK }});
+            }
+        @endforeach
+    </script>
 </body>
 
 </html>
