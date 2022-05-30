@@ -21,8 +21,8 @@ class RecipeIngredientsFactory extends Factory
 
         return [
             'recipe_id' => $recipeId,
-            'unit_id' => rand(1, 18),
-            'ingredient_id' => rand(1, 2412),
+            'unit_id' => rand(1, 17),
+            'ingredient_id' => rand(1, 2413),
             'quantity' => rand(1, 5),
             'order' => Recipe::where('id', $recipeId)->get()->count() + 1,
         ];
