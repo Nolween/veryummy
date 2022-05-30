@@ -6,6 +6,7 @@ use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 class WelcomeController extends Controller
 {

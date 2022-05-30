@@ -48,8 +48,7 @@
         {{-- NOTIFICATION COMPTE SUPPRIME --}}
         @if (session('userDeletionSuccess'))
             <div class="flex flex-wrap justify-center">
-                <div
-                    class="w-full lg:w-1/2 mb-5 p-4 text-center rounded-sm text-white text-5xl bg-veryummy-primary">
+                <div class="w-full lg:w-1/2 mb-5 p-4 text-center rounded-sm text-white text-5xl bg-veryummy-primary">
                     {{ session('userDeletionSuccess') }}
                 </div>
             </div>
@@ -88,19 +87,21 @@
                     </a>
                 </div>
             </div>
-            <div class="pt-4 flex flex-wrap justify-center mb-12">
-                <div class="w-full sm:w-1/2  lg:w-1/3 my-auto ">
-                    <a href="{{ route('my-recipes.list') }}" class="cursor-pointer">
-                        <p
-                            class="h-full px-4 text-veryummy-primary text-5xl md:text-7xl w-full text-center cursor-pointer">
-                            MES RECETTES</p>
-                    </a>
+            @auth
+                <div class="pt-4 flex flex-wrap justify-center mb-12">
+                    <div class="w-full sm:w-1/2  lg:w-1/3 my-auto ">
+                        <a href="{{ route('my-recipes.list') }}" class="cursor-pointer">
+                            <p
+                                class="h-full px-4 text-veryummy-primary text-5xl md:text-7xl w-full text-center cursor-pointer">
+                                MES RECETTES</p>
+                        </a>
+                    </div>
+                    <div class="w-full sm:w-1/2 lg:w-1/3 cursor-pointer"><a href="{{ route('my-recipes.list') }}"
+                            class="cursor-pointer"><img class="w-full max-h-80 object-cover rounded-sm mb-2"
+                                src="https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
+                                alt="test"></a></div>
                 </div>
-                <div class="w-full sm:w-1/2 lg:w-1/3 cursor-pointer"><a href="{{ route('my-recipes.list') }}"
-                        class="cursor-pointer"><img class="w-full max-h-80 object-cover rounded-sm mb-2"
-                            src="https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
-                            alt="test"></a></div>
-            </div>
+            @endauth
         </div>
     </div>
 </body>

@@ -72,8 +72,8 @@
                 src="{{ asset('/img/thumbnail/' . $attributes->get('photo')) }}" alt="test">
         </div>
         <div class="bg-gray-100 drop-shadow-md rounded-sm w-60">
-            <p class="my-0 text-center"><span
-                    class="leading-none text-veryummy-primary text-3xl">{!! $attributes->get('recipeName') !!}</span>
+            <p class="my-0 text-center h-36 pt-2"><span
+                    class="leading-none text-veryummy-primary text-3xl">{!! strlen($attributes->get('recipeName')) <= 90 ? $attributes->get('recipeName') : substr($attributes->get('recipeName'), 0, 90) . '...' !!}</span>
             </p>
             <p class="my-0"><span
                     class="leading-none pl-4 text-veryummy-secondary text-left text-3xl">{{ $attributes->get('stepCount') }}
