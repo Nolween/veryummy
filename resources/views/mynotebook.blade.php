@@ -31,9 +31,6 @@
 
     </style>
 </head>
-@php
-// dd($recipes[0]);
-@endphp
 
 <body class="antialiased">
     <div>
@@ -49,23 +46,33 @@
             @method('GET')
             <div class="flex flex-wrap px-4 lg:px-8">
                 {{-- Formulaire de recherche --}}
-                <div class="w-full lg:w-2/5 lg:pr-2 mb-3">
+                <div class="w-full lg:w-4/12 lg:pr-2 mb-3">
                     <input type="text" placeholder="RECHERCHER UNE RECETTE" name="name" value="{{ $search }}"
                         class="text-gray-400 caret-gray-400 border-gray-100 border-2 text-4xl w-full pl-4 rounded-sm focus:border-gray-400 focus:outline-none">
                 </div>
                 {{-- Sélection d'un type de recette --}}
-                <div class="w-full lg:w-2/5 lg:pl-2 mb-3">
-                    <select name="type" id="type-select"
+                <div class="w-full lg:w-3/12 lg:pl-2 mb-3">
+                    <select name="typeId" id="type-select"
                         class="text-gray-400 border-gray-100 border-2 text-4xl w-full pl-4 rounded-sm focus:border-gray-400 focus:outline-none">
-                        <option {{ $type == 0 ? 'selected' : '' }} value="0">TOUS</option>
-                        <option {{ $type == 1 ? 'selected' : '' }} value="1">VEGETARIEN</option>
-                        <option {{ $type == 2 ? 'selected' : '' }} value="2">VEGAN</option>
-                        <option {{ $type == 3 ? 'selected' : '' }} value="3">SANS GLUTEN</option>
-                        <option {{ $type == 4 ? 'selected' : '' }} value="4">HALAL</option>
-                        <option {{ $type == 5 ? 'selected' : '' }} value="5">CASHER</option>
+                        @foreach ($types as $type)
+                            <option {{ $type->id == $typeId ? 'selected' : '' }} value="{{ $type->id }}">
+                                {{ $type->name }}</option>
+                        @endforeach
                     </select>
                 </div>
-                <div class="w-full lg:w-1/5 pt-1 pl-3 text-center mb-6">
+                {{-- Sélection d'un type de régime --}}
+                <div class="w-full lg:w-3/12 lg:pl-2 mb-3">
+                    <select name="diet" id="diet-select"
+                        class="text-gray-400 border-gray-100 border-2 text-4xl w-full pl-4 rounded-sm focus:border-gray-400 focus:outline-none">
+                        <option {{ $diet == 0 ? 'selected' : '' }} value="0">TOUS</option>
+                        <option {{ $diet == 1 ? 'selected' : '' }} value="1">VEGETARIEN</option>
+                        <option {{ $diet == 2 ? 'selected' : '' }} value="2">VEGAN</option>
+                        <option {{ $diet == 3 ? 'selected' : '' }} value="3">SANS GLUTEN</option>
+                        <option {{ $diet == 4 ? 'selected' : '' }} value="4">HALAL</option>
+                        <option {{ $diet == 5 ? 'selected' : '' }} value="5">CASHER</option>
+                    </select>
+                </div>
+                <div class="w-full lg:w-2/12 pt-1 pl-3 text-center mb-6">
                     <button type="submit" class="text-3xl p-2 rounded-sm my-auto px-4 bg-veryummy-primary">
                         <span class="text-white my-auto">CHERCHER</span>
                     </button>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Recipe;
+use App\Models\RecipeType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,7 +32,8 @@ class MyRecipesController extends Controller
         // Validation du formulaire
         $test = $request->validate([
             'name' => ['string', 'nullable'],
-            'type' => ['integer', 'nullable'],
+            'typeId' => ['integer', 'nullable'],
+            'diet' => ['integer', 'nullable'],
         ]);
 
         // Début de la requête
@@ -40,6 +42,12 @@ class MyRecipesController extends Controller
             ->where('user_id', '=', $user->id)
             ->withCount('ingredients')
             ->withCount('steps');
+
+
+        // Si on a un type de plat (entrée, plat, dessert,...)
+        if ($request->typeId && (int)$request->typeId > 0) {
+            $recipes =  $recipes->where('recipe_type_id', $request->typeId);
+        }
 
         // Si on a un filtre sur le type de recette
         if ($request->type && $request->type > 0) {
@@ -70,12 +78,18 @@ class MyRecipesController extends Controller
             $response['total'] = $recipes->count();
         }
 
+        // Création d'un type temporaire tous
+        $allTypes = new RecipeType();
+        $allTypes->id = 0;
+        $allTypes->name = 'Tous';
+        // Récupération de tous les types de plat auquel on ajoute le type tous
+        $response['types'] = RecipeType::all()->prepend($allTypes);
         // Pagination des recettes
         $response['recipes'] = $recipes->paginate(20);
-
         // Renvoi des données de filtres de recherche
+        $response['diet'] = $request->diet ?? null;
         $response['search'] = $request->name ?? null;
-        $response['type'] = $request->type ?? null;
+        $response['typeId'] = $request->typeId ?? null;
 
         return view('myrecipes', $response);
     }

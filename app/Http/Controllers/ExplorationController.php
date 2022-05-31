@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Recipe;
+use App\Models\RecipeType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use stdClass;
 
 /**
  * Page d'accueil
@@ -28,7 +30,8 @@ class ExplorationController extends Controller
 
         $test = $request->validate([
             'name' => ['string', 'nullable'],
-            'type' => ['integer', 'nullable'],
+            'typeId' => ['integer', 'nullable'],
+            'diet' => ['integer', 'nullable'],
         ]);
 
         $recipes = Recipe::select('id', 'name', 'score', 'making_time', 'cooking_time', 'image')
@@ -41,9 +44,15 @@ class ExplorationController extends Controller
             ->with('opinion');
         }
 
-        // Si on a un filtre sur le type de recette
-        if ($request->type && $request->type > 0) {
-            switch ((int)$request->type) {
+        // Si on a un type de plat (entrée, plat, dessert,...)
+        if ($request->typeId && (int)$request->typeId > 0) {
+            $recipes =  $recipes->where('recipe_type_id', $request->typeId);
+        }
+
+
+        // Si on a un filtre sur le type de régime
+        if ($request->diet && $request->diet > 0) {
+            switch ((int)$request->diet) {
                 case 1: // Végétarien
                     $recipesCount = $recipes =  $recipes->where('vegetarian_compatible', 1);
                     break;
@@ -72,10 +81,17 @@ class ExplorationController extends Controller
 
         // Pagination des recettes
         $response['recipes'] = $recipes->paginate(20);
-
+        // Création d'un type temporaire tous
+        $allTypes = new RecipeType();
+        $allTypes->id = 0;
+        $allTypes->name = 'Tous';
+        // Récupération de tous les types de plat auquel on ajoute le type tous
+        $response['types'] = RecipeType::all()->prepend($allTypes);
+        // dd($response['types']);
         // Renvoi des données de filtres de recherche
         $response['search'] = $request->name ?? null;
-        $response['type'] = $request->type ?? null;
+        $response['diet'] = $request->diet ?? null;
+        $response['typeId'] = $request->typeId ?? null;
 
         return view('exploration', $response);
     }

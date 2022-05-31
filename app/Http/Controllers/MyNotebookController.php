@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Recipe;
 use App\Models\RecipeOpinion;
+use App\Models\RecipeType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,20 +32,27 @@ class MyNotebookController extends Controller
         // Validation du formulaire
         $test = $request->validate([
             'name' => ['string', 'nullable'],
-            'type' => ['integer', 'nullable'],
+            'typeId' => ['integer', 'nullable'],
+            'diet' => ['integer', 'nullable'],
         ]);
 
         // Début de la requête
-        $recipes = Recipe::join('recipe_opinions', 'recipe_opinions.recipe_id', '=', 'recipes.id')
+        $recipes = Recipe::select('*')->join('recipe_opinions', 'recipe_opinions.recipe_id', '=', 'recipes.id')
             ->where('recipes.name', 'like', "%{$request->name}%")
             ->where('recipe_opinions.user_id', '=', $user->id)
             ->where('recipe_opinions.is_favorite', true)
             ->withCount('ingredients')
             ->withCount('steps');
 
-        // Si on a un filtre sur le type de recette
-        if ($request->type && $request->type > 0) {
-            switch ((int)$request->type) {
+
+        // Si on a un type de plat (entrée, plat, dessert,...)
+        if ($request->typeId && (int)$request->typeId > 0) {
+            $recipes =  $recipes->where('recipes.recipe_type_id', $request->typeId);
+        }
+
+        // Si on a un filtre sur le type de régime
+        if ($request->diet && $request->diet > 0) {
+            switch ((int)$request->diet) {
                 case 1: // Végétarien
                     $recipesCount = $recipes =  $recipes->where('recipes.vegetarian_compatible', 1);
                     break;
@@ -66,17 +74,23 @@ class MyNotebookController extends Controller
             }
             $response['total'] = $recipesCount->count();
         }
-        // Si pas de filtre de type
+        // Si pas de filtre de régime
         else {
             $response['total'] = $recipes->count();
         }
 
+        // Création d'un type temporaire tous
+        $allTypes = new RecipeType();
+        $allTypes->id = 0;
+        $allTypes->name = 'Tous';
+        // Récupération de tous les types de plat auquel on ajoute le type tous
+        $response['types'] = RecipeType::all()->prepend($allTypes);
         // Pagination des recettes
         $response['recipes'] = $recipes->paginate(20);
-
         // Renvoi des données de filtres de recherche
         $response['search'] = $request->name ?? null;
-        $response['type'] = $request->type ?? null;
+        $response['diet'] = $request->diet ?? null;
+        $response['typeId'] = $request->typeId ?? null;
 
         return view('mynotebook', $response);
     }
