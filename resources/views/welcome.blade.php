@@ -54,8 +54,11 @@
             </div>
         @endif
         {{-- Recettes à la une tirée au hasard --}}
+        <div class="flex flex-wrap justify-center w-3/4 mx-auto text-center bg-veryummy-primary text-white text-4xl p-2 mb-3">
+            <span>RECETTES POPULAIRES</span>
+        </div>
         <div class="flex flex-wrap px-4 justify-center">
-            @foreach ($recipes as $recipeK => $recipeV)
+            @foreach ($popularRecipes as $recipeK => $recipeV)
                 <div class="mb-4 mx-3">
                     <x-elements.recipe-thumbnail :recipeId="$recipeV['id']" :photo="$recipeV['photo']" :recipeName="$recipeV['name']" :cookingTime="$recipeV['cookingTime']"
                         :makingTime="$recipeV['makingTime']" :stepCount="$recipeV['steps_count']" :score="$recipeV['score']" :ingredientsCount="$recipeV['ingredients_count']" />
@@ -72,6 +75,8 @@
             <h2 class="h-14 text-veryummy-secondary text-7xl w-full text-center">{{ $counts['totalUsers'] }}
                 UTILISATEURS</h2>
         </div>
+
+
         <div class="px-4 divide-y-4 divide-dotted divide-gray-200">
             <div class="flex mb-3 flex-wrap justify-center">
                 <div class="w-full sm:w-1/2 lg:w-1/3"><a href="{{ route('exploration.list') }}"
@@ -103,6 +108,21 @@
                 </div>
             @endauth
         </div>
+
+
+        {{-- RECETTES RECENTES --}}
+        <div class="flex flex-wrap justify-center w-3/4 mx-auto text-center bg-veryummy-primary text-white text-4xl p-2 mb-3">
+            <span>RECETTES RECENTES</span>
+        </div>
+        <div class="flex flex-wrap px-4 justify-center">
+            @foreach ($recentRecipes as $recipeK => $recipeV)
+                <div class="mb-4 mx-3">
+                    <x-elements.recipe-thumbnail :recipeId="$recipeV['id']" :photo="$recipeV['photo']" :recipeName="$recipeV['name']" :cookingTime="$recipeV['cookingTime']"
+                        :makingTime="$recipeV['makingTime']" :stepCount="$recipeV['steps_count']" :score="$recipeV['score']" :ingredientsCount="$recipeV['ingredients_count']" />
+                </div>
+            @endforeach
+        </div>
+
     </div>
 </body>
 

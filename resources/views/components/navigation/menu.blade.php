@@ -59,11 +59,11 @@
                     @csrf
                     @method('POST')
                     <div class="w-full mx-auto justify-center text-center mb-5 px-2">
-                        <input placeholder="MAIL" type="email" name="email"
+                        <input placeholder="MAIL" type="email" name="email" autocomplete="email"
                             class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
                     </div>
                     <div class="w-full mx-auto justify-center text-center mb-5 px-2">
-                        <input placeholder="MOT DE PASSE" type="password" name="password"
+                        <input placeholder="MOT DE PASSE" type="password" name="password" autocomplete="current-password"
                             class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
                     </div>
                     <div class="w-full mx-auto justify-center text-center mb-5 px-2">
@@ -82,7 +82,7 @@
                     @csrf
                     @method('POST')
                     <div class="w-full mx-auto justify-center text-center mb-5 px-2">
-                        <input placeholder="MAIL" type="email" name="email"
+                        <input placeholder="MAIL" type="email" name="email" autocomplete="email"
                             class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
                     </div>
                     <div class="w-full mx-auto justify-center text-center mb-5 px-2">
