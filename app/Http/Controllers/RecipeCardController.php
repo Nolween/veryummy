@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Recipe;
 use App\Models\RecipeOpinion;
+use App\Models\RecipeType;
 use App\Rules\Score;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +21,7 @@ class RecipeCardController extends Controller
     {
         $response = [];
         // Récupération de la recette grâce à son od
-        $response['recipe'] = Recipe::select('id', 'user_id', 'name', 'cooking_time as cookingTime', 'making_time as makingTime', 'image', 'score')
+        $response['recipe'] = Recipe::select('id', 'user_id', 'name', 'cooking_time as cookingTime', 'making_time as makingTime', 'image', 'score', 'recipe_type_id', 'vegan_compatible', 'vegetarian_compatible', 'gluten_free_compatible', 'halal_compatible', 'kosher_compatible')
             ->withCount('steps') // Nombre d'étapes possède la recette
             ->withCount('ingredients') // Nombre d'ingrédients dans la recette 
             ->findOrFail($id);
@@ -34,6 +35,7 @@ class RecipeCardController extends Controller
         // Si utilisateur connecté, récupération de son avis sur la recette (+ fav + report)
         $response['opinion'] = !empty($user) ? RecipeOpinion::whereBelongsTo($user)->where('recipe_id', $id)->first() : [];
 
+        $response['type'] = RecipeType::where('id', $response['recipe']->recipe_type_id)->first()->name;
         return view('recipeshow', $response);
     }
 
@@ -51,7 +53,7 @@ class RecipeCardController extends Controller
         $user = Auth::user();
 
         // Si pas d'utilisateur
-        if(!$user) {
+        if (!$user) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");
@@ -84,7 +86,7 @@ class RecipeCardController extends Controller
         $user = Auth::user();
 
         // Si pas d'utilisateur
-        if(!$user) {
+        if (!$user) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");
@@ -122,7 +124,7 @@ class RecipeCardController extends Controller
         // Récupération de l'utilisateur
         $user = Auth::user();
         // Si pas d'utilisateur
-        if(!$user) {
+        if (!$user) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");

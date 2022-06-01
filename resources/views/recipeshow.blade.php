@@ -56,6 +56,7 @@
     }
 </script>
 @php
+
 @endphp
 
 <body class="antialiased">
@@ -64,26 +65,50 @@
         <x-navigation.menu />
         {{-- Titre de la page --}}
         <div class="mb-4 pt-20 sm:pt-10">
-            <h1 class="text-veryummy-secondary text-6xl sm:text-8xl md:text-9xl w-full text-center">
+            <h1 class="text-veryummy-secondary text-6xl sm:text-8xl md:text-9xl w-full text-center px-2">
                 {{ $recipe['name'] }}
             </h1>
         </div>
+        {{-- REGIMES --}}
+
+        <div class="flex flex-wrap justify-center px-8 md:px-4 w-3/4 mx-auto mb-6">
+            @if ($recipe->vegan_compatible)
+                <img src="{{ asset('svg/diet/vegan.svg') }}"
+                    class="w-16 h-16 sm:w-20 md:h-20 lg:w-28 lg:h-28 mx-auto" />
+            @endif
+            @if ($recipe->vegetarian_compatible)
+                <img src="{{ asset('svg/diet/végétarien.svg') }}"
+                    class="w-16 h-16 sm:w-20 md:h-20 lg:w-28 lg:h-28 mx-auto" />
+            @endif
+            @if ($recipe->gluten_free_compatible)
+                <img src="{{ asset('svg/diet/sans-gluten.svg') }}"
+                    class="w-16 h-16 sm:w-20 md:h-20 lg:w-28 lg:h-28 mx-auto" />
+            @endif
+            @if ($recipe->halal_compatible)
+                <img src="{{ asset('svg/diet/halal.svg') }}"
+                    class="w-16 h-16 sm:w-20 md:h-20 lg:w-28 lg:h-28 mx-auto" />
+            @endif
+            @if ($recipe->kosher_compatible)
+                <img src="{{ asset('svg/diet/casher.svg') }}"
+                    class="w-16 h-16 sm:w-20 md:h-20 lg:w-28 lg:h-28 mx-auto" />
+            @endif
+        </div>
         {{-- Photo + Résumé --}}
-        <div class="flex flex-wrap justify-center px-8 md:px-4 w-3/4 mx-auto">
+        <div class="flex flex-wrap justify-center px-8 md:px-4 w-3/4 mx-auto mb-6">
             <div class="w-full my-auto lg:w-1/2 lg:pr-3">
-                <img class="w-full h-full max-h-80 object-cover rounded-sm mb-2"
+                <img class="w-full h-full max-w-80 max-h-80 object-cover rounded-sm mb-2"
                     src="{{ asset('img/full/' . $recipe->image) }}" alt="test">
             </div>
             <div
-                class="my-auto w-full lg:w-1/2 px-8 md:px-4 text-4xl sm:text-5xl lg:text-5xl text-center md:text-left bg-gray-100 drop-shadow-md rounded-lg">
-                <ul class="text-gray-400">
+                class="my-auto w-full lg:w-1/2 px-8 md:px-4 text-4xl sm:text-5xl lg:text-5xl text-center md:text-left bg-slate-50 drop-shadow-md rounded-lg">
+                <ul class="text-veryummy-primary">
                     @auth
                         <form id="status-form" action="{{ route('recipe.status', $recipe->id) }}" method="POST">
                             @csrf
                             @method('POST')
                             <input id="fav-input" type="hidden" name="is_favorite" value="">
                             <input id="report-input" type="hidden" name="is_reported" value="">
-                            <li class="flex justify-between">
+                            <li class="pt-2 flex justify-between">
                                 @if ($opinion && $opinion->is_favorite == true)
                                     <div title="Retirer du carnet">
                                         <x-fas-heart class="text-veryummy-ternary cursor-pointer"
@@ -109,11 +134,12 @@
                             </li>
                         </form>
                     @endauth
+                    <li class="pt-2">{{ $type }}</li>
                     <li>{{ $recipe['ingredients_count'] }} INGREDIENTS</li>
+                    <li>{{ $recipe['steps_count'] }} ETAPES</li>
                     <li>PREPARATION: {{ $recipe['makingTime'] }} MINUTES</li>
                     <li>CUISSON: {{ $recipe['cookingTime'] }} MINUTES</li>
-                    <li>{{ $recipe['steps_count'] }} ETAPES</li>
-                    <li class="flex text-veryummy-ternary justify-between md:justify-end mb-4">
+                    <li class="flex text-yellow-400 justify-between md:justify-end mb-4">
                         <span class="">{{ $recipe->score }}/5</span>
 
                         {{-- Définition des 5 étoiles de note --}}
@@ -124,18 +150,18 @@
                             @switch($test)
                                 {{-- Etoile pleine --}}
                                 @case($test > 0)
-                                    <x-fas-star class="text-veryummy-ternary w-10 h-10 md:ml-2" />
+                                    <x-fas-star class="text-yellow-400 w-10 h-10 md:ml-2" />
                                 @break
 
                                 {{-- Moitié d'étoile --}}
                                 @case($test >= -0.5)
-                                    <x-fas-star-half-alt class="text-veryummy-ternary w-10 h-10 md:ml-2" />
+                                    <x-fas-star-half-alt class="text-yellow-400 w-10 h-10 md:ml-2" />
                                 @break
 
                                 {{-- Etoile vide --}}
 
                                 @default
-                                    <x-far-star class="text-veryummy-ternary w-10 h-10 md:ml-2" />
+                                    <x-far-star class="text-yellow-400 w-10 h-10 md:ml-2" />
                             @endswitch
                         @endfor
                     </li>
@@ -146,9 +172,9 @@
         <div class="mx-auto lg:w-3/4 flex flex-wrap justify-center items-center">
             @foreach ($ingredients as $ingredientK => $ingredientV)
                 <div class="mx-3 justify-center">
-                    <img src="{{ asset('svg/' . $ingredientV->ingredient->icon . '.svg') }}"
-                        class="w-40 h-40 sm:w-60 md:h-60 lg:w-70 lg:h-70 mx-auto" />
-                    <div class="text-center text-4xl md:text-5xl text-veryummy-primary">
+                    <img src="{{ asset('svg/ingredients/' . $ingredientV->ingredient->icon . '.svg') }}"
+                        class="w-40 h-40 sm:w-48 md:h-48 lg:w-60 lg:h-60 mx-auto" />
+                    <div class="text-center text-3xl md:text-4xl text-veryummy-primary">
                         {{ $ingredientV->quantity }}
                         {{ $ingredientV->unit->name }}{{ $ingredientV->quantity > 1 ? 's' : '' }}
                         de {{ $ingredientV->ingredient->name }}</div>
@@ -226,16 +252,16 @@
                     </div>
 
                 </form>
-                
+
                 @if (!empty($opinion->comment))
-                <div class="w-3/4 mx-auto mb-8 flex justify-center">
-                    <form id="delete-form" action="{{ route('recipe-opinion.empty', $recipe->id) }}" method="POST">
-                        @csrf
-                        @method('PATCH')
-                        <button type="submit" class="text-3xl p-2 rounded-sm my-auto px-4 bg-veryummy-ternary">
-                            <span class="text-white">SUPPRIMER</span> </button>
-                    </form>
-                </div>
+                    <div class="w-3/4 mx-auto mb-8 flex justify-center">
+                        <form id="delete-form" action="{{ route('recipe-opinion.empty', $recipe->id) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="text-3xl p-2 rounded-sm my-auto px-4 bg-veryummy-ternary">
+                                <span class="text-white">SUPPRIMER</span> </button>
+                        </form>
+                    </div>
                 @endif
                 {{-- FIN Si ce n'est pas la recette de l'utilisateur --}}
             @endif
@@ -243,16 +269,16 @@
         {{-- Commentaires existants --}}
         <div class="w-3/4 justify-center mx-auto">
             @foreach ($comments as $commentK => $commentV)
-                <div class="bg-gray-100 drop-shadow-md rounded-sm mb-6 p-4">
+                <div class="bg-slate-50 drop-shadow-md rounded-sm mb-6 p-4">
                     <div class="flex justify-between mb-2">
-                        <span class="text-veryummy-secondary text-5xl">De {{ $commentV->user->name }}</span>
+                        <span class="text-veryummy-primary text-5xl">De {{ $commentV->user->name }}</span>
                         <span
-                            class="text-veryummy-secondary text-5xl">{{ \Carbon\Carbon::parse($commentV->updated_at)->format('d/m/Y H:i:s') }}</span>
+                            class="text-veryummy-primary text-5xl">{{ \Carbon\Carbon::parse($commentV->updated_at)->format('d/m/Y H:i:s') }}</span>
                     </div>
                     <p class="mb-1 text-gray-400 text-justify text-4xl">
                         {{ $commentV->comment }}</p>
 
-                    <p class="flex text-veryummy-ternary justify-end mb-4">
+                    <p class="flex text-yellow-400 justify-end mb-4">
                         <span class="text-5xl pt-3 pr-2">{{ $commentV->score }}/5</span>
 
                         {{-- Définition des 5 étoiles de note --}}
@@ -263,18 +289,18 @@
                             @switch($test)
                                 {{-- Etoile pleine --}}
                                 @case($test > 0)
-                                    <x-fas-star class="text-veryummy-ternary mr-2 my-auto h-7 w-7" />
+                                    <x-fas-star class="text-yellow-400 mr-2 my-auto h-7 w-7" />
                                 @break
 
                                 {{-- Moitié d'étoile --}}
                                 @case($test >= -0.5)
-                                    <x-fas-star-half-alt class="text-veryummy-ternary mr-2 my-auto h-7 w-7" />
+                                    <x-fas-star-half-alt class="text-yellow-400 mr-2 my-auto h-7 w-7" />
                                 @break
 
                                 {{-- Etoile vide --}}
 
                                 @default
-                                    <x-far-star class="text-veryummy-ternary mr-2 my-auto h-7 w-7" />
+                                    <x-far-star class="text-yellow-400 mr-2 my-auto h-7 w-7" />
                             @endswitch
                         @endfor
                         </li>
