@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="64"
+   height="64"
+   viewBox="0 0 16.933333 16.933334"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   sodipodi:docname="malabars.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     units="px"
+     inkscape:zoom="8.3856041"
+     inkscape:cx="-17.172287"
+     inkscape:cy="19.318823"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g4400"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1" />
+  <defs
+     id="defs2">
+    <pattern
+       id="EMFhbasepattern"
+       patternUnits="userSpaceOnUse"
+       width="6"
+       height="6"
+       x="0"
+       y="0" />
+  </defs>
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g4128"
+       transform="translate(-0.63104184,0.12620835)">
+      <g
+         id="g4856"
+         transform="matrix(1.0436402,0,0,1.0436402,-0.25176957,-0.26262699)">
+        <g
+           id="g4400"
+           transform="translate(0.54418909,1.0732618)">
+          <rect
+             style="fill:#e9afdd;fill-rule:evenodd;stroke-width:0.25352"
+             id="rect9422"
+             width="7.7387514"
+             height="9.1924391"
+             x="6.7594275"
+             y="-2.7371724"
+             ry="0.74822181"
+             transform="rotate(30)" />
+          <rect
+             style="fill:#de87aa;fill-rule:evenodd;stroke-width:0.272202"
+             id="rect9424"
+             width="0.87648845"
+             height="9.19244"
+             x="10.286758"
+             y="-2.7384696"
+             ry="0"
+             transform="rotate(30)" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

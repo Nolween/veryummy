@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="64"
+   height="64"
+   version="1.1"
+   viewBox="0 0 16.933 16.933"
+   id="svg146"
+   sodipodi:docname="galette_de_sarrasin.svg"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs150">
+    <pattern
+       id="EMFhbasepattern"
+       patternUnits="userSpaceOnUse"
+       width="6"
+       height="6"
+       x="0"
+       y="0" />
+    <pattern
+       id="EMFhbasepattern-1"
+       patternUnits="userSpaceOnUse"
+       width="6"
+       height="6"
+       x="0"
+       y="0" />
+    <pattern
+       id="EMFhbasepattern-4"
+       patternUnits="userSpaceOnUse"
+       width="6"
+       height="6"
+       x="0"
+       y="0" />
+    <pattern
+       id="EMFhbasepattern-0"
+       patternUnits="userSpaceOnUse"
+       width="6"
+       height="6"
+       x="0"
+       y="0" />
+    <pattern
+       id="EMFhbasepattern-7"
+       patternUnits="userSpaceOnUse"
+       width="6"
+       height="6"
+       x="0"
+       y="0" />
+    <pattern
+       id="EMFhbasepattern-13"
+       patternUnits="userSpaceOnUse"
+       width="6"
+       height="6"
+       x="0"
+       y="0" />
+    <pattern
+       id="EMFhbasepattern-9"
+       patternUnits="userSpaceOnUse"
+       width="6"
+       height="6"
+       x="0"
+       y="0" />
+  </defs>
+  <sodipodi:namedview
+     id="namedview148"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="6.3805339"
+     inkscape:cx="33.46115"
+     inkscape:cy="25.859905"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g6616"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1" />
+  <g
+     transform="translate(-.63104 .12621)"
+     id="g144">
+    <g
+       transform="translate(.089242 .089243)"
+       id="g142">
+      <g
+         transform="translate(-.063104 .94656)"
+         id="g140">
+        <g
+           transform="translate(-.089243 -.80319)"
+           id="g138">
+          <g
+             transform="translate(.31235 -.044621)"
+             id="g136">
+            <g
+               transform="translate(-.12621 .063104)"
+               id="g134">
+              <g
+                 transform="translate(-.23576 .66462)"
+                 id="g132">
+                <g
+                   transform="translate(-121.98 -82.268)"
+                   id="g130">
+                  <g
+                     transform="matrix(.13267 0 0 .13267 114.64 78.216)"
+                     id="g128">
+                    <g
+                       transform="translate(.90513 5.6641)"
+                       id="g126">
+                      <g
+                         transform="translate(-3.3634 -8.7449)"
+                         id="g124">
+                        <g
+                           id="g2243"
+                           transform="matrix(1.1930023,0,0,1.1930023,-33.651497,-20.118288)">
+                          <g
+                             id="g2622"
+                             transform="translate(-3.5913905,-3.2649007)">
+                            <g
+                               id="g3762"
+                               transform="translate(-4.1555401,0.11543139)">
+                              <g
+                                 id="g932"
+                                 transform="translate(3.9178806,-0.97947018)">
+                                <g
+                                   id="g1493"
+                                   transform="translate(-5.6814412,-2.5586263)">
+                                <g
+                                   id="g2924"
+                                   transform="matrix(1.4252606,0,0,1.4252606,-67.958484,-35.929956)">
+                                <g
+                                   id="g3496"
+                                   transform="translate(-1.2958378,1.9437573)">
+                                <g
+                                   id="g6616"
+                                   transform="translate(-2.0796661,3.1194989)">
+                                <circle
+                                   style="fill:#c8b7b7;stroke:none;stroke-width:11.8894;stroke-linecap:round;stroke-linejoin:bevel;stroke-dasharray:11.8894, 23.7788"
+                                   id="path7126"
+                                   cx="153.31133"
+                                   cy="90.70314"
+                                   r="29.870466" />
+                                </g>
+                                </g>
+                                </g>
+                                </g>
+                              </g>
+                            </g>
+                          </g>
+                        </g>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
