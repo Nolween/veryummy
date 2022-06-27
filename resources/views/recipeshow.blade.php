@@ -21,17 +21,36 @@
         body {
             margin: 0
         }
-
     </style>
 
     <style>
         body {
             font-family: 'Jomhuria', sans-serif;
         }
-
     </style>
 </head>
 <script>
+    @php
+        $ingredientsSize = count($ingredients);
+    @endphp
+
+    function updateServings(mod) {
+        // On remet les inputs hidden du formulaire à vide
+        let servings = document.getElementById("servings");
+        let servingsValue = parseInt(servings.textContent);
+        // Si c'est bien un nombre
+        if (!isNaN(servingsValue)) {
+            servings.textContent = mod === 0 ? (servingsValue - 1) : (servingsValue + 1);
+            let ingredientsSize = {{$ingredientsSize}};
+            // Modification des quantités des ingrédients
+            for (let index = 0; index < ingredientsSize; index++) {
+                let quantity = document.getElementById("quantity-" + index);
+                quantity.textContent = (parseFloat(quantity.textContent) * servings.textContent / servingsValue).toFixed(2).replace(/(\.0+|0+)$/, '');
+            }
+
+        }
+    }
+
     function updateFavStatus(favStatus) {
         // On remet les inputs hidden du formulaire à vide
         let reportInput = document.getElementById("report-input");
@@ -55,9 +74,6 @@
         scoreInput.value = scoreInput.value > 5 ? 5 : scoreInput.value < 1 ? 1 : scoreInput.value;
     }
 </script>
-@php
-
-@endphp
 
 <body class="antialiased">
     <div>
@@ -168,6 +184,22 @@
                 </ul>
             </div>
         </div>
+        {{-- Nombre de personnes --}}
+        <div class="w-full justify-center text-center mb-5">
+            <button type="button" class="text-6xl p-2 rounded-sm my-auto px-6 bg-veryummy-primary"
+                onclick="updateServings(0)">
+                <span class="text-white my-auto"> - </span>
+            </button>
+            <span class="text-6xl text-veryummy-secondary align-middle ml-3 mr-1"
+                id="servings">{{ $recipe['servings'] }}</span>
+            <span class="text-6xl text-veryummy-secondary align-middle mr-3">Personnes</span>
+
+            <button type="button" class="text-6xl p-2 rounded-sm my-auto px-6 bg-veryummy-primary"
+                onclick="updateServings(1)">
+                <span class="text-white my-auto"> + </span>
+            </button>
+        </div>
+
         {{-- Ingrédients --}}
         <div class="mx-auto lg:w-3/4 flex flex-wrap justify-center items-center">
             @foreach ($ingredients as $ingredientK => $ingredientV)
@@ -175,9 +207,10 @@
                     <img src="{{ asset('svg/ingredients/' . $ingredientV->ingredient->icon . '.svg') }}"
                         class="w-40 h-40 sm:w-48 md:h-48 lg:w-60 lg:h-60 mx-auto" />
                     <div class="text-center text-3xl md:text-4xl text-veryummy-primary">
-                        {{ $ingredientV->quantity }}
+                        <span id="quantity-{{ $ingredientK }}">{{ $ingredientV->quantity }}</span>
                         {{ $ingredientV->unit->name }}{{ $ingredientV->quantity > 1 ? 's' : '' }}
-                        de {{ $ingredientV->ingredient->name }}</div>
+                        de {{ $ingredientV->ingredient->name }}
+                    </div>
                 </div>
             @endforeach
         </div>
@@ -210,8 +243,9 @@
                     @csrf
                     @method('POST')
                     <div class="w-3/4 mx-auto mb-3 flex justify-center">
-                        <input id="score-input" type="number" min="1" max="5" step="0.5" placeholder="Note"
-                            value="{{ $opinion->score ?? null }}" onchange="scoreControl()" name="score" required
+                        <input id="score-input" type="number" min="1" max="5" step="0.5"
+                            placeholder="Note" value="{{ $opinion->score ?? null }}" onchange="scoreControl()"
+                            name="score" required
                             class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full  md:w-1/3 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
                         @if (!empty($opinion->score))
                             <span class="w-full md:w-1/3 text-center flex justify-center my-auto">
@@ -255,7 +289,8 @@
 
                 @if (!empty($opinion->comment))
                     <div class="w-3/4 mx-auto mb-8 flex justify-center">
-                        <form id="delete-form" action="{{ route('recipe-opinion.empty', $recipe->id) }}" method="POST">
+                        <form id="delete-form" action="{{ route('recipe-opinion.empty', $recipe->id) }}"
+                            method="POST">
                             @csrf
                             @method('PATCH')
                             <button type="submit" class="text-3xl p-2 rounded-sm my-auto px-4 bg-veryummy-ternary">

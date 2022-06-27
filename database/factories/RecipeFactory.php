@@ -25,6 +25,7 @@ class RecipeFactory extends Factory
             'image' => self::$order++ . '.avif',
             'making_time' => rand(1, 100),
             'cooking_time' => rand(1, 180),
+            'servings' => rand(1, 20),
             'score' => $this->faker->randomFloat(2, 1, 5),
             'is_accepted' => $this->faker->boolean(90),
             'vegan_compatible' => $this->faker->boolean(60),

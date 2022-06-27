@@ -21,7 +21,7 @@ class RecipeCardController extends Controller
     {
         $response = [];
         // Récupération de la recette grâce à son od
-        $response['recipe'] = Recipe::select('id', 'user_id', 'name', 'cooking_time as cookingTime', 'making_time as makingTime', 'image', 'score', 'recipe_type_id', 'vegan_compatible', 'vegetarian_compatible', 'gluten_free_compatible', 'halal_compatible', 'kosher_compatible')
+        $response['recipe'] = Recipe::select('id', 'user_id', 'name', 'servings', 'cooking_time as cookingTime', 'making_time as makingTime', 'image', 'score', 'recipe_type_id', 'vegan_compatible', 'vegetarian_compatible', 'gluten_free_compatible', 'halal_compatible', 'kosher_compatible')
             ->withCount('steps') // Nombre d'étapes possède la recette
             ->withCount('ingredients') // Nombre d'ingrédients dans la recette 
             ->findOrFail($id);

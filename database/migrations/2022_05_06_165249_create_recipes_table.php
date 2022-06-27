@@ -22,6 +22,7 @@ return new class extends Migration
             $table->float('score')->nullable();
             $table->smallInteger('cooking_time')->nullable();
             $table->smallInteger('making_time')->nullable();
+            $table->smallInteger('servings')->default('4');
             $table->boolean('is_accepted')->nullable();
             $table->boolean('vegan_compatible')->nullable();
             $table->boolean('vegetarian_compatible')->nullable();

@@ -231,16 +231,18 @@ class RecipeController extends Controller
 
         // Validation du formulaire
         $request->validate([
-            'name' => ['string', 'required'],
-            'photoInput' => ['image', 'nullable'],
-            'making' => ['integer', 'required'],
-            'cooking' => ['integer', 'nullable'],
+            'nom' => ['string', 'required'],
+            'photoInput' => 'nullable|mimes:jpg,png,jpeg,gif,svg,avif,webp',
+            'preparation' => ['integer', 'required'],
+            'cuisson' => ['integer', 'nullable'],
+            'parts' => ['integer', 'required'],
             'stepCount' => ['integer', 'nullable'],
             'type' => ['integer', 'required'],
             'ingredientCount' => ['integer', 'nullable'],
             '*.ingredientId' => ['integer', 'nullable'],
             '*.ingredientName' => ['string', 'nullable'],
             '*.ingredientUnit' => ['numeric', 'nullable'],
+            '*.ingredientQuantity' => ['numeric', 'nullable'],
             '*.stepDescription' => ['string', 'nullable'],
         ]);
 
@@ -248,9 +250,10 @@ class RecipeController extends Controller
         DB::beginTransaction();
         try {
             $newRecipe = new Recipe;
-            $newRecipe->name = $request->name;
-            $newRecipe->cooking_time = $request->cooking;
-            $newRecipe->making_time = $request->making;
+            $newRecipe->name = $request->nom;
+            $newRecipe->cooking_time = $request->cuisson;
+            $newRecipe->making_time = $request->preparation;
+            $newRecipe->servings = $request->parts;
             $newRecipe->is_accepted = 1;
             $newRecipe->recipe_type_id = $request->type;
             $newRecipe->user_id = $user->id;
@@ -292,6 +295,7 @@ class RecipeController extends Controller
                         return back()->with('unitError', 'Ingrédient non trouvé');
                     }
                     $newRecipeIngredient->ingredient_id = $ingredient['ingredientId'];
+                    $newRecipeIngredient->quantity = $ingredient['ingredientQuantity'];
                     $newRecipeIngredient->save();
                 }
             }
@@ -329,9 +333,9 @@ class RecipeController extends Controller
             $newRecipe->image = $newRecipe->id . '-' . Str::slug($request->name, '-') . '.avif';
             //? Si on a une image valide
             if ($request->photoInput && function_exists('imageavif')) {
-                $imgProperties = getimagesize($request->photoInput->path());
                 switch ($request->photoInput->extension()) {
                     case 'jpg':
+                        $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefromjpeg($request->photoInput->path());
                         \imageavif($gdImage, 'img/full/' . $newRecipe->image);
                         $resizeImg = ImageTransformation::image_resize($gdImage, $imgProperties[0], $imgProperties[1]);
@@ -339,12 +343,14 @@ class RecipeController extends Controller
                         // Création d'une miniature
                         break;
                     case 'jpeg':
+                        $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefromjpeg($request->photoInput->path());
                         \imageavif($gdImage, 'img/full/' . $newRecipe->image);
                         $resizeImg = ImageTransformation::image_resize($gdImage, $imgProperties[0], $imgProperties[1]);
                         \imageavif($resizeImg, 'img/thumbnail/' . $newRecipe->image);
                         break;
                     case 'png':
+                        $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefrompng($request->photoInput->path());
                         \imageavif($gdImage, 'img/full/' . $newRecipe->image);
                         $resizeImg = ImageTransformation::image_resize($gdImage, $imgProperties[0], $imgProperties[1]);
@@ -353,10 +359,11 @@ class RecipeController extends Controller
                     case 'avif':
                         $gdImage = imagecreatefromavif($request->photoInput->path());
                         \imageavif($gdImage, 'img/full/' . $newRecipe->image);
-                        $resizeImg = ImageTransformation::image_resize($gdImage, $imgProperties[0], $imgProperties[1]);
+                        $resizeImg = ImageTransformation::image_resize($gdImage, imagesx($gdImage), imagesy($gdImage));
                         \imageavif($resizeImg, 'img/thumbnail/' . $newRecipe->image);
                         break;
                     default:
+                        $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefromjpeg($request->photoInput->path());
                         \imageavif($gdImage, 'img/full/' . $newRecipe->image);
                         $resizeImg = ImageTransformation::image_resize($gdImage, $imgProperties[0], $imgProperties[1]);
@@ -431,16 +438,18 @@ class RecipeController extends Controller
         // Validation du formulaire
         $request->validate([
             'recipeid' => ['integer', 'required'],
-            'name' => ['string', 'required'],
-            'photoInput' => ['image', 'nullable'],
-            'making' => ['integer', 'required'],
-            'cooking' => ['integer', 'nullable'],
+            'nom' => ['string', 'required'],
+            'photoInput' => 'nullable|mimes:jpg,png,jpeg,gif,svg,avif,webp',
+            'preparation' => ['integer', 'required'],
+            'cuisson' => ['integer', 'nullable'],
+            'parts' => ['integer', 'required'],
             'stepCount' => ['integer', 'nullable'],
             'type' => ['integer', 'required'],
             'ingredientCount' => ['integer', 'nullable'],
             '*.ingredientId' => ['integer', 'nullable'],
             '*.ingredientName' => ['string', 'nullable'],
             '*.ingredientUnit' => ['numeric', 'nullable'],
+            '*.ingredientQuantity' => ['numeric', 'nullable'],
             '*.stepDescription' => ['string', 'nullable'],
         ]);
 
@@ -455,9 +464,11 @@ class RecipeController extends Controller
         try {
             $newName = $recipe->name !== $request->name;
             $oldImageName = $recipe->image;
-            $recipe->name = $request->name;
-            $recipe->cooking_time = $request->cooking;
-            $recipe->making_time = $request->making;
+            $recipe->name = $request->nom;
+            $recipe->recipe_type_id = $request->type;
+            $recipe->cooking_time = $request->cuisson;
+            $recipe->making_time = $request->preparation;
+            $recipe->servings = $request->parts;
             $recipe->recipe_type_id = $request->type;
             $recipe->user_id = $user->id;
             // Sauvegarde de la recette
@@ -503,6 +514,7 @@ class RecipeController extends Controller
                     if (!$ingr) {
                         return back()->with('unitError', 'Ingrédient non trouvé');
                     }
+                    $newRecipeIngredient->quantity = $ingredient['ingredientQuantity'];
                     $newRecipeIngredient->ingredient_id = $ingredient['ingredientId'];
                     $newRecipeIngredient->save();
                 }
@@ -544,9 +556,9 @@ class RecipeController extends Controller
                 // Suppression des images existantes
                 File::delete(public_path('img/full/' . $oldImageName));
                 File::delete(public_path('img/thumbnail/' . $oldImageName));
-                $imgProperties = getimagesize($request->photoInput->path());
                 switch ($request->photoInput->extension()) {
                     case 'jpg':
+                        $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefromjpeg($request->photoInput->path());
                         \imageavif($gdImage, 'img/full/' . $recipe->image);
                         $resizeImg = ImageTransformation::image_resize($gdImage, $imgProperties[0], $imgProperties[1]);
@@ -554,12 +566,14 @@ class RecipeController extends Controller
                         // Création d'une miniature
                         break;
                     case 'jpeg':
+                        $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefromjpeg($request->photoInput->path());
                         \imageavif($gdImage, 'img/full/' . $recipe->image);
                         $resizeImg = ImageTransformation::image_resize($gdImage, $imgProperties[0], $imgProperties[1]);
                         \imageavif($resizeImg, 'img/thumbnail/' . $recipe->image);
                         break;
                     case 'png':
+                        $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefrompng($request->photoInput->path());
                         \imageavif($gdImage, 'img/full/' . $recipe->image);
                         $resizeImg = ImageTransformation::image_resize($gdImage, $imgProperties[0], $imgProperties[1]);
@@ -568,10 +582,11 @@ class RecipeController extends Controller
                     case 'avif':
                         $gdImage = imagecreatefromavif($request->photoInput->path());
                         \imageavif($gdImage, 'img/full/' . $recipe->image);
-                        $resizeImg = ImageTransformation::image_resize($gdImage, $imgProperties[0], $imgProperties[1]);
+                        $resizeImg = ImageTransformation::image_resize($gdImage, imagesx($gdImage), imagesy($gdImage));
                         \imageavif($resizeImg, 'img/thumbnail/' . $recipe->image);
                         break;
                     default:
+                        $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefromjpeg($request->photoInput->path());
                         \imageavif($gdImage, 'img/full/' . $recipe->image);
                         $resizeImg = ImageTransformation::image_resize($gdImage, $imgProperties[0], $imgProperties[1]);

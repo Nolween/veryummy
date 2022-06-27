@@ -134,7 +134,7 @@
                 </ul>
                 </p>
             @else
-                <p class="text-white text-center text-3xl rounded-b-md">PAS DE NOTE</p>
+                <p class="text-veryummy-secondary text-center text-3xl rounded-b-md">PAS DE NOTE</p>
             @endif
         </div>
     </a>
