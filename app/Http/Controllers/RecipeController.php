@@ -330,7 +330,7 @@ class RecipeController extends Controller
             $newRecipe->kosher_compatible = $compatible['kosher_compatible'] == 0 ? true : false;
 
             //? Création d'un nom pour l'image
-            $newRecipe->image = $newRecipe->id . '-' . Str::slug($request->name, '-') . '.avif';
+            $newRecipe->image = $newRecipe->id . '-' . Str::slug($request->nom, '-') . '.avif';
             //? Si on a une image valide
             if ($request->photoInput && function_exists('imageavif')) {
                 switch ($request->photoInput->extension()) {
@@ -462,7 +462,7 @@ class RecipeController extends Controller
         // Transaction pour rollback si erreur
         DB::beginTransaction();
         try {
-            $newName = $recipe->name !== $request->name;
+            $newName = $recipe->name !== $request->nom;
             $oldImageName = $recipe->image;
             $recipe->name = $request->nom;
             $recipe->recipe_type_id = $request->type;
@@ -550,7 +550,7 @@ class RecipeController extends Controller
             $recipe->kosher_compatible = $compatible['kosher_compatible'] == 0 ? true : false;
 
             //? Création d'un nom pour l'image
-            $recipe->image = $recipe->id . '-' . Str::slug($request->name, '-') . '.avif';
+            $recipe->image = $recipe->id . '-' . Str::slug($request->nom, '-') . '.avif';
             //? Si on a une image valide
             if ($request->photoInput && function_exists('imageavif')) {
                 // Suppression des images existantes

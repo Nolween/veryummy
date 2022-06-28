@@ -41,11 +41,12 @@
         // Si c'est bien un nombre
         if (!isNaN(servingsValue)) {
             servings.textContent = mod === 0 ? (servingsValue - 1) : (servingsValue + 1);
-            let ingredientsSize = {{$ingredientsSize}};
+            let ingredientsSize = {{ $ingredientsSize }};
             // Modification des quantités des ingrédients
             for (let index = 0; index < ingredientsSize; index++) {
                 let quantity = document.getElementById("quantity-" + index);
-                quantity.textContent = (parseFloat(quantity.textContent) * servings.textContent / servingsValue).toFixed(2).replace(/(\.0+|0+)$/, '');
+                quantity.textContent = (parseFloat(quantity.textContent) * servings.textContent / servingsValue)
+                    .toFixed(2).replace(/(\.0+|0+)$/, '');
             }
 
         }
@@ -81,7 +82,7 @@
         <x-navigation.menu />
         {{-- Titre de la page --}}
         <div class="mb-4 pt-20 sm:pt-10">
-            <h1 class="text-veryummy-secondary text-6xl sm:text-8xl md:text-9xl w-full text-center px-2">
+            <h1 class="text-veryummy-primary text-6xl sm:text-8xl md:text-9xl w-full text-center px-2">
                 {{ $recipe['name'] }}
             </h1>
         </div>
@@ -117,7 +118,7 @@
             </div>
             <div
                 class="my-auto w-full lg:w-1/2 px-8 md:px-4 text-4xl sm:text-5xl lg:text-5xl text-center md:text-left bg-slate-50 drop-shadow-md rounded-lg">
-                <ul class="text-veryummy-primary">
+                <ul class="text-veryummy-secondary">
                     @auth
                         <form id="status-form" action="{{ route('recipe.status', $recipe->id) }}" method="POST">
                             @csrf
@@ -155,7 +156,8 @@
                     <li>{{ $recipe['steps_count'] }} ETAPES</li>
                     <li>PREPARATION: {{ $recipe['makingTime'] }} MINUTES</li>
                     <li>CUISSON: {{ $recipe['cookingTime'] }} MINUTES</li>
-                    <li class="flex text-yellow-400 justify-between md:justify-end mb-4">
+                    @if(!empty($recipe->score))
+                    <li class="flex text-yellow-400 justify-between md:justify-center mb-4">
                         <span class="">{{ $recipe->score }}/5</span>
 
                         {{-- Définition des 5 étoiles de note --}}
@@ -181,6 +183,11 @@
                             @endswitch
                         @endfor
                     </li>
+                    @else
+                    <li class="flex text-veryummy-secondary justify-center text-center mb-4">
+                        <span class=""> PAS DE NOTE</span>
+                    </li>
+                    @endif
                 </ul>
             </div>
         </div>
@@ -231,10 +238,12 @@
             </div>
         </div>
         {{-- Commentaires --}}
-
-        <div class="mb-4 pt-20 sm:pt-10">
-            <h2 class="text-veryummy-secondary text-4xl sm:text-6xl md:text-7xl w-full text-center">COMMENTAIRES</h2>
-        </div>
+        @if (count($comments) > 0)
+            <div class="mb-4 pt-20 sm:pt-10">
+                <h2 class="text-veryummy-secondary text-4xl sm:text-6xl md:text-7xl w-full text-center">COMMENTAIRES
+                </h2>
+            </div>
+        @endif
         @auth
             {{-- Si ce n'est pas la recette de l'utilisateur --}}
             @if ($userId !== $recipe->user_id)

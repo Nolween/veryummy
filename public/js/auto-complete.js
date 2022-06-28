@@ -23,10 +23,9 @@ function autocomplete(inp, arr, count) {
         this.parentNode.appendChild(a);
         // Parcours des items de la liste (limite de 5 résultats)
         Object.entries(arr).forEach(([key, value]) => {
+            const toto = new RegExp(val, "i");
             // Vérifie si l'objet parcouru commence comme la recherche
-            if (
-                value.substr(0, val.length).toUpperCase() == val.toUpperCase() && found <= 5
-            ) {
+            if (value.search(toto) != -1 && found <= 5) {
                 // Création d'un nouvel élément pour chaque résultat trouvé
                 b = document.createElement("DIV");
                 // Partie correspondante en gras
@@ -35,14 +34,16 @@ function autocomplete(inp, arr, count) {
                 b.innerHTML += value.substr(val.length);
                 /*insert a input field that will hold the current array item's value:*/
                 b.innerHTML += "<input type='hidden' value='" + value + "'>";
-                // Ajoutd'une fonction de remplissage automatique lors d'un click
+                // Ajout d'une fonction de remplissage automatique lors d'un click
                 b.addEventListener("click", function (e) {
                     // Ajout de la valeur dans le champ
                     inp.value = this.getElementsByTagName("input")[0].value;
                     // Ajout de l'id de l'ingrédient dans le champ caché
-                    let ingredientIdInput = document.getElementById('ingredientId' + count)
+                    let ingredientIdInput = document.getElementById(
+                        "ingredientId" + count
+                    );
                     // Définition de la valeur par l'id de l'ingrédient
-                    ingredientIdInput.value = key
+                    ingredientIdInput.value = key;
                     // Fermeture de toutes les listes ouvertes
                     closeAllLists();
                 });
@@ -60,41 +61,63 @@ function autocomplete(inp, arr, count) {
             currentFocus++;
             // Changement de résultat sélectionné
             addActive(x);
-        } 
+        }
         // Flèche du haut
         else if (e.keyCode == 38) {
             currentFocus--;
             // Changement de résultat sélectionné
             addActive(x);
-        } 
-        // Touche entrée
-        else if (e.keyCode == 13) {
-            e.preventDefault();
+        }
+        // Touche entrée ou Tab
+        else if (e.keyCode == 13 || e.keyCode == 9) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+            }
             if (currentFocus > -1) {
                 // Simulation du clic sur le résultat actif
                 if (x) x[currentFocus].click();
             }
+            // Si pas de résultat pré sélectionné
+            else {
+                // Si on a des résultats
+                if (x.length > 0) {
+                    // Select the first entry of the list
+                    x[0].click();
+                }
+                // Si pas de résultats
+                else {
+                    // Reset de la valeur du champ
+                    inp.value = null;
+                    // Récupération du champ définissant l'id de l'aliment
+                    let ingredientIdInput = document.getElementById(
+                        "ingredientId" + count
+                    );
+                    // Reset de l'id à 0
+                    ingredientIdInput.value = 0;
+                    // Fermeture de toutes les listes ouvertes
+                    closeAllLists();
+                }
+            }
         }
     });
     function addActive(x) {
-        /*a function to classify an item as "active":*/
+        /*Pré sélectionner un résultat de la liste*/
         if (!x) return false;
-        /*start by removing the "active" class on all items:*/
+        /*Retirer la pré sélection de toute la liste*/
         removeActive(x);
         if (currentFocus >= x.length) currentFocus = 0;
         if (currentFocus < 0) currentFocus = x.length - 1;
-        /*add class "autocomplete-active":*/
+        /*Ajout de la classe "autocomplete-active":*/
         x[currentFocus].classList.add("autocomplete-active");
     }
     function removeActive(x) {
-        /*a function to remove the "active" class from all autocomplete items:*/
+        /*Retirer la pré sélection de toute la liste*/
         for (var i = 0; i < x.length; i++) {
             x[i].classList.remove("autocomplete-active");
         }
     }
     function closeAllLists(elmnt) {
-        /*close all autocomplete lists in the document,
-              except the one passed as an argument:*/
+        /*Fermer les auto complete*/
         var x = document.getElementsByClassName("autocomplete-items");
         for (var i = 0; i < x.length; i++) {
             if (elmnt != x[i] && elmnt != inp) {
@@ -102,7 +125,11 @@ function autocomplete(inp, arr, count) {
             }
         }
     }
-    /*execute a function when someone clicks in the document:*/
+    /*Lorsque l'utilisateur quitte l'autocomplete:*/
+    inp.addEventListener("blur", function (e) {
+        closeAllLists(e.target);
+    });
+    /*Lorsque l'utilisateur clique ailleurs que sur la liste de résultat*/
     document.addEventListener("click", function (e) {
         closeAllLists(e.target);
     });
