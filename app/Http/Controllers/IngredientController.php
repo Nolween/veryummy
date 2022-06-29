@@ -9,7 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 
 class IngredientController extends Controller
 {
@@ -27,7 +29,7 @@ class IngredientController extends Controller
         }
 
         $response['typeList'] = $type;
-        
+
         switch ($type) {
             case 0:
                 $type = null;
@@ -62,6 +64,61 @@ class IngredientController extends Controller
         return view('adminingredientslist', $response);
     }
 
+    public function deny(Request $request)
+    {
+
+        // Récupération des infos de l'utilisateur connecté
+        $user = Auth::user();
+        // Si pas d'utilisateur
+        if (!$user || $user->role_id !== 1) {
+            // Déconnexion de l'utilisateur
+            Auth::logout();
+            return redirect("/");
+        }
+        // Validation du formulaire avec les différentes règles
+        $request->validate([
+            'ingredientid' => ['integer', 'required'],
+            'deny' => ['boolean', 'required'],
+            'typeList' => ['integer', 'required'],
+            'denymessage' => ['string', 'required', 'min:2'],
+        ]);
+
+
+        if ($request->deny == 1) {
+            // Transaction pour rollback si erreur
+            DB::beginTransaction();
+            try {
+                // Récupération de l'ingrédient par son Id
+                $ingredient = Ingredient::where('id', (int)$request->ingredientid)->with('user')->first();
+                // Si pas d'ingrédient trouvé, erreur
+                if (!$ingredient) {
+                    return back()->with('ingredientAllowError', 'Aucun ingrédient trouvé');
+                }
+                $authorMail = $ingredient->user->email;
+                $ingredient->is_accepted = false;
+                // Si l'ingrédient est accepté, il passe sur le compte principal, en cas de suppression de compte du demandeur
+                $ingredient->user_id = 1;
+                $ingredient->save();
+
+                // Envoi de mail à la personne ayant proposé l'ingrédient
+                $informations = ['ingredient' => $ingredient->name, 'url' => URL::to('/'), 'message' => $request->denymessage];
+                // Si la modération était en cours
+                if ($request->typeList == 0) {
+                    Mail::to($authorMail)->send(new RefusedIngredient($informations));
+                }
+
+                // Validation de la transaction
+                DB::commit();
+                return redirect("/admin/ingredients/list/$request->typeList")->with('ingredientAllowSuccess', "L'ingrédient a été modéré");
+            }
+
+            // Si erreur dans la transaction
+            catch (QueryException $e) {
+                DB::rollback();
+                return back()->with('ingredientAllowError', "Erreur dans la modération de l'ingrédient");
+            }
+        }
+    }
     public function allow(Request $request)
     {
 
@@ -73,47 +130,112 @@ class IngredientController extends Controller
             Auth::logout();
             return redirect("/");
         }
-        $response = [];
         // Validation du formulaire avec les différentes règles
         $request->validate([
             'ingredientid' => ['integer', 'required'],
             'allow' => ['boolean', 'required'],
+            'finalname' => ['string', 'required', 'min:2'],
             'typeList' => ['integer', 'required'],
+            'vegetarian' => ['boolean', 'nullable'],
+            'vegan' => ['boolean', 'nullable'],
+            'glutenfree' => ['boolean', 'nullable'],
+            'halal' => ['boolean', 'nullable'],
+            'kosher' => ['boolean', 'nullable'],
         ]);
 
-        // Transaction pour rollback si erreur
-        DB::beginTransaction();
-        try {
-            // Récupération de l'ingrédient par son Id
-            $ingredient = Ingredient::where('id', (int)$request->ingredientid)->with('user')->first();
-            // Si pas d'ingrédient trouvé, erreur
-            if (!$ingredient) {
-                return back()->with('ingredientAllowError', 'Aucun ingrédient trouvé');
-            }
-            $author = $ingredient->user->id;
-            $ingredient->is_accepted = $request->allow;
-            // Si l'ingrédient est accepté, il passe sur le compte principal, en cas de suppression de compte du demandeur
-            $ingredient->user_id = 1;
-            $ingredient->save();
 
-            // Envoi de mail à la personne ayant proposé l'ingrédient
-            $informations = ['ingredient' => $ingredient->name, 'url' => URL::to('/')];
-            // dd($informations);
-            if ($request->allow == 1) {
-                Mail::to($user->email)->send(new AcceptedIngredient($informations));
-            } else {
-                Mail::to($user->email)->send(new RefusedIngredient($informations));
+        if ($request->allow == 1) {
+            // Transaction pour rollback si erreur
+            DB::beginTransaction();
+            try {
+                // Récupération de l'ingrédient par son Id
+                $ingredient = Ingredient::where('id', (int)$request->ingredientid)->with('user')->first();
+                // Si pas d'ingrédient trouvé, erreur
+                if (!$ingredient) {
+                    return back()->with('ingredientAllowError', 'Aucun ingrédient trouvé');
+                }
+                $authorMail = $ingredient->user->email;
+                $ingredient->name = $request->finalname;
+                $ingredient->icon = Str::slug($request->finalname, '_');
+                $ingredient->is_accepted = $request->allow;
+                // Si l'ingrédient est accepté, il passe sur le compte principal, en cas de suppression de compte du demandeur
+                $ingredient->user_id = 1;
+                // Définition du régime de l'aliment
+                $ingredient->vegetarian_compatible = $request->vegetarian || false;
+                $ingredient->vegan_compatible = $request->vegan || false;
+                $ingredient->gluten_free_compatible = $request->glutenfree || false;
+                $ingredient->halal_compatible = $request->halal || false;
+                $ingredient->kosher_compatible = $request->kosher || false;
+                $ingredient->save();
+
+                // Envoi de mail à la personne ayant proposé l'ingrédient
+                $informations = ['ingredient' => $request->finalname, 'url' => URL::to('/')];
+                if ($request->typeList == 0) {
+                    Mail::to($authorMail)->send(new AcceptedIngredient($informations));
+                }
+
+                // Validation de la transaction
+                DB::commit();
+                return redirect("/admin/ingredients/list/$request->typeList")->with('ingredientAllowSuccess', "L'ingrédient a été modéré");
             }
 
-            // Validation de la transaction
-            DB::commit();
-            return redirect("/admin/ingredients/list/$request->typeList")->with('ingredientAllowSuccess', "L'ingrédient a été modéré");
+            // Si erreur dans la transaction
+            catch (QueryException $e) {
+                DB::rollback();
+                return back()->with('ingredientAllowError', "Erreur dans la modération de l'ingrédient");
+            }
+        }
+    }
+
+    public function show(Request $request)
+    {
+
+        // Récupération des infos de l'utilisateur connecté
+        $user = Auth::user();
+        // Si pas d'utilisateur
+        if (!$user) {
+            // Déconnexion de l'utilisateur
+            Auth::logout();
+            return redirect("/");
+        }
+        $response = [];
+
+
+        return view('newingredient', $response);
+    }
+
+
+    public function propose(Request $request)
+    {
+
+        // Récupération des infos de l'utilisateur connecté
+        $user = Auth::user();
+        // Si pas d'utilisateur
+        if (!$user) {
+            // Déconnexion de l'utilisateur
+            Auth::logout();
+            return redirect("/");
+        }
+        $response = [];
+
+
+        // Validation du formulaire avec les différentes règles
+        $request->validate([
+            'ingredient' => ['string', 'required', 'min:2'],
+            'rulescheck' => ['string', 'required'],
+        ]);
+        if ($request->rulescheck !== 'true') {
+            return back()->withInput()->with('rulesError', 'Veuillez accepter les règles pour valider la proposition');
         }
 
-        // Si erreur dans la transaction
-        catch (QueryException $e) {
-            DB::rollback();
-            return back()->with('ingredientAllowError', "Erreur dans la modération de l'ingrédient");
-        }
+        // Création d'un nouvel ingredient
+        $newIngredient = new Ingredient;
+        $newIngredient->user_id = $user->id;
+        $newIngredient->name = $request->ingredient;
+        $newIngredient->icon = null;
+        $newIngredient->is_accepted = null;
+        $newIngredient->save();
+
+        return redirect("/my-recipes")->with('ingredientProposeSuccess', "L'ingrédient a été proposé, vous recevrez un mail de modération.");
     }
 }

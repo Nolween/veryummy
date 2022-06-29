@@ -401,7 +401,7 @@
         @foreach ($recipe['ingredients'] as $ingredientK => $ingredientV)
             {
                 autocomplete(document.getElementById('ingredient' + {{ $ingredientK }}), ingredients,
-                    {{ $ingredientK }});
+                    {{ $ingredientK }}, {{ Illuminate\Support\Js::from(route('new-ingredient.show')) }});
             }
         @endforeach
     </script>

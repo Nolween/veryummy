@@ -44,6 +44,10 @@
         <div class="mb-4 pt-20 sm:pt-10">
             <h1 class="text-veryummy-secondary text-9xl w-full text-center">MES RECETTES</h1>
         </div>
+        @if (session('ingredientProposeSuccess'))
+            <div class=" text-center bg-veryummy-primary text-white text-3xl w-full mx-2 p-2 mb-2">
+                {{ session('ingredientProposeSuccess') }}</div>
+        @endif
         <form method="GET" action="{{ route('my-recipes.list') }}">
             @csrf
             @method('GET')

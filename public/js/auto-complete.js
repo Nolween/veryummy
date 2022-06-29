@@ -1,4 +1,4 @@
-function autocomplete(inp, arr, count) {
+function autocomplete(inp, arr, count, newIngredientLink) {
     // 2 arguments dans la fonction, le texte de la recherche et le tableau des éléments possibles
     var currentFocus;
     // Lorsque l'on écrit dans le champ de recherche
@@ -51,6 +51,15 @@ function autocomplete(inp, arr, count) {
                 found += 1;
             }
         });
+        // Ajout d'une ligne pour proposer un ingrédient
+        // Création d'un nouvel élément pour chaque résultat trouvé
+        b = document.createElement("a");
+        b.target = "_blank";
+        b.href = newIngredientLink;
+        // Partie correspondante en gras
+        b.innerHTML = "<div class=\"text-veryummy-primary\"><strong>PROPOSER UN INGREDIENT</strong></div>";
+        
+        a.appendChild(b);
     });
     // Lorsque l'on appuie sur une touche du clavier
     inp.addEventListener("keydown", function (e) {
@@ -80,7 +89,7 @@ function autocomplete(inp, arr, count) {
             // Si pas de résultat pré sélectionné
             else {
                 // Si on a des résultats
-                if (x.length > 0) {
+                if (x.length > 1) {
                     // Select the first entry of the list
                     x[0].click();
                 }

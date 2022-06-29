@@ -62,24 +62,6 @@
             button2.classList.add("bg-gray-500");
             button.classList.remove("bg-veryummy-secondary");
             button2.classList.remove("bg-veryummy-secondary");
-            switch (false) {
-                case checkbox.checked:
-                    console.log('Checkbox');
-                    break;
-                case nameCheck:
-                    console.log('NOM');
-                    break;
-                case passwordCheck:
-                    console.log('MDP');
-                    break;
-                case emailCheck:
-                    console.log('MAIL');
-                    break;
-            
-                default:
-                    console.log('??');
-                    break;
-            }
         }
     }
 </script>

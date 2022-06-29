@@ -1,9 +1,6 @@
 <div {{ $attributes }} class="bg-gray-100 drop-shadow-md rounded-sm mb-5 w-full md:w-3/4 lg:w-2/3 mx-3">
-    @php
-        // dd('test');
-    @endphp
     <div class="flex justify-between">
-        <div class="pl-3 text-veryummy-ternary text-4xl">{{ $attributes->get('name') }}</div>
+        <div class="pl-3 text-veryummy-ternary text-4xl">{!! $attributes->get('name') !!}</div>
         <div class="pr-3 text-veryummy-secondary text-4xl">
             {{ \Carbon\Carbon::parse($attributes->get('date'))->format('d/m/Y h:H') }}</div>
     </div>
@@ -25,7 +22,7 @@
     <div class="px-3 hidden mb-3" id="reportslist{{ $attributes->get('place') }}">
         @foreach ($opinions as $thK => $thV)
             <div class="px-4 py-3 bg-veryummy-ternary text-white text-3xl rounded-sm mb-3">
-                <div>{{ $thV->comment }}</div>
+                <div>{!! $thV->comment !!}</div>
                 <div class="flex justify-end space-x-2">
                     <div class="text-right flex justify-end" title="Supprimer les signalements"
                         onclick="deleteOpinion(0, {{ $thV->id }})">

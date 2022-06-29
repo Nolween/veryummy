@@ -41,7 +41,7 @@
             {{ \Carbon\Carbon::parse($attributes->get('date'))->format('d/m/Y h:H') }}</div>
     </div>
     <div class="flex justify-between pr-3">
-        <div class="pl-3 text-veryummy-secondary text-4xl">{!! $attributes->get('name') !!}</div>
+        <div class="pl-3 text-veryummy-primary text-4xl">{!! $attributes->get('name') !!}</div>
     </div>
     <div class="flex {{ $attributes->get('typelist') == 0 ? 'justify-between' : 'justify-end' }} mb-3 pr-3">
         @if ($attributes->get('typelist') == 0)

@@ -1,7 +1,7 @@
 @component('mail::message')
     # Proposition d'ingrédient
 
-    Vous avez proposé un nouvel ingrédient {{ $informations['ingredient'] }} afin de pouvoir l'utiliser sur le site Veryummy.
+    Vous avez proposé un nouvel ingrédient **{!! $informations['ingredient'] !!}** afin de pouvoir l'utiliser sur le site Veryummy.
     Cet ingrédient est accepté !
     
     @component('mail::button', ['url' => $informations['url']])

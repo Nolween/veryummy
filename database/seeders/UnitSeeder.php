@@ -33,6 +33,7 @@ class UnitSeeder extends Seeder
             ['name' => 'Filet(s)'],
             ['name' => 'Verre(s)'],
             ['name' => 'Tablette(s)'],
+            ['name' => 'Epi(s)'],
         ];
         foreach ($source as $item) {
             $unit = new Unit(['name' => $item['name']]);
