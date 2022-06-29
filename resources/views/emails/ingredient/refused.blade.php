@@ -1,17 +1,17 @@
 @component('mail::message')
-    # Proposition d'ingrédient
+# Proposition d'ingrédient
 
-    Vous avez proposé un nouvel ingrédient {!! $informations['ingredient'] !!} afin de pouvoir l'utiliser sur le site Veryummy.
-    Cet ingrédient n'est malheureusement pas accepté.
+Vous avez proposé un nouvel ingrédient {!! $informations['ingredient'] !!} afin de pouvoir l'utiliser sur le site Veryummy.
+Cet ingrédient n'est malheureusement pas accepté.
     
-    Voici la raison de ce refus:
+Voici la raison de ce refus:
 
-    {!! $informations['message'] !!}
+{!! $informations['message'] !!}
 
-    @component('mail::button', ['url' => $informations['url']])
-        Aller sur le site
-    @endcomponent
+@component('mail::button', ['url' => $informations['url']])
+    Aller sur le site
+@endcomponent
 
-    Salutations,
-    {{ config('app.name') }}
+Salutations,<br>
+{{ config('app.name') }}
 @endcomponent

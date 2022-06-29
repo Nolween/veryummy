@@ -1,14 +1,14 @@
 @component('mail::message')
-    # Proposition d'ingrédient
+# Proposition d'ingrédient
 
-    Vous avez proposé un nouvel ingrédient **{!! $informations['ingredient'] !!}** afin de pouvoir l'utiliser sur le site Veryummy.
-    Cet ingrédient est accepté !
-    
-    @component('mail::button', ['url' => $informations['url']])
-        Aller sur le site
-    @endcomponent
+Vous avez proposé un nouvel ingrédient {!! $informations['ingredient'] !!} afin de pouvoir l'utiliser sur le site Veryummy.
 
-    Merci à vous!
+Cet ingrédient est accepté !
 
-    {{ config('app.name') }}
+@component('mail::button', ['url' => $informations['url']])
+    Aller sur le site
+@endcomponent
+
+Salutations,<br>
+{{ config('app.name') }}
 @endcomponent
