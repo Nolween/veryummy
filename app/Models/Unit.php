@@ -17,5 +17,7 @@ class Unit extends Model
     protected $fillable = ['name'];
 
     
+    // Pas besoin des created_at et updated_at
+    public $timestamps = false;
 
 }

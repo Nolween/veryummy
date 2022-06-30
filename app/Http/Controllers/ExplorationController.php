@@ -38,7 +38,7 @@ class ExplorationController extends Controller
             ->where('name', 'like', "%{$request->name}%")
             ->withCount('ingredients')
             ->withCount('steps');
-        // Si utilisateur connecté, on ne poublie pas ses recettes
+        // Si utilisateur connecté, on n'oublie pas ses recettes
         if ($userId) {
             $recipes->where('user_id', '!=', $userId)->with('user')
             ->with('opinion');

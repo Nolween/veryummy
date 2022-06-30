@@ -9,6 +9,7 @@ class RecipeIngredients extends Model
 {
     use HasFactory;
     
+    // Pas besoin des created_at et updated_at
     public $timestamps = false;
 
     protected $fillable = [
