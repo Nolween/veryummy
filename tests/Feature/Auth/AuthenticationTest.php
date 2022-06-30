@@ -12,6 +12,18 @@ class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
+    // Initialisation d'un utilisateur
+    public function initialize_user()
+    {
+        // Création d'un rôle, nécessaire pour la création d'un utilisateur
+        Role::create(['name' => 'Administrateur']);
+        // Création d'un utilisateur
+        $user = User::create(['name' => 'Visiteur', 'email' => 'visiteur.test@test.com', 'password' => bcrypt('123456'), 'role_id' => 1, 'is_banned' => false, 'email_verified_at' => now()]);
+
+        return $user;
+    }
+
+
     public function test_login_screen_can_be_rendered()
     {
         $response = $this->get('/');
@@ -21,11 +33,7 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_authenticate_using_the_login_screen()
     {
-        // Création d'un rôle, nécessaire pour la création d'un utilisateur
-        Role::create(['name' => 'Administrateur']);
-        // Création d'un utilisateur
-        $user = User::create(['name' => 'Visiteur', 'email' => 'visiteur.test@test.com', 'password' => bcrypt('123456'), 'role_id' => 1, 'is_banned' => false, 'email_verified_at' => now()]);
-
+        $user = $this->initialize_user();
         // Accès à la connexion avec les infos d'authentification
         $response = $this->post('/login', [
             'email' => $user->email,
@@ -39,10 +47,7 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_not_authenticate_with_invalid_password()
     {
-        // Création d'un rôle, nécessaire pour la création d'un utilisateur
-        Role::create(['name' => 'Administrateur']);
-        // Création d'un utilisateur
-        $user = User::create(['name' => 'Visiteur', 'email' => 'visiteur.test@test.com', 'password' => bcrypt('123456'), 'role_id' => 1, 'is_banned' => false, 'email_verified_at' => now()]);
+        $user = $this->initialize_user();
 
         $this->post('/login', [
             'email' => $user->email,

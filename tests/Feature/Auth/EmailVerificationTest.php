@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\Role;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Verified;
@@ -14,11 +15,20 @@ class EmailVerificationTest extends TestCase
 {
     use RefreshDatabase;
 
+    // Initialisation d'un utilisateur
+    public function initialize_user()
+    {
+        // Création d'un rôle, nécessaire pour la création d'un utilisateur
+        Role::create(['name' => 'Administrateur']);
+        // Création d'un utilisateur
+        $user = User::create(['name' => 'Visiteur', 'email' => 'visiteur.test@test.com', 'password' => bcrypt('123456'), 'role_id' => 1, 'is_banned' => false, 'email_verified_at' => null]);
+
+        return $user;
+    }
+
     public function test_email_verification_screen_can_be_rendered()
     {
-        $user = User::factory()->create([
-            'email_verified_at' => null,
-        ]);
+        $user = $this->initialize_user();
 
         $response = $this->actingAs($user)->get('/verify-email');
 
@@ -27,9 +37,8 @@ class EmailVerificationTest extends TestCase
 
     public function test_email_can_be_verified()
     {
-        $user = User::factory()->create([
-            'email_verified_at' => null,
-        ]);
+
+        $user = $this->initialize_user();
 
         Event::fake();
 
@@ -43,15 +52,13 @@ class EmailVerificationTest extends TestCase
 
         Event::assertDispatched(Verified::class);
         $this->assertTrue($user->fresh()->hasVerifiedEmail());
-        $response->assertRedirect(RouteServiceProvider::HOME.'?verified=1');
+        $response->assertRedirect(RouteServiceProvider::HOME . '?verified=1');
     }
 
     public function test_email_is_not_verified_with_invalid_hash()
-    {
-        $user = User::factory()->create([
-            'email_verified_at' => null,
-        ]);
-
+    {        
+        $user = $this->initialize_user();
+     
         $verificationUrl = URL::temporarySignedRoute(
             'verification.verify',
             now()->addMinutes(60),
