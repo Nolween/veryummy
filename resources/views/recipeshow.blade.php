@@ -86,6 +86,26 @@
                 {{ $recipe['name'] }}
             </h1>
         </div>
+        
+        @if ($errors->any())
+
+            <ul class="mt-3 list-disc list-inside text-red-600 text-4xl">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        @endif
+        <div class="flex justify-center">
+            @if (session('success'))
+                <div class="bg-veryummy-primary text-center mb-3 p-2 w-full md:w-1/2">
+                    <div class="text-3xl text-white">{{ session('success') }}</div>
+                </div>
+            @elseif (session('error'))
+                <div class="bg-veryummy-ternary text-center mb-3 p-2 w-full md:w-1/2">
+                    <div class="text-3xl text-white">{{ session('error') }}</div>
+                </div>
+            @endif
+        </div>
         {{-- REGIMES --}}
 
         <div class="flex flex-wrap justify-center px-8 md:px-4 w-3/4 mx-auto mb-6">

@@ -19,6 +19,7 @@ use Illuminate\Support\Str;
 use App\Helpers\ImageTransformation;
 use App\Models\RecipeType;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\ItemNotFoundException;
 
 class RecipeController extends Controller
 {
@@ -167,11 +168,17 @@ class RecipeController extends Controller
         // Transaction pour rollback si erreur
         DB::beginTransaction();
         try {
+
+            // La recette existe t-elle?
+            $recipe = Recipe::find($request->recipeid);
+            if(!$recipe) {
+                throw new ItemNotFoundException();
+            }
+
             RecipeOpinion::updateOrCreate(
                 ['user_id' => $user->id, 'recipe_id' => $request->recipeid],
                 ['is_favorite' => $request->is_favorite, 'is_reported' => $request->is_reported]
             );
-
 
             // Définition du message de retour
             if ($request->is_reported == null) {
@@ -185,9 +192,14 @@ class RecipeController extends Controller
             return back()->with('statusSuccess', $message);
         }
         // Si erreur dans la transaction
-        catch (QueryException $e) {
+        catch (ItemNotFoundException $e) {
             DB::rollback();
-            return redirect('/')->with('statusError', 'Erreur dans la mise à jour du statut');
+            return back()->with('statusError', 'Recette introuvable');
+        }
+        // Si erreur dans la transaction
+        catch (Exception $e) {
+            DB::rollback();
+            return back()->with('statusError', 'Erreur dans la mise à jour du statut');
         }
     }
 

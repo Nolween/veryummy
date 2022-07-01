@@ -53,6 +53,24 @@
                 </div>
             </div>
         @endif
+        <div class="flex justify-center">
+            @if (session('statusSuccess'))
+                <div class="bg-veryummy-primary text-center mb-3 p-2 w-full md:w-1/2">
+                    <div class="text-3xl text-white">{{ session('statusSuccess') }}</div>
+                </div>
+            @elseif (session('statusError'))
+                <div class="bg-veryummy-ternary text-center mb-3 p-2 w-full md:w-1/2">
+                    <div class="text-3xl text-white">{{ session('statusError') }}</div>
+                </div>
+            @endif
+        </div>
+        <form id="status-form" name="status-form" action="{{ route('recipes.status') }}" method="POST">
+            @csrf
+            @method('POST')
+            <input id="recipe-id-input" type="hidden" value="0" name="recipeid">
+            <input id="fav-input" type="hidden" name="is_favorite" value="">
+            <input id="report-input" type="hidden" name="is_reported" value="">
+        </form>
         {{-- Recettes à la une tirée au hasard --}}
         <div class="flex flex-wrap justify-center w-3/4 mx-auto text-center bg-veryummy-primary text-white text-4xl p-2 mb-3">
             <span>RECETTES POPULAIRES</span>

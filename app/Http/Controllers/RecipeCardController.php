@@ -8,6 +8,8 @@ use App\Models\RecipeType;
 use App\Rules\Score;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\ItemNotFoundException;
 
 class RecipeCardController extends Controller
 {
@@ -91,24 +93,47 @@ class RecipeCardController extends Controller
             Auth::logout();
             return redirect("/");
         }
-        $test = $request->validate([
-            'score' => [new Score, 'required'], // Le socre doit passer la règle Score de App/Rules/Score
+        // Validation des données
+        $request->validate([
+            'score' => [new Score, 'required', 'max:5', 'min:1'], // Le socre doit passer la règle Score de App/Rules/Score
             'comment' => ['string', 'required'],
         ]);
-        // return dd($test);
 
-        RecipeOpinion::updateOrCreate(
-            ['user_id' => $user->id, 'recipe_id' => $recipeId],
-            ['score' => $request->score, 'comment' => $request->comment]
-        );
+        // Transaction pour rollback si erreur
+        DB::beginTransaction();
+        try {
+            // Calcul de la nouvelle note moyenne de la recette
+            $recipe = Recipe::find($recipeId);
+            // Si pas de recette trouvée, erreur
+            if (!$recipe) {
+                throw new ItemNotFoundException();
+            }
 
-        // Calcul de la nouvelle note moyenne de la recette
-        $recipe = Recipe::findOrFail($recipeId);
-        $average = RecipeOpinion::whereBelongsTo($recipe)->avg('score');
-        $recipe->score = $average;
-        $recipe->save();
+            RecipeOpinion::updateOrCreate(
+                ['user_id' => $user->id, 'recipe_id' => $recipeId],
+                ['score' => $request->score, 'comment' => $request->comment]
+            );
 
-        return redirect("/recipe/show/$recipeId");
+
+            $average = RecipeOpinion::whereBelongsTo($recipe)->avg('score');
+            $recipe->score = $average;
+            $recipe->save();
+
+            // Validation de la transaction
+            DB::commit();
+            return back()->with('success', 'Commentaire effectué');
+        }
+
+        // Si erreur dans la transaction
+        catch (ItemNotFoundException $e) {
+            DB::rollback();
+            return back()->with('error', 'Recette introuvable');
+        }
+        // Si erreur dans la transaction
+        catch (Exception $e) {
+            DB::rollback();
+            return back()->with('error', 'Erreur dans la mise à jour du statut');
+        }
     }
 
     /**
