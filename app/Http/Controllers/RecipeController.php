@@ -31,7 +31,7 @@ class RecipeController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user || $user->role_id !== 1) {
+        if (!$user || $user->role_id !== 1 || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");
@@ -94,7 +94,7 @@ class RecipeController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user || $user->role_id !== 1) {
+        if (!$user || $user->role_id !== 1 || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");
@@ -152,7 +152,7 @@ class RecipeController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user || $user->role_id !== 1) {
+        if (!$user || $user->role_id !== 1 || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");
@@ -210,7 +210,7 @@ class RecipeController extends Controller
         $user = Auth::user();
 
         // Si pas d'utilisateur
-        if (!$user) {
+        if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");
@@ -235,7 +235,7 @@ class RecipeController extends Controller
         $user = Auth::user();
 
         // Si pas d'utilisateur
-        if (!$user) {
+        if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");
@@ -404,7 +404,7 @@ class RecipeController extends Controller
         $user = Auth::user();
 
         // Si pas d'utilisateur
-        if (!$user) {
+        if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");
@@ -441,7 +441,7 @@ class RecipeController extends Controller
         $user = Auth::user();
 
         // Si pas d'utilisateur
-        if (!$user) {
+        if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");

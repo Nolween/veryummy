@@ -23,7 +23,7 @@ class MyRecipesController extends Controller
         $user = Auth::user();
 
         // Si pas d'utilisateur
-        if(!$user) {
+        if(!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");

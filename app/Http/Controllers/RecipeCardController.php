@@ -55,7 +55,7 @@ class RecipeCardController extends Controller
         $user = Auth::user();
 
         // Si pas d'utilisateur
-        if (!$user) {
+        if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");
@@ -88,7 +88,7 @@ class RecipeCardController extends Controller
         $user = Auth::user();
 
         // Si pas d'utilisateur
-        if (!$user) {
+        if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");
@@ -149,7 +149,7 @@ class RecipeCardController extends Controller
         // Récupération de l'utilisateur
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user) {
+        if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");

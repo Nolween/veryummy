@@ -22,7 +22,7 @@ class IngredientController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user || $user->role_id !== 1) {
+        if (!$user || $user->role_id !== 1 || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");
@@ -70,7 +70,7 @@ class IngredientController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user || $user->role_id !== 1) {
+        if (!$user || $user->role_id !== 1 || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");
@@ -78,7 +78,7 @@ class IngredientController extends Controller
         // Validation du formulaire avec les différentes règles
         $request->validate([
             'ingredientid' => ['integer', 'required'],
-            'deny' => ['boolean', 'required'],
+            'deny' => ['accepted', 'required'],
             'typeList' => ['integer', 'required'],
             'denymessage' => ['string', 'required', 'min:2'],
         ]);
@@ -125,7 +125,7 @@ class IngredientController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user || $user->role_id !== 1) {
+        if (!$user || $user->role_id !== 1 || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");
@@ -133,8 +133,8 @@ class IngredientController extends Controller
         // Validation du formulaire avec les différentes règles
         $request->validate([
             'ingredientid' => ['integer', 'required'],
-            'allow' => ['boolean', 'required'],
-            'finalname' => ['string', 'required', 'min:2'],
+            'allow' => ['accepted', 'required'],
+            'finalname' => ['string', 'required', 'min:2', 'max:255'],
             'typeList' => ['integer', 'required'],
             'vegetarian' => ['boolean', 'nullable'],
             'vegan' => ['boolean', 'nullable'],
@@ -193,7 +193,7 @@ class IngredientController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user) {
+        if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");
@@ -211,18 +211,16 @@ class IngredientController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user) {
+        if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
             return redirect("/");
         }
-        $response = [];
-
 
         // Validation du formulaire avec les différentes règles
         $request->validate([
-            'ingredient' => ['string', 'required', 'min:2'],
-            'rulescheck' => ['string', 'required'],
+            'ingredient' => ['string', 'required', 'min:2', 'max:255'],
+            'rulescheck' => ['accepted', 'required'],
         ]);
         if ($request->rulescheck !== 'true') {
             return back()->withInput()->with('rulesError', 'Veuillez accepter les règles pour valider la proposition');
