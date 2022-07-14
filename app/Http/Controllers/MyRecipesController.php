@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Recipe;
 use App\Models\RecipeType;
+use App\Rules\DietExists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,10 +31,10 @@ class MyRecipesController extends Controller
         }
         
         // Validation du formulaire
-        $test = $request->validate([
+        $request->validate([
             'name' => ['string', 'nullable'],
-            'typeId' => ['integer', 'nullable'],
-            'diet' => ['integer', 'nullable'],
+            'typeId' => ['integer', 'exists:recipe_types,id', 'nullable'],
+            'diet' => ['integer', 'nullable', new DietExists],
         ]);
 
         // Début de la requête

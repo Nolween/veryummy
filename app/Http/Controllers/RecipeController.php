@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use App\Helpers\ImageTransformation;
 use App\Models\RecipeType;
+use Exception;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ItemNotFoundException;
 
@@ -213,7 +214,7 @@ class RecipeController extends Controller
         if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/");
+            return redirect("/")->withErrors(['badUser' => "Utilisateur non reconnu"]);
         }
 
         $response = [];
@@ -243,17 +244,17 @@ class RecipeController extends Controller
 
         // Validation du formulaire
         $request->validate([
-            'nom' => ['string', 'required'],
+            'nom' => ['string', 'required', 'min:2'],
             'photoInput' => 'nullable|mimes:jpg,png,jpeg,gif,svg,avif,webp',
-            'preparation' => ['integer', 'required'],
-            'cuisson' => ['integer', 'nullable'],
-            'parts' => ['integer', 'required'],
+            'preparation' => ['integer', 'required', 'min:0', 'max:1000'],
+            'cuisson' => ['integer', 'nullable', 'min:0', 'max:1000'],
+            'parts' => ['integer', 'required', 'min:0', 'max:1000'],
             'stepCount' => ['integer', 'nullable'],
-            'type' => ['integer', 'required'],
+            'type' => ['integer', 'exists:recipe_types,id', 'required'],
             'ingredientCount' => ['integer', 'nullable'],
-            '*.ingredientId' => ['integer', 'nullable'],
+            '*.ingredientId' => ['integer', 'exists:ingredients,id', 'nullable'],
             '*.ingredientName' => ['string', 'nullable'],
-            '*.ingredientUnit' => ['numeric', 'nullable'],
+            '*.ingredientUnit' => ['numeric', 'exists:units,id', 'nullable'],
             '*.ingredientQuantity' => ['numeric', 'nullable'],
             '*.stepDescription' => ['string', 'nullable'],
         ]);
@@ -285,7 +286,6 @@ class RecipeController extends Controller
                     $newStep->save();
                 }
             }
-
             //? Création des ingrédients pour la recette
             $ingredientOrder = 0;
             foreach ($request->ingredients as $ingredient) {
@@ -298,20 +298,19 @@ class RecipeController extends Controller
                     $unit = Unit::where('id', $ingredient['ingredientUnit'])->first();
                     // Si pas d'unité de mesure trouvé, erreur
                     if (!$unit) {
-                        return back()->with('unitError', 'Unité de mesure non trouvé');
+                        return back()->with('unitError', 'Unité de mesure non trouvé: ' . $ingredient['ingredientUnit']);
                     }
                     $newRecipeIngredient->unit_id = $ingredient['ingredientUnit'];
                     $ingr = Ingredient::where('id', $ingredient['ingredientId'])->first();
                     // Si pas d'ingrédient  trouvé, erreur
                     if (!$ingr) {
-                        return back()->with('unitError', 'Ingrédient non trouvé');
+                        return back()->with('ingredientError', 'Ingrédient non trouvé');
                     }
                     $newRecipeIngredient->ingredient_id = $ingredient['ingredientId'];
                     $newRecipeIngredient->quantity = $ingredient['ingredientQuantity'];
                     $newRecipeIngredient->save();
                 }
             }
-
             //? Définition des différentes catégories de la recette
             // Tableau des compatibilités de la recette
             $compatible = [
@@ -391,9 +390,9 @@ class RecipeController extends Controller
             return redirect('/my-recipes')->with('newSuccess', 'Recette crée avec succès!');
         }
         // Si erreur dans la transaction
-        catch (QueryException $e) {
+        catch (Exception $e) {
             DB::rollback();
-            return redirect('/recipe/new')->with('newError', 'Erreur dans la création de la recette');
+            return redirect('/recipe/new')->with('newError', $e->getMessage());
         }
     }
 
@@ -449,18 +448,18 @@ class RecipeController extends Controller
 
         // Validation du formulaire
         $request->validate([
-            'recipeid' => ['integer', 'required'],
-            'nom' => ['string', 'required'],
+            'recipeid' => ['integer', 'required', 'exists:recipes,id'],
+            'nom' => ['string', 'required', 'min:2'],
             'photoInput' => 'nullable|mimes:jpg,png,jpeg,gif,svg,avif,webp',
-            'preparation' => ['integer', 'required'],
-            'cuisson' => ['integer', 'nullable'],
-            'parts' => ['integer', 'required'],
+            'preparation' => ['integer', 'required', 'min:0', 'max:1000'],
+            'cuisson' => ['integer', 'nullable', 'min:0', 'max:1000'],
+            'parts' => ['integer', 'required', 'min:0', 'max:1000'],
             'stepCount' => ['integer', 'nullable'],
-            'type' => ['integer', 'required'],
+            'type' => ['integer', 'exists:recipe_types,id', 'required'],
             'ingredientCount' => ['integer', 'nullable'],
-            '*.ingredientId' => ['integer', 'nullable'],
+            '*.ingredientId' => ['integer', 'exists:ingredients,id', 'nullable'],
             '*.ingredientName' => ['string', 'nullable'],
-            '*.ingredientUnit' => ['numeric', 'nullable'],
+            '*.ingredientUnit' => ['numeric', 'exists:units,id', 'nullable'],
             '*.ingredientQuantity' => ['numeric', 'nullable'],
             '*.stepDescription' => ['string', 'nullable'],
         ]);
@@ -524,7 +523,7 @@ class RecipeController extends Controller
                     $ingr = Ingredient::where('id', $ingredient['ingredientId'])->first();
                     // Si pas d'ingrédient  trouvé, erreur
                     if (!$ingr) {
-                        return back()->with('unitError', 'Ingrédient non trouvé');
+                        return back()->with('ingredientError', 'Ingrédient non trouvé');
                     }
                     $newRecipeIngredient->quantity = $ingredient['ingredientQuantity'];
                     $newRecipeIngredient->ingredient_id = $ingredient['ingredientId'];
@@ -617,12 +616,12 @@ class RecipeController extends Controller
             $recipe->save();
 
             DB::commit();
-            return redirect('/my-recipes')->with('updateSuccess', 'Recette crée avec succès!');
+            return redirect('/my-recipes')->with('updateSuccess', 'Recette mise à jour avec succès!');
         }
         // Si erreur dans la transaction
         catch (QueryException $e) {
             DB::rollback();
-            return redirect('/recipe/new')->with('updaterror', 'Erreur dans la création de la recette');
+            return redirect('/recipe/new')->with('updaterror', 'Erreur dans la mide à jour de la recette');
         }
     }
 }

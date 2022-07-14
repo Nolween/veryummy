@@ -29,8 +29,8 @@ class OpinionTest extends TestCase
         // Envoi d'une modification de statut (favori ou signalement) au controller
         $favorite = rand(0, 1);
         $typeInformation = match ($favorite) {
-            0 => 'Ingrédient mis en favori',
-            1 => 'Ingrédient signalé'
+            0 => 'Ingrédient signalé',
+            1 => 'Ingrédient mis en favori'
         };
         dump($typeInformation);
         $response = $this->actingAs($randUser)->post('/recipe/status', ['is_favorite' => $favorite, 'is_reported' => !$favorite, 'recipeid' => $randRecipe->id]);
@@ -53,8 +53,8 @@ class OpinionTest extends TestCase
         // Envoi d'une modification de statut (favori ou signalement) au controller
         $favorite = rand(0, 1);
         $typeInformation = match ($favorite) {
-            0 => 'Ingrédient mis en favori',
-            1 => 'Ingrédient signalé'
+            0 => 'Ingrédient signalé',
+            1 => 'Ingrédient mis en favori'
         };
         dump($typeInformation);
         $response = $this->actingAs($randUser)->post('/recipe/status', ['is_favorite' => $favorite, 'is_reported' => !$favorite, 'recipeid' => 4152185421]);

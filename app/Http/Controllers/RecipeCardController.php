@@ -58,20 +58,26 @@ class RecipeCardController extends Controller
         if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/");
+            return redirect("/")->with('statusError', 'Utilisateur non trouvée');
         }
-        $test = $request->validate([
+
+        // La recette existe t-elle?
+        $recipe = Recipe::where('id', $recipeId)->first();
+        if(!$recipe) {
+            return redirect("/recipe/show/$recipeId")->with('statusError', 'Recette non trouvée');
+        }
+        // Validation du formulaire
+        $request->validate([
             'is_favorite' => ['boolean', 'nullable'],
             'is_reported' => ['boolean', 'nullable'],
         ]);
-        // return dd($test);
 
         RecipeOpinion::updateOrCreate(
             ['user_id' => $user->id, 'recipe_id' => $recipeId],
             ['is_favorite' => (bool)$request->is_favorite, 'is_reported' => (bool)$request->is_reported]
         );
 
-        return redirect("/recipe/show/$recipeId");
+        return redirect("/recipe/show/$recipeId")->with('statusSuccess', (bool)$request->is_favorite ? 'Recette mise en favori' : 'Recette signalée');
     }
 
     /**
@@ -91,12 +97,12 @@ class RecipeCardController extends Controller
         if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/");
+            return redirect("/")->withErrors(['error' => "Pas d'utilisateur"]);
         }
         // Validation des données
         $request->validate([
             'score' => [new Score, 'required', 'max:5', 'min:1'], // Le socre doit passer la règle Score de App/Rules/Score
-            'comment' => ['string', 'required'],
+            'comment' => ['string', 'required', 'min:2', 'max:65535'],
         ]);
 
         // Transaction pour rollback si erreur
@@ -146,15 +152,15 @@ class RecipeCardController extends Controller
     {
         // Quelle est l'ID de la recette?
         $recipeId = $request->route('id');
+        $recipe = Recipe::findOrFail($recipeId);
         // Récupération de l'utilisateur
         $user = Auth::user();
         // Si pas d'utilisateur
         if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/");
+            return redirect("/")->withErrors(['badUser' => "Utilisateur non reconnu"]);
         }
-        $recipe = Recipe::findOrFail($recipeId);
         // Trouver l'opinion de la recette par l'utilisateur
         $recipeOpinion = RecipeOpinion::whereBelongsTo($recipe)->whereBelongsTo($user)->firstOrFail();
         if ($recipeOpinion) {
@@ -168,6 +174,6 @@ class RecipeCardController extends Controller
             $recipe->save();
         }
 
-        return redirect("/recipe/show/$recipeId");
+        return redirect("/recipe/show/$recipeId")->with('success', 'Commentaire supprimé');
     }
 }

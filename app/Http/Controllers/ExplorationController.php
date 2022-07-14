@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Recipe;
 use App\Models\RecipeType;
+use App\Rules\DietExists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use stdClass;
@@ -31,7 +32,7 @@ class ExplorationController extends Controller
         $test = $request->validate([
             'name' => ['string', 'nullable'],
             'typeId' => ['integer', 'nullable'],
-            'diet' => ['integer', 'nullable'],
+            'diet' => ['integer', 'nullable', new DietExists],
         ]);
 
         $recipes = Recipe::select('id', 'name', 'score', 'making_time', 'cooking_time', 'image')
