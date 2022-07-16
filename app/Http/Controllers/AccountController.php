@@ -31,9 +31,9 @@ class AccountController extends Controller
         $user = Auth::user();
         if (!$user || $user->is_banned == true) {
             Auth::logout();
-            return redirect('/');
+            return redirect('/')->withErrors(['badUser' => 'Utilisateur non trouvée']);
         }
-        $response['informations'] = User::select('name', 'email')->where('id', $user->id)->firstOrFail();
+        $response['informations'] = User::select('name', 'email')->where('id', $user->id)->first();
 
         return view('myaccount', $response);
     }
@@ -46,18 +46,17 @@ class AccountController extends Controller
      */
     public function edit(Request $request)
     {
-
         // Authentification de l'utilisateur
         $user = Auth::user();
         if (!$user || $user->is_banned == true) {
             Auth::logout();
-            return redirect('/');
+            return redirect('/')->withErrors(['badUser' => 'Utilisateur non trouvée']);
         }
         // Validation du formulaire avec les différentes règles
         $request->validate([
             'email' => ['email', new UserMailExists],
             'name' => ['string', new UserNameExists],
-            'current-password' => ['string', 'nullable', new CheckCurrentPassword],
+            'current-password' => ['string', 'required', new CheckCurrentPassword],
             'password' => ['string', 'nullable', new PasswordRepetition],
             'confirmation' => ['string', 'nullable']
         ]);
@@ -105,7 +104,7 @@ class AccountController extends Controller
         $user = Auth::user();
         if (!$user || $user->is_banned == true) {
             Auth::logout();
-            return redirect('/');
+            return redirect('/')->withErrors(['badUser' => 'Utilisateur introuvable']);
         }
         // Validation du formulaire avec les différentes règles
         $request->validate([
@@ -128,7 +127,7 @@ class AccountController extends Controller
                 return $value->opinions_count === 0;
             });
             // Suppression des recettes qui ne sont jamais en favori
-            $recipesWithoutFavorite = Recipe::destroy($recipesWithoutFavorite);
+            $recipesWithoutFavorite = Recipe::destroy($recipesWithoutFavorite->pluck('id')->all());
 
             // Filtre des recettes qui ont des favoris
             $recipesWithFavorite = $recipesWithFavoriteCount->filter(function ($value) {
@@ -140,7 +139,7 @@ class AccountController extends Controller
                 $recipesWithFavorite->toQuery()->update(array('user_id' => 1));
             }
             // Suppression de l'utilisateur
-            $userDestroy =  User::destroy($userDelete);
+            $userDestroy =  User::destroy($userDelete->id);
             // Validation de la transaction
             DB::commit();
         }
@@ -156,16 +155,14 @@ class AccountController extends Controller
 
     public function list(int $type, Request $request)
     {
-
         $response = [];
-
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user || $user->role_id !== 1 || $user->is_banned == true) {
+        if (!$user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/");
+            return redirect("/")->withErrors(['badUser' => 'Utilisateur introuvable']);
         }
 
 
@@ -173,7 +170,7 @@ class AccountController extends Controller
         $request->validate([
             'search' => ['string', 'nullable']
         ]);
-        
+
         $response['search'] = $request->search ?? null;
 
         switch ($type) {
@@ -215,6 +212,7 @@ class AccountController extends Controller
                 $response['users'] =  $users->paginate(20);
                 break;
             default:
+                return redirect("/")->withErrors(['badType' => 'Liste introuvable']);
         }
         $response['typeList'] = (int)$type;
         // dd( $response['recipes']);
@@ -228,16 +226,16 @@ class AccountController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user || $user->role_id !== 1 || $user->is_banned == true) {
+        if (!$user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/");
+            return redirect("/")->withErrors(['badUser' => 'Utilisateur introuvable']);
         }
 
         // Validation du formulaire
         $request->validate([
-            'typelist' => ["integer", "required"],
-            'userid' => ["integer", "required"]
+            'typelist' => ["integer", "required", 'min:0', 'max:1'],
+            'userid' => ["integer", "required", 'exists:users,id']
         ]);
 
         // Transaction pour rollback si erreur
@@ -247,9 +245,9 @@ class AccountController extends Controller
             $userDelete = User::findOrFail($request->userid);
 
             // Si l'utilisateur est admin, erreur
-            if ($userDelete->role_id == 1) {
+            if ($userDelete->role->name == 'Administrateur') {
                 return redirect("/admin/users/list/$request->typelist")
-                    ->with('deletionError', "Vous ne pouvez pas bannir un administrateur");
+                    ->withErrors(['deletionError' => "Vous ne pouvez pas bannir un administrateur"]);
             }
 
             // Récupération des recettes de l'utilisateur, avec pour chacune son compte d'opinion en favori
@@ -299,17 +297,17 @@ class AccountController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user || $user->role_id !== 1 || $user->is_banned == true) {
+        if (!$user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/");
+            return redirect("/")->withErrors(['badUser' => 'Utilisateur introuvable']);
         }
 
         // Validation du champ
         $request->validate([
-            'opinionid' => ['integer', 'required'],
+            'opinionid' => ['integer', 'required', 'exists:recipe_opinions,id'],
             'destroy' => ['boolean', 'required'],
-            'typelist' => ['integer', 'required'],
+            'typelist' => ['integer', 'required', 'min:0', 'max:1'],
         ]);
         // Transaction pour rollback si erreur
         DB::beginTransaction();

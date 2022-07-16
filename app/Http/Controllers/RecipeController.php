@@ -32,10 +32,10 @@ class RecipeController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user || $user->role_id !== 1 || $user->is_banned == true) {
+        if (!$user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/");
+            return redirect("/")->withErrors(['badUser' => "Utilisateur non reconnu"]);
         }
 
         // Champ de recherche
@@ -95,10 +95,10 @@ class RecipeController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user || $user->role_id !== 1 || $user->is_banned == true) {
+        if (!$user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/");
+            return redirect("/")->withErrors(['badUser' => "Utilisateur non reconnu"]);
         }
         $response = [];
         // Validation du formulaire avec les différentes règles
@@ -153,10 +153,10 @@ class RecipeController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user || $user->role_id !== 1 || $user->is_banned == true) {
+        if (!$user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/");
+            return redirect("/")->withErrors(['badUser' => "Utilisateur non reconnu"]);
         }
         // Validation du formulaire
         $request->validate([
@@ -239,7 +239,7 @@ class RecipeController extends Controller
         if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/");
+            return redirect("/")->withErrors(['badUser' => "Utilisateur non reconnu"]);
         }
 
         // Validation du formulaire
@@ -406,7 +406,7 @@ class RecipeController extends Controller
         if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/");
+            return redirect("/")->withErrors(['badUser' => "Utilisateur non reconnu"]);
         }
 
         $response = [];
@@ -422,7 +422,7 @@ class RecipeController extends Controller
         // Récupération de la recette
         $recipe = Recipe::where('id', $id)->with('ingredients')->with('steps')->first();
         // L'utilisateur est-il propriétaire de la recette ou administrateur?
-        if (!$recipe || ($recipe->user_id !== $user->id && $user->role_id !== 1)) {
+        if (!$recipe || ($recipe->user_id !== $user->id && $user->role->name !== 'Administrateur')) {
             return redirect('/')->with('statusError', 'Recette non trouvée');
         }
 
@@ -443,7 +443,7 @@ class RecipeController extends Controller
         if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/");
+            return redirect("/")->withErrors(['badUser' => "Utilisateur non reconnu"]);
         }
 
         // Validation du formulaire

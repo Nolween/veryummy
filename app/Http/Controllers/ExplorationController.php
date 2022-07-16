@@ -31,7 +31,7 @@ class ExplorationController extends Controller
 
         $test = $request->validate([
             'name' => ['string', 'nullable'],
-            'typeId' => ['integer', 'nullable'],
+            'typeId' => ['integer', 'nullable', 'exists:recipe_types,id'],
             'diet' => ['integer', 'nullable', new DietExists],
         ]);
 
