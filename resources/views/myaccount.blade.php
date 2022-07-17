@@ -21,14 +21,12 @@
         body {
             margin: 0
         }
-
     </style>
 
     <style>
         body {
             font-family: 'Jomhuria', sans-serif;
         }
-
     </style>
 </head>
 <script>
@@ -77,17 +75,19 @@
         </div>
 
         {{-- NOTIFICATIONS --}}
+        @if ($errors->any())
+            <div class="flex flex-wrap justify-center">
+                @foreach ($errors->all() as $error)
+                    <div
+                        class="w-full lg:w-1/2 mb-1 p-1 text-center rounded-sm text-white text-5xl bg-veryummy-ternary">
+                        {{ $error }}
+                    </div>
+                @endforeach
+            </div>
+        @endif
         @if (session('userUpdateSuccess'))
             <div class="my-3 w-full text-center p-2 text-white bg-veryummy-primary text-3xl">
                 {{ session('userUpdateSuccess') }}</div>
-        @endif
-        @if (session('userUpdateError'))
-            <div class="my-3 w-full text-center p-2 text-white bg-veryummy-ternary text-3xl">
-                {{ session('userUpdateError') }}</div>
-        @endif
-        @if (session('transactionError'))
-            <div class="my-3 w-full text-center p-2 text-white bg-veryummy-ternary text-3xl">
-                {{ session('transactionError') }}</div>
         @endif
         {{-- FIN NOTIFICATIONS --}}
 
@@ -97,34 +97,22 @@
             @csrf
 
             <div class=" bg-white rounded-sm justify-center flex flex-wrap">
-                @error('email')
-                    <div class="w-full text-center text-veryummy-ternary text-3xl">{{ $message }}</div>
-                @enderror
                 <div class="w-full mx-auto justify-center text-center mb-5 px-3 md:px-0">
                     <input autocomplete="email" placeholder="MAIL" type="email" name="email"
                         value="{{ $informations['email'] }}" onkeyup="checkModifications()" id="email-input"
                         class="caret-gray-400 border-gray-100 @error('email') border-veryummy-ternary @enderror text-gray-400 border-2 text-4xl w-full  md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
                 </div>
-                @error('name')
-                    <div class="w-full text-center text-veryummy-ternary text-3xl">{{ $message }}</div>
-                @enderror
                 <div class="w-full mx-auto justify-center text-center mb-5 px-3 md:px-0">
                     <input autocomplete="username" placeholder="PSEUDO" onkeyup="checkModifications()" type="text"
                         name="name" value="{{ $informations['name'] }}" id="name-input"
                         class="caret-gray-400 border-gray-100 @error('name') border-veryummy-ternary @enderror text-gray-400 border-2 text-4xl w-full  md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
                 </div>
-                @error('current-password')
-                    <div class="w-full text-center text-veryummy-ternary text-3xl">{{ $message }}</div>
-                @enderror
                 <div class="w-full mx-auto justify-center text-center mb-5 px-3 md:px-0">
                     <input autocomplete="current-password" placeholder="MOT DE PASSE ACTUEL"
                         onkeyup="checkModifications()" type="password" name="current-password"
                         id="current-password-input"
                         class="caret-gray-400 border-gray-100 @error('current-password') border-veryummy-ternary @enderror text-gray-400 border-2 text-4xl w-full md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
                 </div>
-                @error('password')
-                    <div class="w-full text-center text-veryummy-ternary text-3xl">{{ $message }}</div>
-                @enderror
                 <div class="w-full mx-auto justify-center text-center mb-5 px-3 md:px-0">
                     <input autocomplete="new-password" placeholder="MOT DE PASSE" onkeyup="checkModifications()"
                         type="password" name="password" id="password-input"

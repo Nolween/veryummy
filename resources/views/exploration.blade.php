@@ -21,14 +21,12 @@
         body {
             margin: 0
         }
-
     </style>
 
     <style>
         body {
             font-family: 'Jomhuria', sans-serif;
         }
-
     </style>
 </head>
 @php
@@ -51,7 +49,8 @@
             <div class="flex flex-wrap px-4 lg:px-8">
                 {{-- Formulaire de recherche --}}
                 <div class="w-full lg:w-4/12 lg:pr-2 mb-3">
-                    <input type="text" placeholder="RECHERCHER UNE RECETTE" name="name" value="{{ $search }}"
+                    <input type="text" placeholder="RECHERCHER UNE RECETTE" name="name"
+                        value="{{ $search }}"
                         class="text-gray-400 caret-gray-400 border-gray-100 border-2 text-4xl w-full pl-4 rounded-sm focus:border-gray-400 focus:outline-none">
                 </div>
                 {{-- Sélection d'un type de recette --}}
@@ -88,14 +87,20 @@
                 </div>
             </div>
             {{-- NOTIFICATIONS --}}
+            @if ($errors->any())
+                <div class="flex flex-wrap justify-center">
+                    @foreach ($errors->all() as $error)
+                        <div
+                            class="w-full lg:w-1/2 mb-1 p-1 text-center rounded-sm text-white text-5xl bg-veryummy-ternary">
+                            {{ $error }}
+                        </div>
+                    @endforeach
+                </div>
+            @endif
             <div class="flex justify-center">
                 @if (session('statusSuccess'))
                     <div class="bg-veryummy-primary text-center mb-3 p-2 w-full md:w-1/2">
                         <div class="text-3xl text-white">{{ session('statusSuccess') }}</div>
-                    </div>
-                @elseif (session('statusError'))
-                    <div class="bg-veryummy-ternary text-center mb-3 p-2 w-full md:w-1/2">
-                        <div class="text-3xl text-white">{{ session('statusError') }}</div>
                     </div>
                 @endif
             </div>

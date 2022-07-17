@@ -29,7 +29,7 @@ class ExplorationController extends Controller
 
         $userId = Auth::id() ?? null;
 
-        $test = $request->validate([
+        $request->validate([
             'name' => ['string', 'nullable'],
             'typeId' => ['integer', 'nullable', 'exists:recipe_types,id'],
             'diet' => ['integer', 'nullable', new DietExists],

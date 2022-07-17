@@ -27,7 +27,7 @@ class MyRecipesController extends Controller
         if(!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/");
+            return redirect("/")->withErrors(['badUser' => 'Utilisateur non trouvé']);
         }
         
         // Validation du formulaire

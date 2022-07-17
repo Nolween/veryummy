@@ -21,14 +21,12 @@
         body {
             margin: 0
         }
-
     </style>
 
     <style>
         body {
             font-family: 'Jomhuria', sans-serif;
         }
-
     </style>
 </head>
 
@@ -45,6 +43,16 @@
         <div class="mb-4 pt-20 sm:pt-10">
             <h1 class="text-veryummy-secondary text-9xl w-full text-center">VERYUMMY</h1>
         </div>
+        @if ($errors->any())
+            <div class="flex flex-wrap justify-center">
+                @foreach ($errors->all() as $error)
+                    <div
+                        class="w-full lg:w-1/2 mb-1 p-1 text-center rounded-sm text-white text-5xl bg-veryummy-ternary">
+                        {{ $error }}
+                    </div>
+                @endforeach
+            </div>
+        @endif
         {{-- NOTIFICATION COMPTE SUPPRIME --}}
         @if (session('userDeletionSuccess'))
             <div class="flex flex-wrap justify-center">
@@ -58,10 +66,6 @@
                 <div class="bg-veryummy-primary text-center mb-3 p-2 w-full md:w-1/2">
                     <div class="text-3xl text-white">{{ session('statusSuccess') }}</div>
                 </div>
-            @elseif (session('statusError'))
-                <div class="bg-veryummy-ternary text-center mb-3 p-2 w-full md:w-1/2">
-                    <div class="text-3xl text-white">{{ session('statusError') }}</div>
-                </div>
             @endif
         </div>
         <form id="status-form" name="status-form" action="{{ route('recipes.status') }}" method="POST">
@@ -72,7 +76,8 @@
             <input id="report-input" type="hidden" name="is_reported" value="">
         </form>
         {{-- Recettes à la une tirée au hasard --}}
-        <div class="flex flex-wrap justify-center w-3/4 mx-auto text-center bg-veryummy-primary text-white text-4xl p-2 mb-3">
+        <div
+            class="flex flex-wrap justify-center w-3/4 mx-auto text-center bg-veryummy-primary text-white text-4xl p-2 mb-3">
             <span>RECETTES POPULAIRES</span>
         </div>
         <div class="flex flex-wrap px-4 justify-center">
@@ -85,7 +90,8 @@
         </div>
         {{-- Compteurs --}}
         <div class="my-8">
-            <h2 class="h-14 text-veryummy-secondary text-7xl w-full text-center">{{ $counts['totalRecipes'] }} RECETTES
+            <h2 class="h-14 text-veryummy-secondary text-7xl w-full text-center">{{ $counts['totalRecipes'] }}
+                RECETTES
             </h2>
             <h2 class="h-14 text-veryummy-secondary text-7xl w-full text-center">{{ $counts['totalIngredients'] }}
                 INGREDIENTS
@@ -129,14 +135,16 @@
 
 
         {{-- RECETTES RECENTES --}}
-        <div class="flex flex-wrap justify-center w-3/4 mx-auto text-center bg-veryummy-primary text-white text-4xl p-2 mb-3">
+        <div
+            class="flex flex-wrap justify-center w-3/4 mx-auto text-center bg-veryummy-primary text-white text-4xl p-2 mb-3">
             <span>RECETTES RECENTES</span>
         </div>
         <div class="flex flex-wrap px-4 justify-center">
             @foreach ($recentRecipes as $recipeK => $recipeV)
                 <div class="mb-4 mx-3">
-                    <x-elements.recipe-thumbnail :recipeId="$recipeV['id']" :photo="$recipeV['photo']" :recipeName="$recipeV['name']" :cookingTime="$recipeV['cookingTime']"
-                        :makingTime="$recipeV['makingTime']" :stepCount="$recipeV['steps_count']" :score="$recipeV['score']" :ingredientsCount="$recipeV['ingredients_count']" />
+                    <x-elements.recipe-thumbnail :recipeId="$recipeV['id']" :photo="$recipeV['photo']" :recipeName="$recipeV['name']"
+                        :cookingTime="$recipeV['cookingTime']" :makingTime="$recipeV['makingTime']" :stepCount="$recipeV['steps_count']" :score="$recipeV['score']"
+                        :ingredientsCount="$recipeV['ingredients_count']" />
                 </div>
             @endforeach
         </div>

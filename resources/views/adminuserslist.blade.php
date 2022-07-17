@@ -21,14 +21,12 @@
         body {
             margin: 0
         }
-
     </style>
 
     <style>
         body {
             font-family: 'Jomhuria', sans-serif;
         }
-
     </style>
 </head>
 @php
@@ -91,9 +89,15 @@
 
         <div class="flex flex-wrap justify-center w-full text-center">
             {{-- NOTIFICATION --}}
-            @if (session('deletionError'))
-                <div class=" text-center bg-veryummy-ternary text-white text-3xl w-full lg:w-1/2 mx-2 p-2 mb-2">
-                    {{ session('deletionError') }}</div>
+            @if ($errors->any())
+                <div class="flex flex-wrap justify-center">
+                    @foreach ($errors->all() as $error)
+                        <div
+                            class="w-full lg:w-1/2 mb-1 p-1 text-center rounded-sm text-white text-5xl bg-veryummy-ternary">
+                            {{ $error }}
+                        </div>
+                    @endforeach
+                </div>
             @endif
             @if (session('deletionSuccess'))
                 <div class=" text-center bg-veryummy-primary text-white text-3xl w-full lg:w-1/2 mx-2 p-2 mb-2">

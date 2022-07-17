@@ -93,9 +93,15 @@
 
     </div>
     <div class="flex flex-wrap justify-center w-full text-center">
-        @if (session('recipeAllowError'))
-            <div class=" text-center bg-veryummy-ternary text-white text-3xl w-full mx-2 p-2 mb-2">
-                {{ session('recipeAllowError') }}</div>
+        @if ($errors->any())
+            <div class="flex flex-wrap justify-center">
+                @foreach ($errors->all() as $error)
+                    <div
+                        class="w-full lg:w-1/2 mb-1 p-1 text-center rounded-sm text-white text-5xl bg-veryummy-ternary">
+                        {{ $error }}
+                    </div>
+                @endforeach
+            </div>
         @endif
         @if (session('recipeAllowSuccess'))
             <div class=" text-center bg-veryummy-primary text-white text-3xl w-full mx-2 p-2 mb-2">

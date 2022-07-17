@@ -21,14 +21,12 @@
         body {
             margin: 0
         }
-
     </style>
 
     <style>
         body {
             font-family: 'Jomhuria', sans-serif;
         }
-
     </style>
 </head>
 <script>
@@ -50,7 +48,7 @@
         const emailCheck = mailformat.test(email)
 
 
-        if (checkbox.checked && nameCheck && passwordCheck && emailCheck ) {
+        if (checkbox.checked && nameCheck && passwordCheck && emailCheck) {
             button2.removeAttribute('disabled')
             button.classList.remove("bg-gray-500");
             button2.classList.remove("bg-gray-500");
@@ -81,21 +79,26 @@
             @csrf
 
             @if ($errors->any())
-                <ul class="mt-3 list-disc list-inside text-red-600 text-4xl">
+                <div class="flex flex-wrap justify-center">
                     @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
+                        <div
+                            class="w-full lg:w-1/2 mb-1 p-1 text-center rounded-sm text-white text-5xl bg-veryummy-ternary">
+                            {{ $error }}
+                        </div>
                     @endforeach
-                </ul>
+                </div>
             @endif
 
             <div class=" bg-white rounded-sm justify-center flex flex-wrap">
                 <div class="w-full mx-auto justify-center text-center mb-5 px-3 md:px-0">
                     <input placeholder="MAIL" type="email" name="email" id="email-input" onblur="checkValidButton()"
-                       autocomplete="email" class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full  md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
+                        autocomplete="email"
+                        class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full  md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
                 </div>
                 <div class="w-full mx-auto justify-center text-center mb-5 px-3 md:px-0">
-                    <input placeholder="PSEUDO" type="text" name="name" onblur="checkValidButton()" id="name-input"
-                       autocomplete="name" class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full  md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
+                    <input placeholder="PSEUDO" type="text" name="name" onblur="checkValidButton()"
+                        id="name-input" autocomplete="name"
+                        class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full  md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
                 </div>
                 <div class="w-full mx-auto justify-center text-center mb-5 px-3 md:px-0">
                     <input placeholder="MOT DE PASSE" type="password" name="password" id="password-input"
@@ -103,8 +106,8 @@
                         class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
                 </div>
                 <div class="w-full mx-auto justify-center text-center mb-5 px-3 md:px-0">
-                    <input placeholder="CONFIRMATION" type="password" name="password_confirmation" id="confirmation-input"
-                        onblur="checkValidButton()" autocomplete="new-password"
+                    <input placeholder="CONFIRMATION" type="password" name="password_confirmation"
+                        id="confirmation-input" onblur="checkValidButton()" autocomplete="new-password"
                         class="caret-gray-400 border-gray-100 text-gray-400 border-2 text-4xl w-full md:w-1/2 pl-4 rounded-sm focus:border-gray-400 focus:outline-none mb-3">
                 </div>
                 <div class="w-full mx-auto justify-center text-center mb-5 px-3 md:px-0">
@@ -114,7 +117,8 @@
                 <div class="w-full mx-auto justify-center text-center mb-5 px-3 md:px-0">
                     <input id="rules" type="checkbox" name="rules" onchange="checkValidButton()" value="true"
                         class="h-5 w-5 rounded-full accent-veryummy-primary checked:bg-gray-300 cursor-pointer">
-                    <label for="rules" id="rules"><span class="text-3xl text-gray-400 pl-2 cursor-pointer">J'ai lu et
+                    <label for="rules" id="rules"><span class="text-3xl text-gray-400 pl-2 cursor-pointer">J'ai
+                            lu et
                             j'accepte les règles
                             de
                             la charte ci-dessus.</span></label>

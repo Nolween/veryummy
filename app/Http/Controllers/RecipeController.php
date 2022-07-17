@@ -115,7 +115,7 @@ class RecipeController extends Controller
             $recipe = Recipe::where('id', (int)$request->recipeid)->with('user')->first();
             // Si pas de recette trouvée, erreur
             if (!$recipe) {
-                return back()->with('recipeAllowError', 'Aucun ingrédient trouvé');
+                return back()->withErrors(['recipeAllowError', 'Aucun ingrédient trouvé']);
             }
 
             // Si on ignore les signalements
@@ -143,7 +143,7 @@ class RecipeController extends Controller
         // Si erreur dans la transaction
         catch (QueryException $e) {
             DB::rollback();
-            return back()->with('recipeAllowError', "Erreur dans la modération de la recette");
+            return back()->withErrors(['recipeAllowError', "Erreur dans la modération de la recette"]);
         }
     }
 
@@ -195,12 +195,12 @@ class RecipeController extends Controller
         // Si erreur dans la transaction
         catch (ItemNotFoundException $e) {
             DB::rollback();
-            return back()->with('statusError', 'Recette introuvable');
+            return back()->withErrors(['statusError', 'Recette introuvable']);
         }
         // Si erreur dans la transaction
         catch (Exception $e) {
             DB::rollback();
-            return back()->with('statusError', 'Erreur dans la mise à jour du statut');
+            return back()->withErrors(['statusError', 'Erreur dans la mise à jour du statut']);
         }
     }
 
@@ -298,13 +298,13 @@ class RecipeController extends Controller
                     $unit = Unit::where('id', $ingredient['ingredientUnit'])->first();
                     // Si pas d'unité de mesure trouvé, erreur
                     if (!$unit) {
-                        return back()->with('unitError', 'Unité de mesure non trouvé: ' . $ingredient['ingredientUnit']);
+                        return back()->withErrors(['unitError', 'Unité de mesure non trouvé: ' . $ingredient['ingredientUnit']]);
                     }
                     $newRecipeIngredient->unit_id = $ingredient['ingredientUnit'];
                     $ingr = Ingredient::where('id', $ingredient['ingredientId'])->first();
                     // Si pas d'ingrédient  trouvé, erreur
                     if (!$ingr) {
-                        return back()->with('ingredientError', 'Ingrédient non trouvé');
+                        return back()->withErrors(['ingredientError', 'Ingrédient non trouvé']);
                     }
                     $newRecipeIngredient->ingredient_id = $ingredient['ingredientId'];
                     $newRecipeIngredient->quantity = $ingredient['ingredientQuantity'];
@@ -392,7 +392,7 @@ class RecipeController extends Controller
         // Si erreur dans la transaction
         catch (Exception $e) {
             DB::rollback();
-            return redirect('/recipe/new')->with('newError', $e->getMessage());
+            return redirect('/recipe/new')->withErrors(['newError', $e->getMessage()]);
         }
     }
 
@@ -423,7 +423,7 @@ class RecipeController extends Controller
         $recipe = Recipe::where('id', $id)->with('ingredients')->with('steps')->first();
         // L'utilisateur est-il propriétaire de la recette ou administrateur?
         if (!$recipe || ($recipe->user_id !== $user->id && $user->role->name !== 'Administrateur')) {
-            return redirect('/')->with('statusError', 'Recette non trouvée');
+            return redirect('/')->withErrors(['statusError', 'Recette non trouvée']);
         }
 
         $response['recipe'] = $recipe;
@@ -467,7 +467,7 @@ class RecipeController extends Controller
         // La recette existe t-elle et appartient-elle à l'utilisateur?
         $recipe = Recipe::where('id', $request->recipeid)->first();
         if (!$recipe || $recipe->user_id !== $user->id) {
-            return redirect('/recipe/edit/' . $request->recipeid)->with('editError', 'Recette introuvable');
+            return redirect('/recipe/edit/' . $request->recipeid)->withErrors(['editError', 'Recette introuvable']);
         }
 
         // Transaction pour rollback si erreur
@@ -517,13 +517,13 @@ class RecipeController extends Controller
                     $unit = Unit::where('id', $ingredient['ingredientUnit'])->first();
                     // Si pas d'unité de mesure trouvé, erreur
                     if (!$unit) {
-                        return back()->with('unitError', 'Unité de mesure non trouvé');
+                        return back()->withErrors(['unitError', 'Unité de mesure non trouvé']);
                     }
                     $newRecipeIngredient->unit_id = $ingredient['ingredientUnit'];
                     $ingr = Ingredient::where('id', $ingredient['ingredientId'])->first();
                     // Si pas d'ingrédient  trouvé, erreur
                     if (!$ingr) {
-                        return back()->with('ingredientError', 'Ingrédient non trouvé');
+                        return back()->withErrors(['ingredientError', 'Ingrédient non trouvé']);
                     }
                     $newRecipeIngredient->quantity = $ingredient['ingredientQuantity'];
                     $newRecipeIngredient->ingredient_id = $ingredient['ingredientId'];
@@ -621,7 +621,7 @@ class RecipeController extends Controller
         // Si erreur dans la transaction
         catch (QueryException $e) {
             DB::rollback();
-            return redirect('/recipe/new')->with('updaterror', 'Erreur dans la mide à jour de la recette');
+            return redirect('/recipe/new')->withErrors(['updaterror', 'Erreur dans la mide à jour de la recette']);
         }
     }
 }

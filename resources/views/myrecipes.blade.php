@@ -44,6 +44,16 @@
         <div class="mb-4 pt-20 sm:pt-10">
             <h1 class="text-veryummy-secondary text-9xl w-full text-center">MES RECETTES</h1>
         </div>
+        @if ($errors->any())
+            <div class="flex flex-wrap justify-center">
+                @foreach ($errors->all() as $error)
+                    <div
+                        class="w-full lg:w-1/2 mb-1 p-1 text-center rounded-sm text-white text-5xl bg-veryummy-ternary">
+                        {{ $error }}
+                    </div>
+                @endforeach
+            </div>
+        @endif
         @if (session('ingredientProposeSuccess'))
             <div class=" text-center bg-veryummy-primary text-white text-3xl w-full mx-2 p-2 mb-2">
                 {{ session('ingredientProposeSuccess') }}</div>

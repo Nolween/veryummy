@@ -173,11 +173,14 @@
         </div>
 
         @if ($errors->any())
-            <ul class="mt-3 list-disc list-inside text-red-600 text-4xl">
+            <div class="flex flex-wrap justify-center">
                 @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
+                    <div
+                        class="w-full lg:w-1/2 mb-1 p-1 text-center rounded-sm text-white text-5xl bg-veryummy-ternary">
+                        {{ $error }}
+                    </div>
                 @endforeach
-            </ul>
+            </div>
         @endif
         <form id="edition-form" action="{{ route('my-recipes.update') }}" enctype="multipart/form-data" method="POST">
             @csrf
