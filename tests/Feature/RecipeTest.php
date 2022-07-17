@@ -124,8 +124,9 @@ class RecipeTest extends TestCase
             'is_reported' => !$isFavorite
         ];
 
-        $response = $this->actingAs($user)->post("/recipe/status/sqdsqd", $dataToSend);
-        $response->assertStatus(302)->assertSessionHas('statusError');
+        $recipeId = Recipe::orderBy('id', 'DESC')->first()->id + 1;
+        $response = $this->actingAs($user)->post("/recipe/status/$recipeId", $dataToSend);
+        $response->assertStatus(302)->assertSessionHasErrors('recipeError');
     }
 
     /**
@@ -190,8 +191,7 @@ class RecipeTest extends TestCase
             return false;
         }
         $response = $this->post("/recipe/status/$randomRecipe->id", $dataToSend);
-
-        $response->assertStatus(302)->assertSessionHas('statusError');
+        $response->assertStatus(302)->assertSessionHasErrors('badUser');
     }
 
     /**
@@ -280,8 +280,9 @@ class RecipeTest extends TestCase
         $user = User::where('is_banned', false)->inRandomOrder()->first();
         dump("Connexion avec l'utilisateur $user->name");
 
-        $response = $this->actingAs($user)->post("/recipe/comment/dezfzefdsq", $dataToSend);
-        $response->assertStatus(302)->assertSessionHas('error', 'Recette introuvable')->assertSessionMissing('success');
+        $recipeId = Recipe::orderBy('id', 'DESC')->first()->id + 1;
+        $response = $this->actingAs($user)->post("/recipe/comment/$recipeId", $dataToSend);
+        $response->assertStatus(302)->assertSessionHasErrors('recipeError')->assertSessionMissing('success');
     }
 
 
@@ -753,7 +754,7 @@ class RecipeTest extends TestCase
         }
         // Envoi vers la route
         $response = $this->actingAs($user)->put('/recipe/create', $dataToSend);
-        $response->assertStatus(302)->assertSessionHas('ingredientError')->assertSessionMissing('newSuccess');
+        $response->assertStatus(302)->assertSessionHasErrors('ingredientError')->assertSessionMissing('newSuccess');
     }
 
     /**
@@ -807,7 +808,7 @@ class RecipeTest extends TestCase
         }
         // Envoi vers la route
         $response = $this->actingAs($user)->put('/recipe/create', $dataToSend);
-        $response->assertStatus(302)->assertSessionHas('unitError')->assertSessionMissing('newSuccess');
+        $response->assertStatus(302)->assertSessionHasErrors('unitError')->assertSessionMissing('newSuccess');
     }
 
 
@@ -1147,7 +1148,7 @@ class RecipeTest extends TestCase
         // Envoi vers la route
         $response = $this->actingAs($user)->post('/recipe/update', $dataToSend);
         // $response->dumpSession();
-        $response->assertStatus(302)->assertSessionHas('editError')->assertSessionMissing('updateSuccess');
+        $response->assertStatus(302)->assertSessionHasErrors('editError')->assertSessionMissing('updateSuccess');
     }
 
 
@@ -1567,7 +1568,7 @@ class RecipeTest extends TestCase
 
         // Envoi vers la route
         $response = $this->actingAs($user)->post('/recipe/update', $dataToSend);
-        $response->assertStatus(302)->assertSessionHas('ingredientError')->assertSessionMissing('updateSuccess');
+        $response->assertStatus(302)->assertSessionHasErrors('ingredientError')->assertSessionMissing('updateSuccess');
         
     }
 
@@ -1632,7 +1633,7 @@ class RecipeTest extends TestCase
 
         // Envoi vers la route
         $response = $this->actingAs($user)->post('/recipe/update', $dataToSend);
-        $response->assertStatus(302)->assertSessionHas('unitError')->assertSessionMissing('updateSuccess');
+        $response->assertStatus(302)->assertSessionHasErrors('unitError')->assertSessionMissing('updateSuccess');
         
     }
 

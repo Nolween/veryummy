@@ -56,12 +56,10 @@ class OpinionTest extends TestCase
             0 => 'Ingrédient signalé',
             1 => 'Ingrédient mis en favori'
         };
-        dump($typeInformation);
-        $response = $this->actingAs($randUser)->post('/recipe/status', ['is_favorite' => $favorite, 'is_reported' => !$favorite, 'recipeid' => 4152185421]);
+        $response = $this->actingAs($randUser)->post('/recipe/status', ['is_favorite' => $favorite, 'is_reported' => !$favorite, 'recipeid' => Recipe::orderBy('id', 'DESC')->first()->id + 1]);
 
-        // $response->dumpSession();
         // Vérification de la redirection et qu'il n'y a pas de succès
-        $response->assertStatus(302)->assertSessionHas('statusError', 'Recette introuvable');
+        $response->assertStatus(302)->assertSessionHasErrors('recipeid');
     }
 
 
@@ -109,10 +107,11 @@ class OpinionTest extends TestCase
         // Création d'une phrase au hasard
         $faker = Faker::create();
         $comment = $faker->sentence(6);
-        $response = $this->actingAs($randUser)->post('/recipe/comment/999999', ['score' => $score, 'comment' => $comment]);
+        $recipeId = Recipe::orderBy('id', 'DESC')->first()->id + 1;
+        $response = $this->actingAs($randUser)->post("/recipe/comment/$recipeId", ['score' => $score, 'comment' => $comment]);
 
         // Vérification de la redirection et qu'il n'y a pas d'erreur
-        $response->assertStatus(302)->assertSessionHas('error', 'Recette introuvable');
+        $response->assertStatus(302)->assertSessionHasErrors('recipeError');
     }
 
 

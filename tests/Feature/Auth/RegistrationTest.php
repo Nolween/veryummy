@@ -7,10 +7,10 @@ use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Faker\Factory as Faker;
 
 class RegistrationTest extends TestCase
 {
-    use RefreshDatabase;
 
     public function test_registration_screen_can_be_rendered()
     {
@@ -21,18 +21,25 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register()
     {
-        // Création d'un rôle, nécessaire pour la création d'un utilisateur
-        Role::create(['name' => 'Administrateur']);
+
+        $faker = Faker::create();
+        $mail = $faker->email();
+        $newName = $faker->firstName() . ' ' . $faker->lastName();
+        $newMail = User::where('email', $mail)->first();
+        // Tant qu'on créé des mail qui existent déjà dans la BDD
+        while($newMail) {
+            $mail = $faker->email();
+            $newMail = User::where('email', $mail)->first();
+        }
 
         $response = $this->post('/register', [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => '123456',
-            'password_confirmation' => '123456',
+            'name' => $newName,
+            'email' => $mail,
+            'password' => 'AlsqdDpefdzkl82:',
+            'password_confirmation' => 'AlsqdDpefdzkl82:',
             'test' => true
         ]);
-        
-        
+        // dump($response);
         $this->assertAuthenticated();
         $response->assertRedirect(RouteServiceProvider::HOME);
     }

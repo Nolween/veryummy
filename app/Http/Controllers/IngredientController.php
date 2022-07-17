@@ -92,7 +92,7 @@ class IngredientController extends Controller
                 $ingredient = Ingredient::where('id', (int)$request->ingredientid)->with('user')->first();
                 // Si pas d'ingrédient trouvé, erreur
                 if (!$ingredient) {
-                    return back()->withErrors(['ingredientAllowError', 'Aucun ingrédient trouvé']);
+                    return back()->withErrors(['ingredientAllowError' => 'Aucun ingrédient trouvé']);
                 }
                 $authorMail = $ingredient->user->email;
                 $ingredient->is_accepted = false;
@@ -115,7 +115,7 @@ class IngredientController extends Controller
             // Si erreur dans la transaction
             catch (QueryException $e) {
                 DB::rollback();
-                return back()->withErrors(['ingredientAllowError', "Erreur dans la modération de l'ingrédient"]);
+                return back()->withErrors(['ingredientAllowError' => "Erreur dans la modération de l'ingrédient"]);
             }
         }
     }
@@ -152,7 +152,7 @@ class IngredientController extends Controller
                 $ingredient = Ingredient::where('id', (int)$request->ingredientid)->with('user')->first();
                 // Si pas d'ingrédient trouvé, erreur
                 if (!$ingredient) {
-                    return back()->withErrors(['ingredientAllowError', 'Aucun ingrédient trouvé']);
+                    return back()->withErrors(['ingredientAllowError' => 'Aucun ingrédient trouvé']);
                 }
                 $authorMail = $ingredient->user->email;
                 $ingredient->name = $request->finalname;
@@ -182,7 +182,7 @@ class IngredientController extends Controller
             // Si erreur dans la transaction
             catch (QueryException $e) {
                 DB::rollback();
-                return back()->withErrors(['ingredientAllowError', "Erreur dans la modération de l'ingrédient"]);
+                return back()->withErrors(['ingredientAllowError' => "Erreur dans la modération de l'ingrédient"]);
             }
         }
     }
@@ -196,7 +196,7 @@ class IngredientController extends Controller
         if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/")->withErrors(['badUser' => 'Utilisateur non trouvée']);
+            return redirect("/")->withErrors(['badUser' => 'Utilisateur non trouvé']);
         }
         $response = [];
 
@@ -223,7 +223,7 @@ class IngredientController extends Controller
             'rulescheck' => ['accepted', 'required'],
         ]);
         if ($request->rulescheck !== 'true') {
-            return back()->withInput()->withErrors(['rulesError', 'Veuillez accepter les règles pour valider la proposition']);
+            return back()->withInput()->withErrors(['rulesError' => 'Veuillez accepter les règles pour valider la proposition']);
         }
 
         // Création d'un nouvel ingredient

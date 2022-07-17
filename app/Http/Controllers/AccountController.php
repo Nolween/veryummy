@@ -31,7 +31,7 @@ class AccountController extends Controller
         $user = Auth::user();
         if (!$user || $user->is_banned == true) {
             Auth::logout();
-            return redirect('/')->withErrors(['badUser' => 'Utilisateur non trouvée']);
+            return redirect('/')->withErrors(['badUser' => 'Utilisateur non trouvé']);
         }
         $response['informations'] = User::select('name', 'email')->where('id', $user->id)->first();
 
@@ -50,7 +50,7 @@ class AccountController extends Controller
         $user = Auth::user();
         if (!$user || $user->is_banned == true) {
             Auth::logout();
-            return redirect('/')->withErrors(['badUser' => 'Utilisateur non trouvée']);
+            return redirect('/')->withErrors(['badUser' => 'Utilisateur non trouvé']);
         }
         // Validation du formulaire avec les différentes règles
         $request->validate([
@@ -86,7 +86,7 @@ class AccountController extends Controller
         // Si erreur dans la transaction
         catch (QueryException $e) {
             DB::rollback();
-            return redirect('/')->withErrors(['userUpdateError', 'Erreur dans la mise à jour du compte']);
+            return redirect('/')->withErrors(['userUpdateError' => 'Erreur dans la mise à jour du compte']);
         }
 
         return redirect()->back()->with('userUpdateSuccess', 'Vos informations on été mises à jour!');
@@ -146,11 +146,11 @@ class AccountController extends Controller
         // Si erreur dans la transaction
         catch (QueryException $e) {
             DB::rollback();
-            return redirect('/')->withErrors(['transactionError', 'Erreur dans la suppression du compte']);
+            return redirect('/')->withErrors(['transactionError' => 'Erreur dans la suppression du compte']);
         }
         // Déconnexion de l'utilisateur
         Auth::logout();
-        return redirect('/')->withErrors(['userDeletionSuccess', 'Votre compte a bien été supprimé!']);
+        return redirect('/')->with(['userDeletionSuccess', 'Votre compte a bien été supprimé!']);
     }
 
     public function list(int $type, Request $request)
@@ -287,7 +287,7 @@ class AccountController extends Controller
         // Si erreur dans la transaction
         catch (QueryException $e) {
             DB::rollback();
-            return back()->withErrors(['deletionError', "Erreur dans le bannissement de l'utilisateur"]);
+            return back()->withErrors(['deletionError' => "Erreur dans le bannissement de l'utilisateur"]);
         }
     }
 
@@ -332,7 +332,7 @@ class AccountController extends Controller
         // Si erreur dans la transaction
         catch (QueryException $e) {
             DB::rollback();
-            return back()->withErrors(['deletionError', 'Erreur dans la modération du commentaire']);
+            return back()->withErrors(['deletionError' => 'Erreur dans la modération du commentaire']);
         }
     }
 }

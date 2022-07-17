@@ -8,21 +8,42 @@ use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
+use Faker\Factory as Faker;
 
 class PasswordResetTest extends TestCase
 {
-    use RefreshDatabase;
 
-    // Initialisation d'un utilisateur
-    public function initialize_user()
+    /**
+     * Création d'un utilisateur
+     *
+     * @param boolean $banned
+     * @param boolean $admin
+     * @return User
+     */
+    private function initialize_user(bool $banned = false, bool $admin = false): User
     {
-        // Création d'un rôle, nécessaire pour la création d'un utilisateur
-        Role::create(['name' => 'Administrateur']);
+        $faker = Faker::create();
+        $newName = $faker->firstName() . ' ' . $faker->lastName();
+        $mail = $faker->email();
+        if ($admin == true) {
+            // Création d'un rôle, nécessaire pour la création d'un utilisateur
+            $role = Role::where('name', 'Administrateur')->first();
+            if (!$role) {
+                $role = Role::factory()->create(['name' => 'Administrateur']);
+            }
+        } else {
+            // Création d'un rôle, nécessaire pour la création d'un utilisateur
+            $role = Role::where('name', 'Utilisateur')->first();
+            if (!$role) {
+                $role = Role::factory()->create(['name' => 'Utilisateur']);
+            }
+        }
         // Création d'un utilisateur
-        $user = User::create(['name' => 'Visiteur', 'email' => 'visiteur.test@test.com', 'password' => bcrypt('123456'), 'role_id' => 1, 'is_banned' => false, 'email_verified_at' => now()]);
+        $user = User::factory()->create(['name' => $newName, 'email' => $mail, 'password' => bcrypt('123456'), 'role_id' => $role->id, 'is_banned' => $banned, 'email_verified_at' => now()]);
 
         return $user;
     }
+
 
     public function test_reset_password_link_screen_can_be_rendered()
     {

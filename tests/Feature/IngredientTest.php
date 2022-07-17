@@ -3,13 +3,48 @@
 namespace Tests\Feature;
 
 use App\Models\Ingredient;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Faker\Factory as Faker;
 
 class IngredientTest extends TestCase
 {
+
+
+    /**
+     * Création d'un utilisateur
+     *
+     * @param boolean $banned
+     * @param boolean $admin
+     * @return User
+     */
+    private function initialize_user(bool $banned = false, bool $admin = false): User
+    {
+        $faker = Faker::create();
+        $newName = $faker->firstName() . ' ' . $faker->lastName();
+        $mail = $faker->email();
+        if ($admin == true) {
+            // Création d'un rôle, nécessaire pour la création d'un utilisateur
+            $role = Role::where('name', 'Administrateur')->first();
+            if (!$role) {
+                $role = Role::factory()->create(['name' => 'Administrateur']);
+            }
+        } else {
+            // Création d'un rôle, nécessaire pour la création d'un utilisateur
+            $role = Role::where('name', 'Utilisateur')->first();
+            if (!$role) {
+                $role = Role::factory()->create(['name' => 'Utilisateur']);
+            }
+        }
+        // Création d'un utilisateur
+        $user = User::factory()->create(['name' => $newName, 'email' => $mail, 'password' => bcrypt('123456'), 'role_id' => $role->id, 'is_banned' => $banned, 'email_verified_at' => now()]);
+
+        return $user;
+    }
+
 
     /**
      * Prendre un ingrédient au hasard pour réinitialiser sa modération
@@ -294,7 +329,9 @@ class IngredientTest extends TestCase
         
         // On sélectionne un utilisateur au hasard qui n'est pas banni
         $simpleUser = User::where('is_banned', true)->inRandomOrder()->first();
-        dump("Tentative de connexion avec l'utilisateur banni $simpleUser->name");
+        if(!$simpleUser) {
+            $simpleUser = $this->initialize_user(true, false);
+        }
 
         $response = $this->actingAs($simpleUser)->get("/ingredients/new");
         

@@ -13,7 +13,7 @@ use Faker\Factory as Faker;
 class AccountTest extends TestCase
 {
     /**
-     * Undocumented function
+     * Création d'un utilisateur
      *
      * @param boolean $banned
      * @param boolean $admin

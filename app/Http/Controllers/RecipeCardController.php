@@ -58,13 +58,13 @@ class RecipeCardController extends Controller
         if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/")->withErrors(['statusError', 'Utilisateur non trouvée']);
+            return redirect("/")->withErrors(['badUser' => 'Utilisateur non trouvé']);
         }
 
         // La recette existe t-elle?
         $recipe = Recipe::where('id', $recipeId)->first();
         if(!$recipe) {
-            return redirect("/recipe/show/$recipeId")->withErrors(['statusError', 'Recette non trouvée']);
+            return redirect("/")->withErrors(['recipeError' => 'Recette non trouvée']);
         }
         // Validation du formulaire
         $request->validate([
@@ -112,7 +112,7 @@ class RecipeCardController extends Controller
             $recipe = Recipe::find($recipeId);
             // Si pas de recette trouvée, erreur
             if (!$recipe) {
-                throw new ItemNotFoundException();
+                return back()->withErrors(['recipeError' => 'Recette inexistante']);
             }
 
             RecipeOpinion::updateOrCreate(
@@ -133,12 +133,12 @@ class RecipeCardController extends Controller
         // Si erreur dans la transaction
         catch (ItemNotFoundException $e) {
             DB::rollback();
-            return back()->withErrors(['error', 'Recette introuvable']);
+            return back()->withErrors(['error' => 'Recette introuvable']);
         }
         // Si erreur dans la transaction
         catch (Exception $e) {
             DB::rollback();
-            return back()->withErrors(['error', 'Erreur dans la mise à jour du statut']);
+            return back()->withErrors(['error' => 'Erreur dans la mise à jour du statut']);
         }
     }
 
@@ -174,6 +174,6 @@ class RecipeCardController extends Controller
             $recipe->save();
         }
 
-        return redirect("/recipe/show/$recipeId")->withErrors(['success', 'Commentaire supprimé']);
+        return redirect("/recipe/show/$recipeId")->with('success', 'Commentaire supprimé');
     }
 }
