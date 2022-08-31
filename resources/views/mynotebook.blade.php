@@ -126,7 +126,7 @@
             <div class="flex flex-wrap mx-8 justify-center">
                 @foreach ($recipes as $recipeK => $recipeV)
                     <div class="mb-4 mx-3">
-                        <x-elements.recipe-thumbnail :recipeId="$recipeV['id']" :photo="$recipeV['image']" :recipeName="$recipeV['name']"
+                        <x-elements.recipe-thumbnail :recipeId="$recipeV['recipe_id']" :photo="$recipeV['image']" :recipeName="$recipeV['name']"
                             :cookingTime="$recipeV['cooking_time']" :makingTime="$recipeV['making_time']" :stepCount="$recipeV['steps_count']" :score="$recipeV['score']" :ingredientsCount="$recipeV['ingredients_count']"
                             :isfavorite="$recipeV->is_favorite ?? null" :isreported="$recipeV->is_reported ?? null" />
                     </div>
