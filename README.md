@@ -14,11 +14,17 @@
 
 ## Commandes principales annexes
 
-### Laravel Pint
+### Laravel Pint (codestyle)
 - `./vendor/bin/pint`: Correction du codestyle (indentations, espaces)
 - './vendor/bin/pint path/from/root.php': Correction d'un seul fichier
 
-### Laravel PEST
+### Laravel PEST (test unitaire)
 - `./vendor/bin/pest`: Lancement des tests PEST
 - `./vendor/bin/pest --filter "name of test"`: Lancement d'un seul test
 - `./vendor/bin/pest --coverage --min=90`: Test de couverture des tests avec un % minimum 
+
+### Laravel Larastan (analyse statique)
+- `./vendor/bin/phpstan analyse`: Analyse totale du projet selon le niveau défini das phpstan.neon
+- `./vendor/bin/phpstan analyse --generate-baseline`: Analyse + rapport généré dans un fichier à la racine
+- `./vendor/bin/phpstan analyse path/to/yourfile.php`: Analyse d'un seul fichier
+

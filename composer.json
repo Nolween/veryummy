@@ -5,15 +5,15 @@
     "keywords": ["framework", "laravel"],
         "license": "MIT",
         "require": {
-            "php": "^8.1.10",
-            "blade-ui-kit/blade-icons": "^1.5.2",
-            "doctrine/dbal": "^3.6.5",
-            "guzzlehttp/guzzle": "^7.7.0",
-            "laravel/framework": "^v10.18.0",
-            "laravel/sanctum": "^v3.2.5",
-            "laravel/tinker": "^v2.8.1",
-            "owenvoke/blade-fontawesome": "^v2.4.0"
-        },
+        "php": "^8.1.10",
+        "blade-ui-kit/blade-icons": "^1.5.2",
+        "doctrine/dbal": "^3.6.5",
+        "guzzlehttp/guzzle": "^7.7.0",
+        "laravel/framework": "^v10.18.0",
+        "laravel/sanctum": "^v3.2.5",
+        "laravel/tinker": "^v2.8.1",
+        "owenvoke/blade-fontawesome": "^v2.4.0"
+    },
         "require-dev": {
         "fakerphp/faker": "^1.11.3",
         "laravel/breeze": "^v1.23.0",
@@ -22,6 +22,7 @@
         "laravel/telescope": "^v4.16.0",
         "mockery/mockery": "^1.6.6",
         "nunomaduro/collision": "^v7.8.1",
+        "nunomaduro/larastan": "^2.6",
         "pestphp/pest": "^2.14",
         "pestphp/pest-plugin-drift": "^2.2",
         "phpunit/phpunit": "^10.3.1",
