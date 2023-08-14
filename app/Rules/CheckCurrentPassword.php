@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Hash;
 
 class CheckCurrentPassword implements Rule
 {
-
-
     /**
      * Create a new rule instance.
      *
@@ -19,7 +17,6 @@ class CheckCurrentPassword implements Rule
     {
         //
     }
-
 
     /**
      * Determine if the validation rule passes.
@@ -32,6 +29,7 @@ class CheckCurrentPassword implements Rule
     {
         // Récupérartion du mot de passe actuel
         $oldPassword = Auth::user()->password;
+
         return Hash::check($value, $oldPassword);
     }
 

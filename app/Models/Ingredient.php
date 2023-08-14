@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Ingredient extends Model
 {
     use HasFactory;
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -25,6 +25,7 @@ class Ingredient extends Model
         'halal_compatible',
         'kosher_compatible',
     ];
+
     /**
      * Get the user that owns the ingredient.
      */
@@ -32,5 +33,4 @@ class Ingredient extends Model
     {
         return $this->belongsTo(User::class);
     }
-
 }

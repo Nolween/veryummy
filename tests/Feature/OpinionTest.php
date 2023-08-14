@@ -4,11 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\Recipe;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Auth;
-use Tests\TestCase;
 use Faker\Factory as Faker;
+use Tests\TestCase;
 
 class OpinionTest extends TestCase
 {
@@ -33,12 +30,11 @@ class OpinionTest extends TestCase
             1 => 'Ingrédient mis en favori'
         };
         dump($typeInformation);
-        $response = $this->actingAs($randUser)->post('/recipe/status', ['is_favorite' => $favorite, 'is_reported' => !$favorite, 'recipeid' => $randRecipe->id]);
+        $response = $this->actingAs($randUser)->post('/recipe/status', ['is_favorite' => $favorite, 'is_reported' => ! $favorite, 'recipeid' => $randRecipe->id]);
 
         // Vérification de la redirection et qu'il n'y a pas d'erreur
         $response->assertStatus(302)->assertSessionMissing('statusError');
     }
-
 
     /**
      * Tentative de modification de statut d'une recette inexistante
@@ -56,12 +52,11 @@ class OpinionTest extends TestCase
             0 => 'Ingrédient signalé',
             1 => 'Ingrédient mis en favori'
         };
-        $response = $this->actingAs($randUser)->post('/recipe/status', ['is_favorite' => $favorite, 'is_reported' => !$favorite, 'recipeid' => Recipe::orderBy('id', 'DESC')->first()->id + 1]);
+        $response = $this->actingAs($randUser)->post('/recipe/status', ['is_favorite' => $favorite, 'is_reported' => ! $favorite, 'recipeid' => Recipe::orderBy('id', 'DESC')->first()->id + 1]);
 
         // Vérification de la redirection et qu'il n'y a pas de succès
         $response->assertStatus(302)->assertSessionHasErrors('recipeid');
     }
-
 
     /**
      * Tentative de création / modification de commentaire de recette avec un utilisateur et une recette au hasard
@@ -83,12 +78,11 @@ class OpinionTest extends TestCase
         // Création d'une phrase au hasard
         $faker = Faker::create();
         $comment = $faker->sentence(6);
-        $response = $this->actingAs($randUser)->post('/recipe/comment/' . $randRecipe->id, ['score' => $score, 'comment' => $comment]);
+        $response = $this->actingAs($randUser)->post('/recipe/comment/'.$randRecipe->id, ['score' => $score, 'comment' => $comment]);
 
         // Vérification de la redirection et qu'il n'y a pas d'erreur
         $response->assertStatus(302)->assertSessionMissing('error');
     }
-
 
     /**
      * Tentative de création / modification de commentaire de recette avec une recette inexistante
@@ -114,7 +108,6 @@ class OpinionTest extends TestCase
         $response->assertStatus(302)->assertSessionHasErrors('recipeError');
     }
 
-
     /**
      * Tentative de création / modification de commentaire de recette avec une note trop élevée
      *
@@ -136,7 +129,7 @@ class OpinionTest extends TestCase
         $faker = Faker::create();
         $comment = $faker->sentence(6);
         // Envoi d'une modification de statut (favori ou signalement) au controller
-        $response = $this->actingAs($randUser)->post('/recipe/comment/' . $randRecipe->id, ['score' => $score, 'comment' => $comment]);
+        $response = $this->actingAs($randUser)->post('/recipe/comment/'.$randRecipe->id, ['score' => $score, 'comment' => $comment]);
 
         // Vérification si on a bien une erreur au niveau du score
         $response->assertStatus(302)->assertSessionHasErrors('score');

@@ -6,9 +6,9 @@ use App\Mail\PendingModeration as MailPendingModeration;
 use App\Models\Ingredient;
 use App\Models\Recipe;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Database\Eloquent\Builder;
 
 class PendingModeration extends Command
 {
@@ -26,7 +26,6 @@ class PendingModeration extends Command
      */
     protected $description = 'Récupère les modérations en attente de modération';
 
-
     /**
      * Create a new command instance.
      *
@@ -36,7 +35,6 @@ class PendingModeration extends Command
     {
         parent::__construct();
     }
-
 
     /**
      * Execute the console command.
@@ -50,7 +48,7 @@ class PendingModeration extends Command
         $informations['ingredients'] = Ingredient::where('is_accepted', null)->with('user')->get();
 
         // Récupération des recettes en non ignorées avec des signalements
-        $informations['recettes'] = Recipe::having('opinions_count', ">", 0)
+        $informations['recettes'] = Recipe::having('opinions_count', '>', 0)
             ->with('user')
             ->withCount(['opinions' => function (Builder $query) {
                 $query->where('is_reported', '=', true);

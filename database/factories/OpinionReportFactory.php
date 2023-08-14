@@ -20,7 +20,7 @@ class OpinionReportFactory extends Factory
             'user_id' => rand(1, 21),
             'opinion_id' => rand(1, 100),
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ];
     }
 }

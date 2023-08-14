@@ -12,6 +12,7 @@ class RecipeReport extends Component
      * @var array
      */
     public $reports;
+
     /**
      * Create a new component instance.
      *

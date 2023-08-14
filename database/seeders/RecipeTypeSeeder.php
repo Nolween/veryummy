@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\RecipeType;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class RecipeTypeSeeder extends Seeder
@@ -15,7 +14,7 @@ class RecipeTypeSeeder extends Seeder
      */
     public function run()
     {
-        
+
         $source = [
             ['name' => 'Entrée'],
             ['name' => 'Plat'],

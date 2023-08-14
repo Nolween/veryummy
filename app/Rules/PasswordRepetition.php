@@ -7,7 +7,6 @@ use Illuminate\Contracts\Validation\Rule;
 
 class PasswordRepetition implements Rule, DataAwareRule
 {
-
     /**
      * All of the data under validation.
      *

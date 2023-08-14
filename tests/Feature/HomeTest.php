@@ -3,8 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\RecipeType;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class HomeTest extends TestCase
@@ -65,14 +63,13 @@ class HomeTest extends TestCase
         $response = $this->get("/exploration?name=$name&typeId=$typeId&diet=$diet");
         $response->assertStatus(200);
 
-
-        //? Type inexistant 
+        //? Type inexistant
         $typeId = RecipeType::orderBy('id', 'DESC')->first()->id + 1;
         $response = $this->get("/exploration?name=$name&typeId=$typeId&diet=$diet");
         $response->assertSessionHasErrors('typeId')->assertStatus(302);
 
-        //? Type invalide 
-        $typeId = "dqsfsqdqsDDSQ";
+        //? Type invalide
+        $typeId = 'dqsfsqdqsDDSQ';
         $response = $this->get("/exploration?name=$name&typeId=$typeId&diet=$diet");
         $response->assertSessionHasErrors('typeId')->assertStatus(302);
     }
@@ -87,20 +84,18 @@ class HomeTest extends TestCase
         //? Régime valide valide
         $name = null;
         $typeId = null;
-        $diet = rand(0,5);
+        $diet = rand(0, 5);
         $response = $this->get("/exploration?name=$name&typeId=$typeId&diet=$diet");
         $response->assertStatus(200);
 
-
-        //? Régime inexistant 
+        //? Régime inexistant
         $diet = 50;
         $response = $this->get("/exploration?name=$name&typeId=$typeId&diet=$diet");
         $response->assertSessionHasErrors('diet')->assertStatus(302);
 
-        //? Régime invalide 
-        $diet = "dqsfsqdqsDDSQ";
+        //? Régime invalide
+        $diet = 'dqsfsqdqsDDSQ';
         $response = $this->get("/exploration?name=$name&typeId=$typeId&diet=$diet");
         $response->assertSessionHasErrors('diet')->assertStatus(302);
     }
-
 }

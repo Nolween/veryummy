@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -12,6 +11,7 @@ class RefusedRecipe extends Mailable
     use Queueable, SerializesModels;
 
     public $informations;
+
     /**
      * Create a new message instance.
      *
@@ -23,7 +23,6 @@ class RefusedRecipe extends Mailable
         //
     }
 
-
     /**
      * Build the message.
      *
@@ -31,6 +30,6 @@ class RefusedRecipe extends Mailable
      */
     public function build()
     {
-        return $this->from('noreply@randidea.fr', 'Veryummy')->subject("Recette supprimée")->markdown('emails.recipe.refused');
+        return $this->from('noreply@randidea.fr', 'Veryummy')->subject('Recette supprimée')->markdown('emails.recipe.refused');
     }
 }

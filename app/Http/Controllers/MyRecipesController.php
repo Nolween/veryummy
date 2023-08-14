@@ -13,7 +13,6 @@ class MyRecipesController extends Controller
     /**
      * Listes des recettes de l'utilisateur
      *
-     * @param Request $request
      * @return void
      */
     public function list(Request $request)
@@ -24,12 +23,13 @@ class MyRecipesController extends Controller
         $user = Auth::user();
 
         // Si pas d'utilisateur
-        if(!$user || $user->is_banned == true) {
+        if (! $user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/")->withErrors(['badUser' => 'Utilisateur non trouvé']);
+
+            return redirect('/')->withErrors(['badUser' => 'Utilisateur non trouvé']);
         }
-        
+
         // Validation du formulaire
         $request->validate([
             'name' => ['string', 'nullable'],
@@ -44,29 +44,28 @@ class MyRecipesController extends Controller
             ->withCount('ingredients')
             ->withCount('steps');
 
-
         // Si on a un type de plat (entrée, plat, dessert,...)
-        if ($request->typeId && (int)$request->typeId > 0) {
-            $recipes =  $recipes->where('recipe_type_id', $request->typeId);
+        if ($request->typeId && (int) $request->typeId > 0) {
+            $recipes = $recipes->where('recipe_type_id', $request->typeId);
         }
 
         // Si on a un filtre sur le type de recette
         if ($request->type && $request->type > 0) {
-            switch ((int)$request->type) {
+            switch ((int) $request->type) {
                 case 1: // Végétarien
-                    $recipesCount = $recipes =  $recipes->where('vegetarian_compatible', 1);
+                    $recipesCount = $recipes = $recipes->where('vegetarian_compatible', 1);
                     break;
                 case 2: // Vegan
-                    $recipesCount = $recipes =  $recipes->where('vegan_compatible', 1);
+                    $recipesCount = $recipes = $recipes->where('vegan_compatible', 1);
                     break;
                 case 3: // Sans gluten
-                    $recipesCount = $recipes =  $recipes->where('gluten_free_compatible', 1);
+                    $recipesCount = $recipes = $recipes->where('gluten_free_compatible', 1);
                     break;
                 case 4: // Halal
-                    $recipesCount = $recipes =  $recipes->where('halal_compatible', 1);
+                    $recipesCount = $recipes = $recipes->where('halal_compatible', 1);
                     break;
                 case 5: // casher
-                    $recipesCount = $recipes =  $recipes->where('kosher_compatible', 1);
+                    $recipesCount = $recipes = $recipes->where('kosher_compatible', 1);
                     break;
 
                 default:

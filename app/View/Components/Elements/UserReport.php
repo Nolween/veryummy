@@ -12,10 +12,11 @@ class UserReport extends Component
      * @var array
      */
     public $opinions;
+
     /**
      * Create a new component instance.
      *
-     * @param array  $opinions
+     * @param  array  $opinions
      * @return void
      */
     public function __construct($opinions)

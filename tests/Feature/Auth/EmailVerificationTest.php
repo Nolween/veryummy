@@ -5,37 +5,32 @@ namespace Tests\Feature\Auth;
 use App\Models\Role;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use Faker\Factory as Faker;
 use Illuminate\Auth\Events\Verified;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
-use Faker\Factory as Faker;
 
 class EmailVerificationTest extends TestCase
 {
     /**
      * Création d'un utilisateur
-     *
-     * @param boolean $banned
-     * @param boolean $admin
-     * @return User
      */
     private function initialize_user(bool $banned = false, bool $admin = false): User
     {
         $faker = Faker::create();
-        $newName = $faker->firstName() . ' ' . $faker->lastName();
+        $newName = $faker->firstName().' '.$faker->lastName();
         $mail = $faker->email();
         if ($admin == true) {
             // Création d'un rôle, nécessaire pour la création d'un utilisateur
             $role = Role::where('name', 'Administrateur')->first();
-            if (!$role) {
+            if (! $role) {
                 $role = Role::factory()->create(['name' => 'Administrateur']);
             }
         } else {
             // Création d'un rôle, nécessaire pour la création d'un utilisateur
             $role = Role::where('name', 'Utilisateur')->first();
-            if (!$role) {
+            if (! $role) {
                 $role = Role::factory()->create(['name' => 'Utilisateur']);
             }
         }
@@ -44,8 +39,6 @@ class EmailVerificationTest extends TestCase
 
         return $user;
     }
-
-
 
     public function test_email_verification_screen_can_be_rendered()
     {
@@ -75,13 +68,13 @@ class EmailVerificationTest extends TestCase
         //! A vérifier
         // Event::assertDispatched(Verified::class);
         $this->assertTrue($user->fresh()->hasVerifiedEmail());
-        $response->assertRedirect(RouteServiceProvider::HOME . '?verified=1');
+        $response->assertRedirect(RouteServiceProvider::HOME.'?verified=1');
     }
 
     public function test_email_is_not_verified_with_invalid_hash()
-    {        
+    {
         $user = $this->initialize_user();
-     
+
         $verificationUrl = URL::temporarySignedRoute(
             'verification.verify',
             now()->addMinutes(60),

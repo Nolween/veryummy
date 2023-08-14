@@ -5,35 +5,29 @@ namespace Tests\Feature;
 use App\Models\RecipeOpinion;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use Faker\Factory as Faker;
+use Tests\TestCase;
 
 class AccountTest extends TestCase
 {
     /**
      * Création d'un utilisateur
-     *
-     * @param boolean $banned
-     * @param boolean $admin
-     * @return User
      */
     private function initialize_user(bool $banned = false, bool $admin = false): User
     {
         $faker = Faker::create();
-        $newName = $faker->firstName() . ' ' . $faker->lastName();
+        $newName = $faker->firstName().' '.$faker->lastName();
         $mail = $faker->email();
         if ($admin == true) {
             // Création d'un rôle, nécessaire pour la création d'un utilisateur
             $role = Role::where('name', 'Administrateur')->first();
-            if (!$role) {
+            if (! $role) {
                 $role = Role::factory()->create(['name' => 'Administrateur']);
             }
         } else {
             // Création d'un rôle, nécessaire pour la création d'un utilisateur
             $role = Role::where('name', 'Utilisateur')->first();
-            if (!$role) {
+            if (! $role) {
                 $role = Role::factory()->create(['name' => 'Utilisateur']);
             }
         }
@@ -54,13 +48,13 @@ class AccountTest extends TestCase
         // Le rôle d'administrateur existe t-il?
         $adminRole = Role::where('name', 'Administrateur')->first();
         // Si pas de rôle administrateur existant
-        if (!$adminRole) {
+        if (! $adminRole) {
             // Création d'un rôle d'admin
             $adminRole = Role::factory()->create(['name' => 'Administrateur']);
         }
+
         return $adminRole;
     }
-
 
     /**
      * A basic feature test example.
@@ -79,7 +73,7 @@ class AccountTest extends TestCase
         $userToDelete = false;
         $user = User::where('is_banned', true)->inRandomOrder()->first();
         // Si pas d'utilisateur banni
-        if (!$user) {
+        if (! $user) {
             // Initialisation d'un compte banni
             $user = $this->initialize_user(true, false);
             $userToDelete = true;
@@ -138,7 +132,6 @@ class AccountTest extends TestCase
         // Destruction de l'utilisateur
         User::destroy($user->id);
 
-
         //? Avec un mot de passe actuel erroné
         // On crée un utilisateur
         $user = $this->initialize_user(false, false);
@@ -172,7 +165,6 @@ class AccountTest extends TestCase
         $response->assertStatus(302)->assertSessionHasErrors('password')->assertSessionMissing('userUpdateSuccess');
         // Destruction de l'utilisateur
         User::destroy($user->id);
-
 
         //? Avec un nom d'utilisateur déjà existant
         // Utilisateur déjà existant
@@ -208,7 +200,7 @@ class AccountTest extends TestCase
         $user = $this->initialize_user(false, false);
         // Données à envoyer
         $dataToSend = [
-            'delete-account-password' => '123456'
+            'delete-account-password' => '123456',
         ];
         // Accès à la route
         $response = $this->actingAs($user)->delete('/my-account/delete', $dataToSend);
@@ -219,20 +211,19 @@ class AccountTest extends TestCase
         $user = $this->initialize_user(true, false);
         // Données à envoyer
         $dataToSend = [
-            'delete-account-password' => '123456'
+            'delete-account-password' => '123456',
         ];
         // Accès à la route
         $response = $this->actingAs($user)->delete('/my-account/delete', $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors('badUser')->assertSessionMissing('userDeletionSuccess');
         User::destroy($user->id);
 
-
         //? Mot de passe invalide
         // On crée un utilisateur
         $user = $this->initialize_user(false, false);
         // Données à envoyer
         $dataToSend = [
-            'delete-account-password' => 'gtgrsfgedezq'
+            'delete-account-password' => 'gtgrsfgedezq',
         ];
         // Accès à la route
         $response = $this->actingAs($user)->delete('/my-account/delete', $dataToSend);
@@ -255,10 +246,10 @@ class AccountTest extends TestCase
         $user = User::where('is_banned', false)->where('role_id', $adminRole->id)->inRandomOrder()->first();
 
         // Si pas d'utilisateur
-        if (!$user) {
+        if (! $user) {
             // Création d'un admin
             $faker = Faker::create();
-            $newName = $faker->firstName() . ' ' . $faker->lastName();
+            $newName = $faker->firstName().' '.$faker->lastName();
             $mail = $faker->email();
             $user = User::factory()->create(['name' => $newName, 'email' => $mail, 'password' => bcrypt('123456'), 'role_id' => $adminRole->id, 'is_banned' => false, 'email_verified_at' => now()]);
         }
@@ -282,7 +273,6 @@ class AccountTest extends TestCase
 
     }
 
-    
     /**
      * Accès à la liste des utilisateurs avec un mauvais type de liste
      *
@@ -290,7 +280,7 @@ class AccountTest extends TestCase
      */
     public function test_access_admin_users_list_with_bad_type()
     {
-        
+
         $user = $this->initialize_user(false, true);
         $typeList = 500;
         $response = $this->actingAs($user)->get("/admin/users/list/$typeList");
@@ -302,17 +292,18 @@ class AccountTest extends TestCase
      *
      * @return void
      */
-    public function test_ban_user_in_list() {
+    public function test_ban_user_in_list()
+    {
 
         //? Ban Valide
         $userToBan = $this->initialize_user(false, false);
         $adminUser = $this->initialize_user(false, true);
 
         $dataToSend = [
-            'typelist' => rand(0,1),
+            'typelist' => rand(0, 1),
             'userid' => $userToBan->id,
         ];
-        $response = $this->actingAs($adminUser)->delete("/admin/users/ban", $dataToSend);
+        $response = $this->actingAs($adminUser)->delete('/admin/users/ban', $dataToSend);
         $response->assertStatus(302)->assertSessionHas('deletionSuccess');
 
     }
@@ -322,16 +313,17 @@ class AccountTest extends TestCase
      *
      * @return void
      */
-    public function test_ban_inexisting_user_in_list() {
-        
+    public function test_ban_inexisting_user_in_list()
+    {
+
         //? Ban Valide
         $adminUser = $this->initialize_user(false, true);
 
         $dataToSend = [
-            'typelist' => rand(0,1),
+            'typelist' => rand(0, 1),
             'userid' => User::orderBy('id', 'DESC')->first()->id + 1,
         ];
-        $response = $this->actingAs($adminUser)->delete("/admin/users/ban", $dataToSend);
+        $response = $this->actingAs($adminUser)->delete('/admin/users/ban', $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors('userid');
 
     }
@@ -341,67 +333,63 @@ class AccountTest extends TestCase
      *
      * @return void
      */
-    public function test_ban_admin_in_list() {
-        
+    public function test_ban_admin_in_list()
+    {
+
         //? Ban Valide
         $adminUser = $this->initialize_user(false, true);
         $adminToBan = $this->initialize_user(false, true);
 
         $dataToSend = [
-            'typelist' => rand(0,1),
+            'typelist' => rand(0, 1),
             'userid' => $adminToBan->id,
         ];
-        $response = $this->actingAs($adminUser)->delete("/admin/users/ban", $dataToSend);
+        $response = $this->actingAs($adminUser)->delete('/admin/users/ban', $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors('deletionError');
 
     }
 
+    public function test_moderate_opinion()
+    {
 
-    public function test_moderate_opinion() {
-        
         //? Ban Valide
         $adminUser = $this->initialize_user(false, true);
         $faker = Faker::create();
-        $newName = $faker->firstName() . ' ' . $faker->lastName();
+        $newName = $faker->firstName().' '.$faker->lastName();
         $mail = $faker->email();
 
         // Création d'un utilisateur avec des opinions sur des recettes
         $userOpinionToModerate = User::factory()->hasOpinions(3)->create(['name' => $newName, 'email' => $mail, 'password' => bcrypt('123456'), 'role_id' => Role::where('name', 'Utilisateur')->first()->id, 'is_banned' => false, 'email_verified_at' => now()]);
 
-
         $dataToSend = [
-            'typelist' => rand(0,1),
+            'typelist' => rand(0, 1),
             'opinionid' => RecipeOpinion::whereBelongsTo($userOpinionToModerate)->inRandomOrder()->first()->id,
-            'destroy' => rand(0, 1)
+            'destroy' => rand(0, 1),
         ];
-        $response = $this->actingAs($adminUser)->delete("/admin/users/moderate", $dataToSend);
+        $response = $this->actingAs($adminUser)->delete('/admin/users/moderate', $dataToSend);
         $response->assertStatus(302)->assertSessionHas('deletionSuccess');
 
     }
 
+    public function test_moderate_opinion_with_bad_data()
+    {
 
-    public function test_moderate_opinion_with_bad_data() {
-        
         //? Ban Valide
         $adminUser = $this->initialize_user(false, true);
         $faker = Faker::create();
-        $newName = $faker->firstName() . ' ' . $faker->lastName();
+        $newName = $faker->firstName().' '.$faker->lastName();
         $mail = $faker->email();
 
         // Création d'un utilisateur avec des opinions sur des recettes
         $userOpinionToModerate = User::factory()->hasOpinions(3)->create(['name' => $newName, 'email' => $mail, 'password' => bcrypt('123456'), 'role_id' => Role::where('name', 'Utilisateur')->first()->id, 'is_banned' => false, 'email_verified_at' => now()]);
 
-
         $dataToSend = [
             'typelist' => 50,
             'opinionid' => RecipeOpinion::orderBy('id', 'DESC')->first()->id + 1,
-            'destroy' => 'qsdsd'
+            'destroy' => 'qsdsd',
         ];
-        $response = $this->actingAs($adminUser)->delete("/admin/users/moderate", $dataToSend);
+        $response = $this->actingAs($adminUser)->delete('/admin/users/moderate', $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors(['typelist', 'opinionid', 'destroy']);
 
     }
-
-    
-
 }

@@ -86,7 +86,6 @@ class Recipe extends Model
         return $this->hasMany(RecipeOpinion::class)->with('user');
     }
 
-    
     /**
      * Indique l'avis de l'utilisateur sur la recette
      *
@@ -102,5 +101,4 @@ class Recipe extends Model
         });
         // return $this->hasMany(RecipeOpinion::class)->with('user')->where('user_id', );
     }
-
 }

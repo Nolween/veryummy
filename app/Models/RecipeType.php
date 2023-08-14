@@ -11,6 +11,6 @@ class RecipeType extends Model
 
     // Pas besoin des created_at et updated_at
     public $timestamps = false;
-    
+
     protected $fillable = ['name'];
 }

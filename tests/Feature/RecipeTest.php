@@ -8,14 +8,11 @@ use App\Models\RecipeOpinion;
 use App\Models\RecipeType;
 use App\Models\Unit;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Auth;
-use Tests\TestCase;
 use Faker\Factory as Faker;
-use GuzzleHttp\Client;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
 
 class RecipeTest extends TestCase
 {
@@ -33,9 +30,10 @@ class RecipeTest extends TestCase
         $randomRecipe = Recipe::where('is_accepted', true)->inRandomOrder()->first();
 
         // Si pas de recette trouvée
-        if (!$randomRecipe) {
+        if (! $randomRecipe) {
             dump('Pas de recette valable trouvée');
             $this->assertTrue(false);
+
             return false;
         }
         $response = $this->get("/recipe/show/$randomRecipe->id");
@@ -50,7 +48,6 @@ class RecipeTest extends TestCase
         $response->assertStatus(200);
     }
 
-
     /**
      * Test d'accès à une fiche de recette
      *
@@ -61,7 +58,7 @@ class RecipeTest extends TestCase
         //? Accès à une recette inexistante
         dump('Accès à une recette inexistante');
 
-        $response = $this->get("/recipe/show/sdfdsfdsf");
+        $response = $this->get('/recipe/show/sdfdsfdsf');
         $response->assertStatus(404);
     }
 
@@ -79,9 +76,10 @@ class RecipeTest extends TestCase
         // On prend une recette au hasard
         $randomRecipe = Recipe::where('is_accepted', true)->inRandomOrder()->first();
         // Si pas de recette trouvée
-        if (!$randomRecipe) {
+        if (! $randomRecipe) {
             dump('Pas de recette valable trouvée');
             $this->assertTrue(false);
+
             return false;
         }
         $isFavorite = rand(0, 1);
@@ -92,7 +90,7 @@ class RecipeTest extends TestCase
         dump($typeInformation);
         $dataToSend = [
             'is_favorite' => $isFavorite,
-            'is_reported' => !$isFavorite
+            'is_reported' => ! $isFavorite,
         ];
 
         $response = $this->actingAs($user)->post("/recipe/status/$randomRecipe->id", $dataToSend);
@@ -121,7 +119,7 @@ class RecipeTest extends TestCase
         dump($typeInformation);
         $dataToSend = [
             'is_favorite' => $isFavorite,
-            'is_reported' => !$isFavorite
+            'is_reported' => ! $isFavorite,
         ];
 
         $recipeId = Recipe::orderBy('id', 'DESC')->first()->id + 1;
@@ -142,18 +140,19 @@ class RecipeTest extends TestCase
         dump("Connexion avec l'utilisateur $user->name");
 
         //? Requete non valide
-        dump("Requete non valide");
+        dump('Requete non valide');
         // On prend une recette au hasard
         $randomRecipe = Recipe::where('is_accepted', true)->inRandomOrder()->first();
         // Si pas de recette trouvée
-        if (!$randomRecipe) {
+        if (! $randomRecipe) {
             dump('Pas de recette valable trouvée');
             $this->assertTrue(false);
+
             return false;
         }
         $dataToSend = [
             'is_favorite' => 'qsdsqdsqd',
-            'is_reported' => "sdfqdfsdfc"
+            'is_reported' => 'sdfqdfsdfc',
         ];
 
         $response = $this->actingAs($user)->post("/recipe/status/$randomRecipe->id", $dataToSend);
@@ -180,14 +179,15 @@ class RecipeTest extends TestCase
 
         $dataToSend = [
             'is_favorite' => $isFavorite,
-            'is_reported' => !$isFavorite
+            'is_reported' => ! $isFavorite,
         ];
         // On prend une recette au hasard
         $randomRecipe = Recipe::where('is_accepted', true)->inRandomOrder()->first();
         // Si pas de recette trouvée
-        if (!$randomRecipe) {
+        if (! $randomRecipe) {
             dump('Pas de recette valable trouvée');
             $this->assertTrue(false);
+
             return false;
         }
         $response = $this->post("/recipe/status/$randomRecipe->id", $dataToSend);
@@ -208,9 +208,10 @@ class RecipeTest extends TestCase
         // On prend une recette au hasard
         $randomRecipe = Recipe::where('is_accepted', true)->inRandomOrder()->first();
         // Si pas de recette trouvée
-        if (!$randomRecipe) {
+        if (! $randomRecipe) {
             dump('Pas de recette valide trouvée');
             $this->assertTrue(false);
+
             return false;
         }
         dump("Recette $randomRecipe->name sélectionnée");
@@ -220,7 +221,7 @@ class RecipeTest extends TestCase
         $comment = $faker->sentence(6);
         $dataToSend = [
             'score' => rand(1, 5),
-            'comment' => $comment
+            'comment' => $comment,
         ];
 
         $response = $this->actingAs($user)->post("/recipe/comment/$randomRecipe->id", $dataToSend);
@@ -241,9 +242,10 @@ class RecipeTest extends TestCase
         // On prend une recette au hasard
         $randomRecipe = Recipe::where('is_accepted', true)->inRandomOrder()->first();
         // Si pas de recette trouvée
-        if (!$randomRecipe) {
+        if (! $randomRecipe) {
             dump('Pas de recette valide trouvée');
             $this->assertTrue(false);
+
             return false;
         }
         dump("Recette $randomRecipe->name sélectionnée");
@@ -253,7 +255,7 @@ class RecipeTest extends TestCase
         $comment = $faker->sentence(6);
         $dataToSend = [
             'score' => rand(1, 5),
-            'comment' => $comment
+            'comment' => $comment,
         ];
 
         $response = $this->post("/recipe/comment/$randomRecipe->id", $dataToSend);
@@ -274,7 +276,7 @@ class RecipeTest extends TestCase
         $comment = $faker->sentence(6);
         $dataToSend = [
             'score' => rand(1, 5),
-            'comment' => $comment
+            'comment' => $comment,
         ];
         // On sélectionne un utilisateur au hasard qui n'est pas banni
         $user = User::where('is_banned', false)->inRandomOrder()->first();
@@ -284,7 +286,6 @@ class RecipeTest extends TestCase
         $response = $this->actingAs($user)->post("/recipe/comment/$recipeId", $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors('recipeError')->assertSessionMissing('success');
     }
-
 
     /**
      * Ecriture d'un commentaire pour une recette avec e fausses données
@@ -302,9 +303,10 @@ class RecipeTest extends TestCase
         // On prend une recette au hasard
         $randomRecipe = Recipe::where('is_accepted', true)->inRandomOrder()->first();
         // Si pas de recette trouvée
-        if (!$randomRecipe) {
+        if (! $randomRecipe) {
             dump('Pas de recette valide trouvée');
             $this->assertTrue(false);
+
             return false;
         }
         dump("Recette $randomRecipe->name sélectionnée");
@@ -314,12 +316,11 @@ class RecipeTest extends TestCase
         $comment = $faker->sentence(6);
         $dataToSend = [
             'score' => 0,
-            'comment' => $comment
+            'comment' => $comment,
         ];
 
         $response = $this->actingAs($user)->post("/recipe/comment/$randomRecipe->id", $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors('score')->assertSessionMissing('success');
-
 
         //? Score trop haut
         dump('Score trop haut');
@@ -340,7 +341,7 @@ class RecipeTest extends TestCase
         dump('Commentaire vide');
         $dataToSend = [
             'score' => 0,
-            'comment' => ""
+            'comment' => '',
         ];
         // On sélectionne un utilisateur au hasard qui n'est pas banni
         $user = User::where('is_banned', false)->inRandomOrder()->first();
@@ -349,16 +350,16 @@ class RecipeTest extends TestCase
         // On prend une recette au hasard
         $randomRecipe = Recipe::where('is_accepted', true)->inRandomOrder()->first();
         // Si pas de recette trouvée
-        if (!$randomRecipe) {
+        if (! $randomRecipe) {
             dump('Pas de recette valide trouvée');
             $this->assertTrue(false);
+
             return false;
         }
 
         $response = $this->actingAs($user)->post("/recipe/comment/$randomRecipe->id", $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors('comment')->assertSessionMissing('success');
     }
-
 
     /**
      * Supprimer le commentaire et la note attribuée à une recette
@@ -375,17 +376,17 @@ class RecipeTest extends TestCase
         // On prend une opinion au hasard de l'utilisateur sur une recette
         $randomRecipeOpinion = RecipeOpinion::where('user_id', $user->id)->with('recipe')->inRandomOrder()->first();
         // Si pas de recette trouvée
-        if (!$randomRecipeOpinion) {
+        if (! $randomRecipeOpinion) {
             dump("Pas de commentaire valide trouvé chez l'utilisateur");
             $this->assertTrue(false);
+
             return false;
         }
-        dump('Recette ' . $randomRecipeOpinion->recipe->name . ' sélectionnée');
+        dump('Recette '.$randomRecipeOpinion->recipe->name.' sélectionnée');
 
         $response = $this->actingAs($user)->patch("/recipe/opinion/empty/$randomRecipeOpinion->recipe_id");
         $response->assertStatus(302)->assertSessionHas('success');
     }
-
 
     /**
      * Supprimer le commentaire et la note attribuée à un utilisateur non connecté
@@ -400,17 +401,17 @@ class RecipeTest extends TestCase
         // On prend une opinion au hasard de l'utilisateur sur une recette
         $randomRecipeOpinion = RecipeOpinion::with('recipe')->inRandomOrder()->first();
         // Si pas de recette trouvée
-        if (!$randomRecipeOpinion) {
+        if (! $randomRecipeOpinion) {
             dump("Pas de commentaire valide trouvé chez l'utilisateur");
             $this->assertTrue(false);
+
             return false;
         }
-        dump('Recette ' . $randomRecipeOpinion->recipe->name . ' sélectionnée');
+        dump('Recette '.$randomRecipeOpinion->recipe->name.' sélectionnée');
 
         $response = $this->patch("/recipe/opinion/empty/$randomRecipeOpinion->recipe_id");
         $response->assertStatus(302)->assertSessionHasErrors('badUser');
     }
-
 
     /**
      * Supprimer le commentaire et la note attribuée à une recette avec des erreurs
@@ -420,15 +421,14 @@ class RecipeTest extends TestCase
     public function test_empty_opinion_non_existing_recipe()
     {
         //? Recette inexistante
-        dump("Recette inexistante");
+        dump('Recette inexistante');
         // On sélectionne un utilisateur au hasard qui n'est pas banni
         $user = User::where('is_banned', false)->inRandomOrder()->first();
         dump("Connexion avec l'utilisateur $user->name");
 
-        $response = $this->actingAs($user)->patch("/recipe/opinion/empty/dflkndqfsdsqdqs");
+        $response = $this->actingAs($user)->patch('/recipe/opinion/empty/dflkndqfsdsqdqs');
         $response->assertStatus(404);
     }
-
 
     /**
      * Supprimer le commentaire et la note attribuée à une recette avec des erreurs
@@ -444,15 +444,15 @@ class RecipeTest extends TestCase
         dump("Pas d'opinion pour cette recette et cet utilisateur");
         // Il suffit de prendre une recette de l'utilisateur car il ne peut pas avoir d'opinion dessus
         $recipe = Recipe::where('user_id', $user->id)->first();
-        if (!$recipe) {
+        if (! $recipe) {
             dump("Pas de recette chez l'utilisateur");
             $this->assertTrue(false);
+
             return false;
         }
         $response = $this->actingAs($user)->patch("/recipe/opinion/empty/$recipe->id");
         $response->assertStatus(404);
     }
-
 
     /**
      * Accès aux recettes de l'utilisateur
@@ -513,7 +513,6 @@ class RecipeTest extends TestCase
         $response->assertSessionHasErrors('diet');
     }
 
-
     /**
      * Accès aux recettes favories de l'utilisateur
      *
@@ -534,7 +533,6 @@ class RecipeTest extends TestCase
         // dump($response['search']);
         $response->assertStatus(200);
     }
-
 
     /**
      * Accès aux recettes favories de l'utilisateur avec un mauvais type de plat
@@ -587,7 +585,7 @@ class RecipeTest extends TestCase
         $user = User::where('is_banned', false)->inRandomOrder()->first();
         dump("Connexion avec l'utilisateur $user->name");
 
-        $response = $this->actingAs($user)->get("/recipe/new");
+        $response = $this->actingAs($user)->get('/recipe/new');
         $response->assertStatus(200);
     }
 
@@ -603,7 +601,7 @@ class RecipeTest extends TestCase
         dump('Utilisateur non connecté');
         Auth::logout();
 
-        $response = $this->get("/recipe/new");
+        $response = $this->get('/recipe/new');
         $response->assertStatus(302)->assertSessionHasErrors('badUser');
     }
 
@@ -631,7 +629,7 @@ class RecipeTest extends TestCase
             'parts' => rand(1, 20),
             'stepCount' => $stepCount,
             'type' => RecipeType::inRandomOrder()->first()->id,
-            'ingredientCount' => $ingredientCount
+            'ingredientCount' => $ingredientCount,
         ];
         // Ajout des ingrédients
         for ($i = 0; $i < $ingredientCount; $i++) {
@@ -648,7 +646,7 @@ class RecipeTest extends TestCase
             $faker = Faker::create();
             $step = $faker->sentence(6);
             $dataToSend['steps'][] = [
-                'stepDescription' => $step
+                'stepDescription' => $step,
             ];
         }
         // dump($dataToSend);
@@ -672,13 +670,13 @@ class RecipeTest extends TestCase
         $ingredientCount = rand(1, 10);
         $stepCount = rand(1, 10);
         $dataToSend = [
-            'nom' => "Test Recette 1",
+            'nom' => 'Test Recette 1',
             'preparation' => rand(5, 60),
             'cuisson' => rand(5, 60),
             'parts' => rand(1, 20),
             'stepCount' => $stepCount,
             'type' => rand(RecipeType::orderBy('id', 'DESC')->first()->id + 1, 999),
-            'ingredientCount' => $ingredientCount
+            'ingredientCount' => $ingredientCount,
         ];
         // Ajout des ingrédients
         for ($i = 0; $i < $ingredientCount; $i++) {
@@ -695,7 +693,7 @@ class RecipeTest extends TestCase
             $faker = Faker::create();
             $step = $faker->sentence(6);
             $dataToSend['steps'][] = [
-                'stepDescription' => $step
+                'stepDescription' => $step,
             ];
         }
         // Envoi vers la route
@@ -718,13 +716,13 @@ class RecipeTest extends TestCase
         $ingredientCount = rand(1, 10);
         $stepCount = rand(1, 10);
         $dataToSend = [
-            'nom' => "Test Recette 1",
+            'nom' => 'Test Recette 1',
             'preparation' => rand(5, 60),
             'cuisson' => rand(5, 60),
             'parts' => rand(1, 20),
             'stepCount' => $stepCount,
             'type' => RecipeType::inRandomOrder()->first()->id,
-            'ingredientCount' => $ingredientCount
+            'ingredientCount' => $ingredientCount,
         ];
         // Ajout des ingrédients
         for ($i = 0; $i < $ingredientCount; $i++) {
@@ -749,7 +747,7 @@ class RecipeTest extends TestCase
             $faker = Faker::create();
             $step = $faker->sentence(6);
             $dataToSend['steps'][] = [
-                'stepDescription' => $step
+                'stepDescription' => $step,
             ];
         }
         // Envoi vers la route
@@ -772,13 +770,13 @@ class RecipeTest extends TestCase
         $ingredientCount = rand(1, 10);
         $stepCount = rand(1, 10);
         $dataToSend = [
-            'nom' => "Test Recette 1",
+            'nom' => 'Test Recette 1',
             'preparation' => rand(5, 60),
             'cuisson' => rand(5, 60),
             'parts' => rand(1, 20),
             'stepCount' => $stepCount,
             'type' => RecipeType::inRandomOrder()->first()->id,
-            'ingredientCount' => $ingredientCount
+            'ingredientCount' => $ingredientCount,
         ];
         // Ajout des ingrédients
         for ($i = 0; $i < $ingredientCount; $i++) {
@@ -803,14 +801,13 @@ class RecipeTest extends TestCase
             $faker = Faker::create();
             $step = $faker->sentence(6);
             $dataToSend['steps'][] = [
-                'stepDescription' => $step
+                'stepDescription' => $step,
             ];
         }
         // Envoi vers la route
         $response = $this->actingAs($user)->put('/recipe/create', $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors('unitError')->assertSessionMissing('newSuccess');
     }
-
 
     /**
      * Création d'une recette avec une unité non existante
@@ -829,13 +826,13 @@ class RecipeTest extends TestCase
         $stepCount = rand(1, 10);
         //? Temps de préapation négatif
         $dataToSend = [
-            'nom' => "Test Recette 1",
+            'nom' => 'Test Recette 1',
             'preparation' => -5,
             'cuisson' => rand(5, 60),
             'parts' => rand(1, 20),
             'stepCount' => $stepCount,
             'type' => RecipeType::inRandomOrder()->first()->id,
-            'ingredientCount' => $ingredientCount
+            'ingredientCount' => $ingredientCount,
         ];
         // Ajout des ingrédients
         for ($i = 0; $i < $ingredientCount; $i++) {
@@ -852,13 +849,12 @@ class RecipeTest extends TestCase
             $faker = Faker::create();
             $step = $faker->sentence(6);
             $dataToSend['steps'][] = [
-                'stepDescription' => $step
+                'stepDescription' => $step,
             ];
         }
         // Envoi vers la route
         $response = $this->actingAs($user)->put('/recipe/create', $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors('preparation')->assertSessionMissing('newSuccess');
-
 
         $dataToSend['preparation'] = 2000;
         // Envoi vers la route
@@ -879,7 +875,6 @@ class RecipeTest extends TestCase
         $response->assertStatus(302)->assertSessionHasErrors('cuisson')->assertSessionMissing('newSuccess');
     }
 
-
     /**
      * Création d'une recette avec un nombre de personnes erroné
      *
@@ -897,13 +892,13 @@ class RecipeTest extends TestCase
         $stepCount = rand(1, 10);
         //? Temps de préapation négatif
         $dataToSend = [
-            'nom' => "Test Recette 1",
+            'nom' => 'Test Recette 1',
             'preparation' => rand(5, 60),
             'cuisson' => rand(5, 60),
             'parts' => -5,
             'stepCount' => $stepCount,
             'type' => RecipeType::inRandomOrder()->first()->id,
-            'ingredientCount' => $ingredientCount
+            'ingredientCount' => $ingredientCount,
         ];
         // Ajout des ingrédients
         for ($i = 0; $i < $ingredientCount; $i++) {
@@ -920,7 +915,7 @@ class RecipeTest extends TestCase
             $faker = Faker::create();
             $step = $faker->sentence(6);
             $dataToSend['steps'][] = [
-                'stepDescription' => $step
+                'stepDescription' => $step,
             ];
         }
         // Envoi vers la route
@@ -951,13 +946,13 @@ class RecipeTest extends TestCase
         $stepCount = rand(1, 10);
         //? Temps de préapation négatif
         $dataToSend = [
-            'nom' => "A",
+            'nom' => 'A',
             'preparation' => rand(5, 60),
             'cuisson' => rand(5, 60),
             'parts' => rand(5, 20),
             'stepCount' => $stepCount,
             'type' => RecipeType::inRandomOrder()->first()->id,
-            'ingredientCount' => $ingredientCount
+            'ingredientCount' => $ingredientCount,
         ];
         // Ajout des ingrédients
         for ($i = 0; $i < $ingredientCount; $i++) {
@@ -974,7 +969,7 @@ class RecipeTest extends TestCase
             $faker = Faker::create();
             $step = $faker->sentence(6);
             $dataToSend['steps'][] = [
-                'stepDescription' => $step
+                'stepDescription' => $step,
             ];
         }
         // Envoi vers la route
@@ -983,7 +978,6 @@ class RecipeTest extends TestCase
 
     }
 
-    
     /**
      * Création d'une recette avec un fichier inadapté
      *
@@ -997,23 +991,23 @@ class RecipeTest extends TestCase
         dump("Connexion avec l'utilisateur $user->name");
 
         Storage::fake('avatars');
- 
+
         $file = UploadedFile::fake()->create(
             'document.pdf', 500, 'application/pdf'
         );
-  
+
         $ingredientCount = rand(1, 10);
         $stepCount = rand(1, 10);
         //? Temps de préapation négatif
         $dataToSend = [
-            'nom' => "A",
+            'nom' => 'A',
             'preparation' => rand(5, 60),
             'cuisson' => rand(5, 60),
             'parts' => rand(5, 20),
             'photoInput' => $file,
             'stepCount' => $stepCount,
             'type' => RecipeType::inRandomOrder()->first()->id,
-            'ingredientCount' => $ingredientCount
+            'ingredientCount' => $ingredientCount,
         ];
         // Ajout des ingrédients
         for ($i = 0; $i < $ingredientCount; $i++) {
@@ -1030,7 +1024,7 @@ class RecipeTest extends TestCase
             $faker = Faker::create();
             $step = $faker->sentence(6);
             $dataToSend['steps'][] = [
-                'stepDescription' => $step
+                'stepDescription' => $step,
             ];
         }
         // Envoi vers la route
@@ -1053,7 +1047,6 @@ class RecipeTest extends TestCase
         // On prend une recette de l'utilisateur
         $recipe = Recipe::whereBelongsTo($user)->inRandomOrder()->first();
 
-
         $faker = Faker::create();
         $newName = $faker->sentence(6);
         $ingredientCount = rand(1, 10);
@@ -1066,7 +1059,7 @@ class RecipeTest extends TestCase
             'parts' => rand(1, 20),
             'stepCount' => $stepCount,
             'type' => RecipeType::inRandomOrder()->first()->id,
-            'ingredientCount' => $ingredientCount
+            'ingredientCount' => $ingredientCount,
         ];
 
         // Ajout des ingrédients
@@ -1084,7 +1077,7 @@ class RecipeTest extends TestCase
             $faker = Faker::create();
             $step = $faker->sentence(6);
             $dataToSend['steps'][] = [
-                'stepDescription' => $step
+                'stepDescription' => $step,
             ];
         }
         // dump($dataToSend);
@@ -1093,7 +1086,6 @@ class RecipeTest extends TestCase
         // $response->dumpSession();
         $response->assertStatus(302)->assertSessionHasNoErrors()->assertSessionHas('updateSuccess');
     }
-
 
     /**
      * Mise à jour d'une recette qui n'appartient pas à l'utilisateur
@@ -1110,7 +1102,6 @@ class RecipeTest extends TestCase
         // On prend une recette de l'utilisateur
         $recipe = Recipe::where('user_id', '!=', $user)->inRandomOrder()->first();
 
-
         $faker = Faker::create();
         $newName = $faker->sentence(6);
         $ingredientCount = rand(1, 10);
@@ -1123,7 +1114,7 @@ class RecipeTest extends TestCase
             'parts' => rand(1, 20),
             'stepCount' => $stepCount,
             'type' => RecipeType::inRandomOrder()->first()->id,
-            'ingredientCount' => $ingredientCount
+            'ingredientCount' => $ingredientCount,
         ];
 
         // Ajout des ingrédients
@@ -1141,7 +1132,7 @@ class RecipeTest extends TestCase
             $faker = Faker::create();
             $step = $faker->sentence(6);
             $dataToSend['steps'][] = [
-                'stepDescription' => $step
+                'stepDescription' => $step,
             ];
         }
         // dump($dataToSend);
@@ -1150,8 +1141,6 @@ class RecipeTest extends TestCase
         // $response->dumpSession();
         $response->assertStatus(302)->assertSessionHasErrors('editError')->assertSessionMissing('updateSuccess');
     }
-
-
 
     /**
      * Mise à jour d'une recette avec de mauvais temps de cuisson / préparation
@@ -1181,7 +1170,7 @@ class RecipeTest extends TestCase
             'parts' => rand(1, 20),
             'stepCount' => $stepCount,
             'type' => RecipeType::inRandomOrder()->first()->id,
-            'ingredientCount' => $ingredientCount
+            'ingredientCount' => $ingredientCount,
         ];
 
         // Ajout des ingrédients
@@ -1199,13 +1188,13 @@ class RecipeTest extends TestCase
             $faker = Faker::create();
             $step = $faker->sentence(6);
             $dataToSend['steps'][] = [
-                'stepDescription' => $step
+                'stepDescription' => $step,
             ];
         }
         // Envoi vers la route
         $response = $this->actingAs($user)->post('/recipe/update', $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors('preparation')->assertSessionMissing('updateSuccess');
-        
+
         //? Temps de préparation exessif
         $dataToSend['preparation'] = 2000;
         $response = $this->actingAs($user)->post('/recipe/update', $dataToSend);
@@ -1220,7 +1209,6 @@ class RecipeTest extends TestCase
         $response = $this->actingAs($user)->post('/recipe/update', $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors('cuisson')->assertSessionMissing('updateSuccess');
     }
-
 
     /**
      * Mise à jour d'une recette avec un nombre de personne faux
@@ -1250,7 +1238,7 @@ class RecipeTest extends TestCase
             'parts' => -5,
             'stepCount' => $stepCount,
             'type' => RecipeType::inRandomOrder()->first()->id,
-            'ingredientCount' => $ingredientCount
+            'ingredientCount' => $ingredientCount,
         ];
 
         // Ajout des ingrédients
@@ -1268,19 +1256,18 @@ class RecipeTest extends TestCase
             $faker = Faker::create();
             $step = $faker->sentence(6);
             $dataToSend['steps'][] = [
-                'stepDescription' => $step
+                'stepDescription' => $step,
             ];
         }
         // Envoi vers la route
         $response = $this->actingAs($user)->post('/recipe/update', $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors('parts')->assertSessionMissing('updateSuccess');
-        
+
         //? Personnes exessif
         $dataToSend['parts'] = 2000;
         $response = $this->actingAs($user)->post('/recipe/update', $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors('parts')->assertSessionMissing('updateSuccess');
     }
-
 
     /**
      * Mise à jour d'une recette avec une recette inexistante
@@ -1307,7 +1294,7 @@ class RecipeTest extends TestCase
             'parts' => -5,
             'stepCount' => $stepCount,
             'type' => RecipeType::inRandomOrder()->first()->id,
-            'ingredientCount' => $ingredientCount
+            'ingredientCount' => $ingredientCount,
         ];
 
         // Ajout des ingrédients
@@ -1325,15 +1312,14 @@ class RecipeTest extends TestCase
             $faker = Faker::create();
             $step = $faker->sentence(6);
             $dataToSend['steps'][] = [
-                'stepDescription' => $step
+                'stepDescription' => $step,
             ];
         }
         // Envoi vers la route
         $response = $this->actingAs($user)->post('/recipe/update', $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors('recipeid')->assertSessionMissing('updateSuccess');
-        
-    }
 
+    }
 
     /**
      * Mise à jour d'une recette avec un nom trop court
@@ -1354,13 +1340,13 @@ class RecipeTest extends TestCase
         //? Temps de préparation négatif
         $dataToSend = [
             'recipeid' => $recipe->id,
-            'nom' => "A",
+            'nom' => 'A',
             'preparation' => rand(5, 60),
             'cuisson' => rand(5, 60),
             'parts' => -5,
             'stepCount' => $stepCount,
             'type' => RecipeType::inRandomOrder()->first()->id,
-            'ingredientCount' => $ingredientCount
+            'ingredientCount' => $ingredientCount,
         ];
 
         // Ajout des ingrédients
@@ -1378,15 +1364,14 @@ class RecipeTest extends TestCase
             $faker = Faker::create();
             $step = $faker->sentence(6);
             $dataToSend['steps'][] = [
-                'stepDescription' => $step
+                'stepDescription' => $step,
             ];
         }
         // Envoi vers la route
         $response = $this->actingAs($user)->post('/recipe/update', $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors('nom')->assertSessionMissing('updateSuccess');
-        
-    }
 
+    }
 
     /**
      * Mise à jour d'une recette avec un mauvais fichier
@@ -1423,7 +1408,7 @@ class RecipeTest extends TestCase
             'parts' => -5,
             'stepCount' => $stepCount,
             'type' => RecipeType::inRandomOrder()->first()->id,
-            'ingredientCount' => $ingredientCount
+            'ingredientCount' => $ingredientCount,
         ];
 
         // Ajout des ingrédients
@@ -1441,16 +1426,14 @@ class RecipeTest extends TestCase
             $faker = Faker::create();
             $step = $faker->sentence(6);
             $dataToSend['steps'][] = [
-                'stepDescription' => $step
+                'stepDescription' => $step,
             ];
         }
         // Envoi vers la route
         $response = $this->actingAs($user)->post('/recipe/update', $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors('photoInput')->assertSessionMissing('updateSuccess');
-        
+
     }
-
-
 
     /**
      * Mise à jour d'une recette avec un mauvais type de recette
@@ -1480,7 +1463,7 @@ class RecipeTest extends TestCase
             'parts' => -5,
             'stepCount' => $stepCount,
             'type' => rand(RecipeType::orderBy('id', 'DESC')->first()->id + 1, 999),
-            'ingredientCount' => $ingredientCount
+            'ingredientCount' => $ingredientCount,
         ];
 
         // Ajout des ingrédients
@@ -1498,16 +1481,14 @@ class RecipeTest extends TestCase
             $faker = Faker::create();
             $step = $faker->sentence(6);
             $dataToSend['steps'][] = [
-                'stepDescription' => $step
+                'stepDescription' => $step,
             ];
         }
         // Envoi vers la route
         $response = $this->actingAs($user)->post('/recipe/update', $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors('type')->assertSessionMissing('updateSuccess');
-        
+
     }
-
-
 
     /**
      * Mise à jour d'une recette avec un ingrédient inexistant
@@ -1537,7 +1518,7 @@ class RecipeTest extends TestCase
             'parts' => rand(5, 20),
             'stepCount' => $stepCount,
             'type' => RecipeType::inRandomOrder()->first()->id,
-            'ingredientCount' => $ingredientCount
+            'ingredientCount' => $ingredientCount,
         ];
 
         // Ajout des ingrédients
@@ -1562,17 +1543,15 @@ class RecipeTest extends TestCase
             $faker = Faker::create();
             $step = $faker->sentence(6);
             $dataToSend['steps'][] = [
-                'stepDescription' => $step
+                'stepDescription' => $step,
             ];
         }
 
         // Envoi vers la route
         $response = $this->actingAs($user)->post('/recipe/update', $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors('ingredientError')->assertSessionMissing('updateSuccess');
-        
+
     }
-
-
 
     /**
      * Mise à jour d'une recette avec une unité de mesure inexistante
@@ -1602,7 +1581,7 @@ class RecipeTest extends TestCase
             'parts' => rand(5, 20),
             'stepCount' => $stepCount,
             'type' => RecipeType::inRandomOrder()->first()->id,
-            'ingredientCount' => $ingredientCount
+            'ingredientCount' => $ingredientCount,
         ];
 
         // Ajout des ingrédients
@@ -1627,17 +1606,13 @@ class RecipeTest extends TestCase
             $faker = Faker::create();
             $step = $faker->sentence(6);
             $dataToSend['steps'][] = [
-                'stepDescription' => $step
+                'stepDescription' => $step,
             ];
         }
 
         // Envoi vers la route
         $response = $this->actingAs($user)->post('/recipe/update', $dataToSend);
         $response->assertStatus(302)->assertSessionHasErrors('unitError')->assertSessionMissing('updateSuccess');
-        
+
     }
-
-
-
-
 }

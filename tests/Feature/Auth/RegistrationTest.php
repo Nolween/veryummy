@@ -2,16 +2,13 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Models\Role;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use Faker\Factory as Faker;
+use Tests\TestCase;
 
 class RegistrationTest extends TestCase
 {
-
     public function test_registration_screen_can_be_rendered()
     {
         $response = $this->get('/registration');
@@ -24,10 +21,10 @@ class RegistrationTest extends TestCase
 
         $faker = Faker::create();
         $mail = $faker->email();
-        $newName = $faker->firstName() . ' ' . $faker->lastName();
+        $newName = $faker->firstName().' '.$faker->lastName();
         $newMail = User::where('email', $mail)->first();
         // Tant qu'on créé des mail qui existent déjà dans la BDD
-        while($newMail) {
+        while ($newMail) {
             $mail = $faker->email();
             $newMail = User::where('email', $mail)->first();
         }
@@ -37,7 +34,7 @@ class RegistrationTest extends TestCase
             'email' => $mail,
             'password' => 'AlsqdDpefdzkl82:',
             'password_confirmation' => 'AlsqdDpefdzkl82:',
-            'test' => true
+            'test' => true,
         ]);
         // dump($response);
         $this->assertAuthenticated();

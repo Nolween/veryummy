@@ -24,7 +24,7 @@ class UserFactory extends Factory
             'password' => bcrypt($this->faker->password()),
             'remember_token' => Str::random(10),
             'is_banned' => false,
-            'role_id' => rand(1, 2)
+            'role_id' => rand(1, 2),
         ];
     }
 

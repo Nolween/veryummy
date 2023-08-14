@@ -12,7 +12,7 @@ class OpinionReport extends Model
     protected $fillable = [
         'opinion_reports',
         'user_id',
-        'opinion_id'
+        'opinion_id',
     ];
 
     /**

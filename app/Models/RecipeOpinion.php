@@ -15,7 +15,7 @@ class RecipeOpinion extends Model
         'comment',
         'score',
         'is_reported',
-        'is_favorite'
+        'is_favorite',
     ];
 
     /**
@@ -47,6 +47,4 @@ class RecipeOpinion extends Model
     {
         return $this->hasMany(OpinionReport::class, 'opinion_id');
     }
-
-
 }

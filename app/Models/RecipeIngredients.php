@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class RecipeIngredients extends Model
 {
     use HasFactory;
-    
+
     // Pas besoin des created_at et updated_at
     public $timestamps = false;
 
@@ -17,7 +17,7 @@ class RecipeIngredients extends Model
         'unit_id',
         'ingredient_id',
         'quantity',
-        'order'
+        'order',
     ];
 
     /**

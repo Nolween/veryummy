@@ -4,37 +4,31 @@ namespace Tests\Feature\Auth;
 
 use App\Models\Role;
 use App\Models\User;
+use Faker\Factory as Faker;
 use Illuminate\Auth\Notifications\ResetPassword;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
-use Faker\Factory as Faker;
 
 class PasswordResetTest extends TestCase
 {
-
     /**
      * Création d'un utilisateur
-     *
-     * @param boolean $banned
-     * @param boolean $admin
-     * @return User
      */
     private function initialize_user(bool $banned = false, bool $admin = false): User
     {
         $faker = Faker::create();
-        $newName = $faker->firstName() . ' ' . $faker->lastName();
+        $newName = $faker->firstName().' '.$faker->lastName();
         $mail = $faker->email();
         if ($admin == true) {
             // Création d'un rôle, nécessaire pour la création d'un utilisateur
             $role = Role::where('name', 'Administrateur')->first();
-            if (!$role) {
+            if (! $role) {
                 $role = Role::factory()->create(['name' => 'Administrateur']);
             }
         } else {
             // Création d'un rôle, nécessaire pour la création d'un utilisateur
             $role = Role::where('name', 'Utilisateur')->first();
-            if (!$role) {
+            if (! $role) {
                 $role = Role::factory()->create(['name' => 'Utilisateur']);
             }
         }
@@ -43,7 +37,6 @@ class PasswordResetTest extends TestCase
 
         return $user;
     }
-
 
     public function test_reset_password_link_screen_can_be_rendered()
     {

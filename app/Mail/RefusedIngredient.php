@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -11,8 +10,8 @@ class RefusedIngredient extends Mailable
 {
     use Queueable, SerializesModels;
 
-
     public $informations;
+
     /**
      * Create a new message instance.
      *

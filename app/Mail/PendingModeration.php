@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -24,7 +23,6 @@ class PendingModeration extends Mailable
         //
     }
 
-
     /**
      * Build the message.
      *
@@ -32,6 +30,6 @@ class PendingModeration extends Mailable
      */
     public function build()
     {
-        return $this->from('noreply@randidea.fr', 'Veryummy')->subject("Rapport de modération quotidien")->markdown('emails.moderation.pending');
+        return $this->from('noreply@randidea.fr', 'Veryummy')->subject('Rapport de modération quotidien')->markdown('emails.moderation.pending');
     }
 }

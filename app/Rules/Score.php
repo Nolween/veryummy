@@ -25,7 +25,8 @@ class Score implements Rule
      */
     public function passes($attribute, $value)
     {
-        $value = (float)$value;
+        $value = (float) $value;
+
         return is_float($value) && $value >= 1 && $value <= 5 && fmod($value, 0.5) == 0;
     }
 

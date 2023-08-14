@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Recipe;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\RecipeStep>
@@ -22,7 +22,7 @@ class RecipeStepFactory extends Factory
         return [
             'recipe_id' => $recipeId,
             'order' => Recipe::where('id', $recipeId)->get()->count() + 1,
-            'description' => $this->faker->text()
+            'description' => $this->faker->text(),
         ];
     }
 }

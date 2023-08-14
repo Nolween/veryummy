@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
@@ -22,10 +21,11 @@ class IngredientController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
+        if (! $user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/")->withErrors(['badUser' => 'Utilisateur non trouvé']);
+
+            return redirect('/')->withErrors(['badUser' => 'Utilisateur non trouvé']);
         }
 
         $response['typeList'] = $type;
@@ -47,13 +47,13 @@ class IngredientController extends Controller
 
         // Champ de recherche
         $request->validate([
-            'search' => ['string', 'nullable']
+            'search' => ['string', 'nullable'],
         ]);
 
         // Récupération des ingrédients
         $ingredients = Ingredient::where('is_accepted', $type)->with('user');
         // Si on a quelque chose dans la recherche
-        if (!empty($request->search)) {
+        if (! empty($request->search)) {
             $ingredients->where('name', 'like', "%{$request->search}%");
         }
 
@@ -70,10 +70,11 @@ class IngredientController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
+        if (! $user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/")->withErrors(['badUser' => 'Utilisateur non trouvé']);
+
+            return redirect('/')->withErrors(['badUser' => 'Utilisateur non trouvé']);
         }
         // Validation du formulaire avec les différentes règles
         $request->validate([
@@ -83,15 +84,14 @@ class IngredientController extends Controller
             'denymessage' => ['string', 'required', 'min:2'],
         ]);
 
-
         if ($request->deny == 1) {
             // Transaction pour rollback si erreur
             DB::beginTransaction();
             try {
                 // Récupération de l'ingrédient par son Id
-                $ingredient = Ingredient::where('id', (int)$request->ingredientid)->with('user')->first();
+                $ingredient = Ingredient::where('id', (int) $request->ingredientid)->with('user')->first();
                 // Si pas d'ingrédient trouvé, erreur
-                if (!$ingredient) {
+                if (! $ingredient) {
                     return back()->withErrors(['ingredientAllowError' => 'Aucun ingrédient trouvé']);
                 }
                 $authorMail = $ingredient->user->email;
@@ -109,26 +109,30 @@ class IngredientController extends Controller
 
                 // Validation de la transaction
                 DB::commit();
+
                 return redirect("/admin/ingredients/list/$request->typeList")->with('ingredientAllowSuccess', "L'ingrédient a été modéré");
             }
 
             // Si erreur dans la transaction
             catch (QueryException $e) {
                 DB::rollback();
+
                 return back()->withErrors(['ingredientAllowError' => "Erreur dans la modération de l'ingrédient"]);
             }
         }
     }
+
     public function allow(Request $request)
     {
 
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
+        if (! $user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/")->withErrors(['badUser' => 'Utilisateur non trouvé']);
+
+            return redirect('/')->withErrors(['badUser' => 'Utilisateur non trouvé']);
         }
         // Validation du formulaire avec les différentes règles
         $request->validate([
@@ -143,15 +147,14 @@ class IngredientController extends Controller
             'kosher' => ['boolean', 'nullable'],
         ]);
 
-
         if ($request->allow == 1) {
             // Transaction pour rollback si erreur
             DB::beginTransaction();
             try {
                 // Récupération de l'ingrédient par son Id
-                $ingredient = Ingredient::where('id', (int)$request->ingredientid)->with('user')->first();
+                $ingredient = Ingredient::where('id', (int) $request->ingredientid)->with('user')->first();
                 // Si pas d'ingrédient trouvé, erreur
-                if (!$ingredient) {
+                if (! $ingredient) {
                     return back()->withErrors(['ingredientAllowError' => 'Aucun ingrédient trouvé']);
                 }
                 $authorMail = $ingredient->user->email;
@@ -176,12 +179,14 @@ class IngredientController extends Controller
 
                 // Validation de la transaction
                 DB::commit();
+
                 return redirect("/admin/ingredients/list/$request->typeList")->with('ingredientAllowSuccess', "L'ingrédient a été modéré");
             }
 
             // Si erreur dans la transaction
             catch (QueryException $e) {
                 DB::rollback();
+
                 return back()->withErrors(['ingredientAllowError' => "Erreur dans la modération de l'ingrédient"]);
             }
         }
@@ -193,17 +198,16 @@ class IngredientController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user || $user->is_banned == true) {
+        if (! $user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/")->withErrors(['badUser' => 'Utilisateur non trouvé']);
+
+            return redirect('/')->withErrors(['badUser' => 'Utilisateur non trouvé']);
         }
         $response = [];
 
-
         return view('newingredient', $response);
     }
-
 
     public function propose(Request $request)
     {
@@ -211,10 +215,11 @@ class IngredientController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (!$user || $user->is_banned == true) {
+        if (! $user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
-            return redirect("/")->withErrors(['badUser' => 'Utilisateur non trouvé']);
+
+            return redirect('/')->withErrors(['badUser' => 'Utilisateur non trouvé']);
         }
 
         // Validation du formulaire avec les différentes règles
@@ -234,6 +239,6 @@ class IngredientController extends Controller
         $newIngredient->is_accepted = null;
         $newIngredient->save();
 
-        return redirect("/my-recipes")->with('ingredientProposeSuccess', "L'ingrédient a été proposé, vous recevrez un mail de modération.");
+        return redirect('/my-recipes')->with('ingredientProposeSuccess', "L'ingrédient a été proposé, vous recevrez un mail de modération.");
     }
 }
