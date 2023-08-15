@@ -24,7 +24,7 @@ class RecipeIngredients extends Model
     /**
      * A quelle recette appartient cette ligne
      *
-     * @return BelongsTo<Recipe>
+     * @return BelongsTo<Recipe, RecipeIngredients>
      */
     public function recipe(): BelongsTo
     {
@@ -34,7 +34,7 @@ class RecipeIngredients extends Model
     /**
      * A quelle ingredient appartient cette ligne
      *
-     * @return BelongsTo<Ingredient>
+     * @return BelongsTo<Ingredient, RecipeIngredients>
      */
     public function ingredient(): BelongsTo
     {
@@ -44,7 +44,7 @@ class RecipeIngredients extends Model
     /**
      * A quelle unité appartient cette ligne
      *
-     * @return BelongsTo<Unit>
+     * @return BelongsTo<Unit, RecipeIngredients>
      */
     public function unit(): BelongsTo
     {

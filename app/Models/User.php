@@ -69,7 +69,7 @@ class User extends Authenticatable
     /**
      * Indique le rôle de l'utilisateur
      *
-     * @return BelongsTo<Role>
+     * @return BelongsTo<Role, User>
      */
     public function role(): BelongsTo
     {

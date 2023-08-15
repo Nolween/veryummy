@@ -23,7 +23,7 @@ class RecipeOpinion extends Model
     /**
      * La recette auquel le commentaire appartient
      *
-     * @return BelongsTo<Recipe>
+     * @return BelongsTo<Recipe, RecipeOpinion>
      */
     public function recipe(): BelongsTo
     {
@@ -33,7 +33,7 @@ class RecipeOpinion extends Model
     /**
      * L'utilisateur auquel le commentaire appartient
      *
-     * @return BelongsTo<User>
+     * @return BelongsTo<User, RecipeOpinion>
      */
     public function user(): BelongsTo
     {

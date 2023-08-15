@@ -18,7 +18,7 @@ class RecipeStep extends Model
     /**
      * La recette à laquelle l'étape appartient
      *
-     * @return BelongsTo<Recipe>
+     * @return BelongsTo<Recipe, RecipeStep>
      */
     public function recipe(): BelongsTo
     {

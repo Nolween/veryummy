@@ -19,7 +19,7 @@ class OpinionReport extends Model
     /**
      * Le commentaire recette auquel il appartient
      *
-     * @return BelongsTo<RecipeOpinion>
+     * @return BelongsTo<RecipeOpinion, RecipeOpinion>
      */
     public function opinion(): BelongsTo
     {
@@ -29,7 +29,7 @@ class OpinionReport extends Model
     /**
      * L'utilisateur qui a signalé le commentaire
      *
-     * @return BelongsTo<User>
+     * @return BelongsTo<User, RecipeOpinion>
      */
     public function user(): BelongsTo
     {

@@ -32,7 +32,7 @@ class Recipe extends Model
     /**
      * Indique à quel type de recette elle appartient
      *
-     * @return BelongsTo<RecipeType>
+     * @return BelongsTo<RecipeType, Recipe>
      */
     public function recipeType(): BelongsTo
     {
@@ -42,7 +42,7 @@ class Recipe extends Model
     /**
      * Indique à quel utilisateur elle appartient
      *
-     * @return BelongsTo<User>
+     * @return BelongsTo<User, Recipe>
      */
     public function user(): BelongsTo
     {

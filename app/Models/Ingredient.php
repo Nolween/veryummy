@@ -29,7 +29,7 @@ class Ingredient extends Model
 
     /**
      * Get the user that owns the ingredient.
-     * @return BelongsTo<User>
+     * @return BelongsTo<User,Ingredient>
      */
     public function user(): BelongsTo
     {

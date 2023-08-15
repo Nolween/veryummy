@@ -1,46 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Caught class App\\\\Http\\\\Controllers\\\\QueryException not found\\.$#"
-			count: 4
-			path: app/Http/Controllers/AccountController.php
-
-		-
-			message: "#^Variable \\$recipesCount might not be defined\\.$#"
+			message: "#^Generic type Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\BelongsTo\\<App\\\\Models\\\\RecipeType\\> in PHPDoc tag @return does not specify all template types of class Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\BelongsTo\\: TRelatedModel, TChildModel$#"
 			count: 1
-			path: app/Http/Controllers/ExplorationController.php
-
-		-
-			message: "#^Caught class App\\\\Http\\\\Controllers\\\\QueryException not found\\.$#"
-			count: 2
-			path: app/Http/Controllers/IngredientController.php
-
-		-
-			message: "#^Variable \\$recipesCount might not be defined\\.$#"
-			count: 1
-			path: app/Http/Controllers/MyNotebookController.php
-
-		-
-			message: "#^Variable \\$recipesCount might not be defined\\.$#"
-			count: 1
-			path: app/Http/Controllers/MyRecipesController.php
-
-		-
-			message: "#^Caught class App\\\\Http\\\\Controllers\\\\Exception not found\\.$#"
-			count: 1
-			path: app/Http/Controllers/RecipeCardController.php
-
-		-
-			message: "#^Called 'pluck' on Laravel collection, but could have been retrieved as a query\\.$#"
-			count: 2
-			path: app/Http/Controllers/RecipeController.php
-
-		-
-			message: "#^Caught class App\\\\Http\\\\Controllers\\\\QueryException not found\\.$#"
-			count: 2
-			path: app/Http/Controllers/RecipeController.php
-
-		-
-			message: "#^Variable \\$message might not be defined\\.$#"
-			count: 1
-			path: app/Http/Controllers/RecipeController.php
+			path: app/Models/Recipe.php
