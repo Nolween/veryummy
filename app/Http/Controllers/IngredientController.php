@@ -165,11 +165,11 @@ class IngredientController extends Controller
                 // Si l'ingrédient est accepté, il passe sur le compte principal, en cas de suppression de compte du demandeur
                 $ingredient->user_id = 1;
                 // Définition du régime de l'aliment
-                $ingredient->vegetarian_compatible = $request->vegetarian || false;
-                $ingredient->vegan_compatible = $request->vegan || false;
-                $ingredient->gluten_free_compatible = $request->glutenfree || false;
-                $ingredient->halal_compatible = $request->halal || false;
-                $ingredient->kosher_compatible = $request->kosher || false;
+                $ingredient->vegetarian_compatible = $request->vegetarian ?? false;
+                $ingredient->vegan_compatible = $request->vegan ?? false;
+                $ingredient->gluten_free_compatible = $request->glutenfree ?? false;
+                $ingredient->halal_compatible = $request->halal ?? false;
+                $ingredient->kosher_compatible = $request->kosher ?? false;
                 $ingredient->save();
 
                 // Envoi de mail à la personne ayant proposé l'ingrédient

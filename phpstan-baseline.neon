@@ -1,6 +1,11 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Property App\\\\Models\\\\Recipe\\:\\:\\$is_accepted \\(bool\\|null\\) does not accept int\\.$#"
+			message: "#^Right side of \\|\\| is always false\\.$#"
+			count: 5
+			path: app/Http/Controllers/IngredientController.php
+
+		-
+			message: "#^If condition is always true\\.$#"
 			count: 1
-			path: app/Http/Controllers/RecipeController.php
+			path: app/Http/Controllers/RecipeCardController.php

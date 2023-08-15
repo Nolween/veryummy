@@ -25,19 +25,35 @@ class RecipeCardController extends Controller
     {
         $response = [];
         // Récupération de la recette grâce à son od
-        $response['recipe'] = Recipe::select('id', 'user_id', 'name', 'servings', 'cooking_time as cookingTime', 'making_time as makingTime', 'image', 'score', 'recipe_type_id', 'vegan_compatible', 'vegetarian_compatible', 'gluten_free_compatible', 'halal_compatible', 'kosher_compatible')
-            ->withCount('steps') // Nombre d'étapes possède la recette
-            ->withCount('ingredients') // Nombre d'ingrédients dans la recette
-            ->findOrFail($id);
+        $response['recipe']      = Recipe::select(
+            'id',
+            'user_id',
+            'name',
+            'servings',
+            'cooking_time as cookingTime',
+            'making_time as makingTime',
+            'image',
+            'score',
+            'recipe_type_id',
+            'vegan_compatible',
+            'vegetarian_compatible',
+            'gluten_free_compatible',
+            'halal_compatible',
+            'kosher_compatible'
+        )
+                                         ->withCount('steps') // Nombre d'étapes possède la recette
+                                         ->withCount('ingredients') // Nombre d'ingrédients dans la recette
+                                         ->findOrFail($id);
         $response['ingredients'] = Recipe::findOrFail($id)->ingredients;
-        $response['steps'] = Recipe::findOrFail($id)->steps;
+        $response['steps']       = Recipe::findOrFail($id)->steps;
         // Si l'utilisateur est connecté
-        $user = Auth::user();
+        $user               = Auth::user();
         $response['userId'] = $user->id ?? null;
         // Tous les avis de la recette sauf celui de l'utilisateur connecté
         $response['comments'] = Recipe::findOrFail($id)->comments->where('user_id', '!=', $response['userId']);
         // Si utilisateur connecté, récupération de son avis sur la recette (+ fav + report)
-        $response['opinion'] = ! empty($user) ? RecipeOpinion::whereBelongsTo($user)->where('recipe_id', $id)->first() : [];
+        $response['opinion'] = !empty($user) ? RecipeOpinion::whereBelongsTo($user)->where('recipe_id', $id)->first(
+        ) : [];
 
         $response['type'] = RecipeType::where('id', $response['recipe']->recipe_type_id)->first()->name;
 
@@ -57,7 +73,7 @@ class RecipeCardController extends Controller
         $user = Auth::user();
 
         // Si pas d'utilisateur
-        if (! $user || $user->is_banned == true) {
+        if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 
@@ -66,7 +82,7 @@ class RecipeCardController extends Controller
 
         // La recette existe t-elle?
         $recipe = Recipe::where('id', $recipeId)->first();
-        if (! $recipe) {
+        if (!$recipe) {
             return redirect('/')->withErrors(['recipeError' => 'Recette non trouvée']);
         }
         // Validation du formulaire
@@ -77,10 +93,13 @@ class RecipeCardController extends Controller
 
         RecipeOpinion::updateOrCreate(
             ['user_id' => $user->id, 'recipe_id' => $recipeId],
-            ['is_favorite' => (bool) $request->is_favorite, 'is_reported' => (bool) $request->is_reported]
+            ['is_favorite' => (bool)$request->is_favorite, 'is_reported' => (bool)$request->is_reported]
         );
 
-        return redirect("/recipe/show/$recipeId")->with('statusSuccess', (bool) $request->is_favorite ? 'Recette mise en favori' : 'Recette signalée');
+        return redirect("/recipe/show/$recipeId")->with(
+            'statusSuccess',
+            (bool)$request->is_favorite ? 'Recette mise en favori' : 'Recette signalée'
+        );
     }
 
     /**
@@ -96,7 +115,7 @@ class RecipeCardController extends Controller
         $user = Auth::user();
 
         // Si pas d'utilisateur
-        if (! $user || $user->is_banned == true) {
+        if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 
@@ -104,7 +123,8 @@ class RecipeCardController extends Controller
         }
         // Validation des données
         $request->validate([
-            'score' => [new Score, 'required', 'max:5', 'min:1'], // Le socre doit passer la règle Score de App/Rules/Score
+            'score'   => [new Score, 'required', 'max:5', 'min:1'],
+            // Le socre doit passer la règle Score de App/Rules/Score
             'comment' => ['string', 'required', 'min:2', 'max:65535'],
         ]);
 
@@ -114,7 +134,7 @@ class RecipeCardController extends Controller
             // Calcul de la nouvelle note moyenne de la recette
             $recipe = Recipe::find($recipeId);
             // Si pas de recette trouvée, erreur
-            if (! $recipe) {
+            if (!$recipe) {
                 return back()->withErrors(['recipeError' => 'Recette inexistante']);
             }
 
@@ -123,7 +143,7 @@ class RecipeCardController extends Controller
                 ['score' => $request->score, 'comment' => $request->comment]
             );
 
-            $average = RecipeOpinion::whereBelongsTo($recipe)->avg('score');
+            $average       = RecipeOpinion::whereBelongsTo($recipe)->avg('score');
             $recipe->score = $average;
             $recipe->save();
 
@@ -131,15 +151,12 @@ class RecipeCardController extends Controller
             DB::commit();
 
             return back()->with('success', 'Commentaire effectué');
-        }
-
-        // Si erreur dans la transaction
+        } // Si erreur dans la transaction
         catch (ItemNotFoundException $e) {
             DB::rollback();
 
             return back()->withErrors(['error' => 'Recette introuvable']);
-        }
-        // Si erreur dans la transaction
+        } // Si erreur dans la transaction
         catch (Exception $e) {
             DB::rollback();
 
@@ -156,11 +173,11 @@ class RecipeCardController extends Controller
     {
         // Quelle est l'ID de la recette?
         $recipeId = $request->route('id');
-        $recipe = Recipe::findOrFail($recipeId);
+        $recipe   = Recipe::findOrFail($recipeId);
         // Récupération de l'utilisateur
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (! $user || $user->is_banned == true) {
+        if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 
@@ -168,16 +185,14 @@ class RecipeCardController extends Controller
         }
         // Trouver l'opinion de la recette par l'utilisateur
         $recipeOpinion = RecipeOpinion::whereBelongsTo($recipe)->whereBelongsTo($user)->firstOrFail();
-        if ($recipeOpinion) {
-            // Réinitialisation du commentaire et de la note de l'avis sur la recette
-            $recipeOpinion->score = null;
-            $recipeOpinion->comment = null;
-            $recipeOpinion->save();
-            // Définition de la nouvelle moyenne
-            $average = RecipeOpinion::whereBelongsTo($recipe)->avg('score');
-            $recipe->score = $average;
-            $recipe->save();
-        }
+        // Réinitialisation du commentaire et de la note de l'avis sur la recette
+        $recipeOpinion->score   = null;
+        $recipeOpinion->comment = null;
+        $recipeOpinion->save();
+        // Définition de la nouvelle moyenne
+        $average       = RecipeOpinion::whereBelongsTo($recipe)->avg('score');
+        $recipe->score = $average;
+        $recipe->save();
 
         return redirect("/recipe/show/$recipeId")->with('success', 'Commentaire supprimé');
     }

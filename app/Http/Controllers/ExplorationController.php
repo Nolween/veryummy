@@ -71,7 +71,7 @@ class ExplorationController extends Controller
                     $recipesCount = 0;
                     break;
             }
-            $response['total'] = $recipesCount->count() ?? 0;
+            $response['total'] = $recipesCount->count();
         }
         // Si pas de filtre de type
         else {
