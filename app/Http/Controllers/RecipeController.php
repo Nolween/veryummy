@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ItemNotFoundException;
 use Illuminate\Support\Str;
+use Illuminate\Database\QueryException;
 
 class RecipeController extends Controller
 {
@@ -189,6 +190,9 @@ class RecipeController extends Controller
             } elseif ($request->is_favorite == null) {
                 $message = $request->is_reported == 1 ? 'La recette a été signalée' : 'La recette a été retirée des signalements';
             }
+            else {
+                $message = 'Erreur inconnue';
+            }
 
             // Validation de la transaction
             DB::commit();
@@ -226,7 +230,7 @@ class RecipeController extends Controller
         $response = [];
 
         // Récupération de tous les ingrédients
-        $response['ingredients'] = Ingredient::all()->pluck('name', 'id');
+        $response['ingredients'] = Ingredient::pluck('name', 'id');
         // Récupération des unités de mesures
         $response['units'] = Unit::all();
         // Récupération des différents types de recette
@@ -422,7 +426,7 @@ class RecipeController extends Controller
         $response = [];
 
         // Récupération de tous les ingrédients
-        $response['ingredientsList'] = Ingredient::all()->pluck('name', 'id');
+        $response['ingredientsList'] = Ingredient::pluck('name', 'id');
         // Récupération des unités de mesures
         $response['units'] = Unit::all();
         // Récupération des différents types de recette

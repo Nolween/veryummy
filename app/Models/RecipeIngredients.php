@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RecipeIngredients extends Model
 {
@@ -23,9 +24,9 @@ class RecipeIngredients extends Model
     /**
      * A quelle recette appartient cette ligne
      *
-     * @return void
+     * @return BelongsTo<Recipe>
      */
-    public function recipe()
+    public function recipe(): BelongsTo
     {
         return $this->belongsTo(Recipe::class);
     }
@@ -33,9 +34,9 @@ class RecipeIngredients extends Model
     /**
      * A quelle ingredient appartient cette ligne
      *
-     * @return void
+     * @return BelongsTo<Ingredient>
      */
-    public function ingredient()
+    public function ingredient(): BelongsTo
     {
         return $this->belongsTo(Ingredient::class);
     }
@@ -43,9 +44,9 @@ class RecipeIngredients extends Model
     /**
      * A quelle unité appartient cette ligne
      *
-     * @return void
+     * @return BelongsTo<Unit>
      */
-    public function unit()
+    public function unit(): BelongsTo
     {
         return $this->belongsTo(Unit::class);
     }

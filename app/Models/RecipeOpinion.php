@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class RecipeOpinion extends Model
 {
@@ -21,9 +23,9 @@ class RecipeOpinion extends Model
     /**
      * La recette auquel le commentaire appartient
      *
-     * @return void
+     * @return BelongsTo<Recipe>
      */
-    public function recipe()
+    public function recipe(): BelongsTo
     {
         return $this->belongsTo(Recipe::class);
     }
@@ -31,9 +33,9 @@ class RecipeOpinion extends Model
     /**
      * L'utilisateur auquel le commentaire appartient
      *
-     * @return void
+     * @return BelongsTo<User>
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -41,9 +43,9 @@ class RecipeOpinion extends Model
     /**
      * Les signalements concernant le commentaire d'un utilisateur
      *
-     * @return void
+     * @return HasMany<OpinionReport>
      */
-    public function reports()
+    public function reports(): HasMany
     {
         return $this->hasMany(OpinionReport::class, 'opinion_id');
     }

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -47,9 +49,9 @@ class User extends Authenticatable
     /**
      * Indique les recettes de l'utilisateur
      *
-     * @return void
+     * @return HasMany<Recipe>
      */
-    public function recipes()
+    public function recipes(): HasMany
     {
         return $this->hasMany(Recipe::class);
     }
@@ -57,9 +59,9 @@ class User extends Authenticatable
     /**
      * Indique les ingredients de l'utilisateur
      *
-     * @return void
+     * @return HasMany<Ingredient>
      */
-    public function ingredients()
+    public function ingredients(): HasMany
     {
         return $this->hasMany(Ingredient::class);
     }
@@ -67,9 +69,9 @@ class User extends Authenticatable
     /**
      * Indique le rôle de l'utilisateur
      *
-     * @return void
+     * @return BelongsTo<Role>
      */
-    public function role()
+    public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
     }
@@ -77,9 +79,9 @@ class User extends Authenticatable
     /**
      * Indique les signalements qu'a fait l'utilisateur
      *
-     * @return void
+     * @return HasMany<OpinionReport>
      */
-    public function reportedOpinions()
+    public function reportedOpinions(): HasMany
     {
         return $this->hasMany(OpinionReport::class);
     }
@@ -87,9 +89,9 @@ class User extends Authenticatable
     /**
      * Indique les commentaires / reports de l'utilisateur
      *
-     * @return void
+     * @return HasMany<RecipeOpinion>
      */
-    public function opinions()
+    public function opinions(): HasMany
     {
         return $this->hasMany(RecipeOpinion::class);
     }

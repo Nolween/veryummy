@@ -67,9 +67,10 @@ class ExplorationController extends Controller
                     break;
 
                 default:
+                    $recipesCount = 0;
                     break;
             }
-            $response['total'] = $recipesCount->count();
+            $response['total'] = $recipesCount->count() ?? 0;
         }
         // Si pas de filtre de type
         else {

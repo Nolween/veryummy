@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RecipeStep extends Model
 {
@@ -17,9 +18,9 @@ class RecipeStep extends Model
     /**
      * La recette à laquelle l'étape appartient
      *
-     * @return void
+     * @return BelongsTo<Recipe>
      */
-    public function recipe()
+    public function recipe(): BelongsTo
     {
         return $this->belongsTo(Recipe::class);
     }

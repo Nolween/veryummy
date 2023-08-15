@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
 
 class Recipe extends Model
@@ -29,9 +32,9 @@ class Recipe extends Model
     /**
      * Indique à quel type de recette elle appartient
      *
-     * @return void
+     * @return BelongsTo<RecipeType>
      */
-    public function recipeType()
+    public function recipeType(): BelongsTo
     {
         return $this->belongsTo(RecipeType::class);
     }
@@ -39,9 +42,9 @@ class Recipe extends Model
     /**
      * Indique à quel utilisateur elle appartient
      *
-     * @return void
+     * @return BelongsTo<User>
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -49,9 +52,9 @@ class Recipe extends Model
     /**
      * Indique les étapes de la recette
      *
-     * @return void
+     * @return HasMany<RecipeStep>
      */
-    public function steps()
+    public function steps(): HasMany
     {
         return $this->hasMany(RecipeStep::class)->orderBy('order');
     }
@@ -59,9 +62,9 @@ class Recipe extends Model
     /**
      * Indique les avis de la recette
      *
-     * @return void
+     * @return HasMany<RecipeOpinion>
      */
-    public function comments()
+    public function comments(): HasMany
     {
         return $this->hasMany(RecipeOpinion::class);
     }
@@ -69,9 +72,9 @@ class Recipe extends Model
     /**
      * Indique les ingrédients de la recette et son type d'unité
      *
-     * @return void
+     * @return HasMany<RecipeIngredients>
      */
-    public function ingredients()
+    public function ingredients(): HasMany
     {
         return $this->hasMany(RecipeIngredients::class)->with('ingredient')->with('unit')->orderBy('order');
     }
@@ -79,9 +82,9 @@ class Recipe extends Model
     /**
      * Indique les opinions de la recette
      *
-     * @return void
+     * @return HasMany
      */
-    public function opinions()
+    public function opinions(): HasMany
     {
         return $this->hasMany(RecipeOpinion::class)->with('user');
     }
@@ -89,9 +92,9 @@ class Recipe extends Model
     /**
      * Indique l'avis de l'utilisateur sur la recette
      *
-     * @return void
+     * @return HasOne<RecipeOpinion>
      */
-    public function opinion()
+    public function opinion(): HasOne
     {
         return $this->hasOne(RecipeOpinion::class)->ofMany([
             'updated_at' => 'max',
