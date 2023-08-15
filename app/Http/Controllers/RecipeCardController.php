@@ -11,13 +11,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ItemNotFoundException;
 use Exception;
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class RecipeCardController extends Controller
 {
     /**
      * Page d'accueil
      *
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function show($id)
     {
@@ -45,7 +47,7 @@ class RecipeCardController extends Controller
     /**
      * Mettre en favori / Signaler une recette
      *
-     * @return void
+     * @return RedirectResponse
      */
     public function status(Request $request)
     {
@@ -84,7 +86,7 @@ class RecipeCardController extends Controller
     /**
      * Poster / Créer un commentaire sur la recette
      *
-     * @return void
+     * @return RedirectResponse
      */
     public function comment(Request $request)
     {
@@ -148,7 +150,7 @@ class RecipeCardController extends Controller
     /**
      * Supprimer l'opinion et la note de l'utilisateur
      *
-     * @return void
+     * @return RedirectResponse
      */
     public function emptyOpinion(Request $request)
     {

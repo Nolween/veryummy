@@ -278,7 +278,7 @@ class RecipeController extends Controller
             $newRecipe->cooking_time = $request->cuisson;
             $newRecipe->making_time = $request->preparation;
             $newRecipe->servings = $request->parts;
-            $newRecipe->is_accepted = 1;
+            $newRecipe->is_accepted = true;
             $newRecipe->recipe_type_id = $request->type;
             $newRecipe->user_id = $user->id;
             // Sauvegarde de la recette

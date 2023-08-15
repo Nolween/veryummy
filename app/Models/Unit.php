@@ -12,7 +12,7 @@ class Unit extends Model
     /**
      * Tableau des champs remplissables
      *
-     * @var array
+     * @var array<string>
      */
     protected $fillable = ['name'];
 

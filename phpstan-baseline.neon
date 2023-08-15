@@ -1,6 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Generic type Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\BelongsTo\\<App\\\\Models\\\\RecipeType\\> in PHPDoc tag @return does not specify all template types of class Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\BelongsTo\\: TRelatedModel, TChildModel$#"
+			message: "#^Property App\\\\Models\\\\Recipe\\:\\:\\$is_accepted \\(bool\\|null\\) does not accept int\\.$#"
 			count: 1
-			path: app/Models/Recipe.php
+			path: app/Http/Controllers/RecipeController.php

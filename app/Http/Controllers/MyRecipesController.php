@@ -5,15 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Recipe;
 use App\Models\RecipeType;
 use App\Rules\DietExists;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class MyRecipesController extends Controller
 {
     /**
      * Listes des recettes de l'utilisateur
      *
-     * @return void
+     * @return RedirectResponse | View
      */
     public function list(Request $request)
     {

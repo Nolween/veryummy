@@ -7,6 +7,7 @@ use App\Models\RecipeType;
 use App\Rules\DietExists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 /**
  * Page d'accueil
@@ -18,7 +19,7 @@ class ExplorationController extends Controller
     /**
      * Listes des recettes
      *
-     * @return void
+     * @return View
      */
     public function list(Request $request)
     {

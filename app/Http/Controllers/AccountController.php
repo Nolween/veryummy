@@ -11,18 +11,21 @@ use App\Rules\PasswordRepetition;
 use App\Rules\UserMailExists;
 use App\Rules\UserNameExists;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\View\View;
 
 class AccountController extends Controller
 {
     /**
      * Affichage des informations de compte
      *
-     * @return void
+     * @return RedirectResponse | View
      */
     public function show()
     {
@@ -42,7 +45,7 @@ class AccountController extends Controller
     /**
      * Edition des informations de l'utilisateur
      *
-     * @return void
+     * @return RedirectResponse
      */
     public function edit(Request $request)
     {
@@ -97,7 +100,7 @@ class AccountController extends Controller
     /**
      * Suppression du compte de l'utilisateur
      *
-     * @return void
+     * @return RedirectResponse
      */
     public function delete(Request $request)
     {
@@ -157,6 +160,11 @@ class AccountController extends Controller
         return redirect('/')->with(['userDeletionSuccess', 'Votre compte a bien été supprimé!']);
     }
 
+    /**
+     * Affichage de la liste des utilisateurs
+     *
+     * @return RedirectResponse | View
+     */
     public function list(int $type, Request $request)
     {
         $response = [];
@@ -224,6 +232,11 @@ class AccountController extends Controller
         return view('adminuserslist', $response);
     }
 
+    /**
+     * Bannir un utilisateur
+     *
+     * @return RedirectResponse
+     */
     public function ban(Request $request)
     {
         // Récupération des infos de l'utilisateur connecté
@@ -296,6 +309,11 @@ class AccountController extends Controller
         }
     }
 
+    /**
+     * Modérer un utilisateur
+     *
+     * @return RedirectResponse
+     */
     public function moderate(Request $request)
     {
 
