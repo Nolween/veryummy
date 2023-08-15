@@ -10,14 +10,17 @@ class AcceptedIngredient extends Mailable
 {
     use Queueable, SerializesModels;
 
+    /**
+     * @var array<string,string>
+     */
     public $informations;
 
     /**
      * Create a new message instance.
      *
-     * @return void
+     * @param array<string, string> $informations
      */
-    public function __construct($informations)
+    public function __construct(array $informations)
     {
         $this->informations = $informations;
         //

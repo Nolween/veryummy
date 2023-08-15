@@ -10,7 +10,7 @@ class PasswordRepetition implements Rule, DataAwareRule
     /**
      * All of the data under validation.
      *
-     * @var array
+     * @var array<string,mixed>
      */
     protected $data = [];
 
@@ -27,10 +27,10 @@ class PasswordRepetition implements Rule, DataAwareRule
     /**
      * Set the data under validation.
      *
-     * @param  array  $data
+     * @param  array<string>  $data
      * @return $this
      */
-    public function setData($data)
+    public function setData(array $data): self
     {
         $this->data = $data;
 

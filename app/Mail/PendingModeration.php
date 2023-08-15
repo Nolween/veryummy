@@ -10,11 +10,15 @@ class PendingModeration extends Mailable
 {
     use Queueable, SerializesModels;
 
+    /**
+     * @var array<string,string>
+     */
     public $informations;
 
     /**
      * Create a new message instance.
      *
+     * @param array<string, string> $informations
      * @return void
      */
     public function __construct($informations)

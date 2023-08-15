@@ -2,6 +2,8 @@
 
 namespace App\View\Components\Elements;
 
+use Closure;
+use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class RecipeReport extends Component
@@ -9,14 +11,14 @@ class RecipeReport extends Component
     /**
      * Les personnes ayant fait le report de la recette.
      *
-     * @var array
+     * @var array<string>
      */
     public $reports;
 
     /**
      * Create a new component instance.
      *
-     * @param  array  $reports
+     * @param  array<string>  $reports
      * @return void
      */
     public function __construct($reports)
@@ -27,7 +29,7 @@ class RecipeReport extends Component
     /**
      * Get the view / contents that represent the component.
      *
-     * @return \Illuminate\Contracts\View\View|\Closure|string
+     * @return View|Closure|string
      */
     public function render()
     {

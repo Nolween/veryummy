@@ -19,9 +19,10 @@ class RecipeCardController extends Controller
     /**
      * Page d'accueil
      *
+     * @param int $id
      * @return View
      */
-    public function show($id)
+    public function show($id): View
     {
         $response = [];
         // Récupération de la recette grâce à son od
@@ -65,7 +66,7 @@ class RecipeCardController extends Controller
      *
      * @return RedirectResponse
      */
-    public function status(Request $request)
+    public function status(Request $request): RedirectResponse
     {
         // Quelle est l'ID de la recette?
         $recipeId = $request->route('id');
@@ -107,7 +108,7 @@ class RecipeCardController extends Controller
      *
      * @return RedirectResponse
      */
-    public function comment(Request $request)
+    public function comment(Request $request): RedirectResponse
     {
         // Quelle est l'ID de la recette?
         $recipeId = $request->route('id');
@@ -169,7 +170,7 @@ class RecipeCardController extends Controller
      *
      * @return RedirectResponse
      */
-    public function emptyOpinion(Request $request)
+    public function emptyOpinion(Request $request): RedirectResponse
     {
         // Quelle est l'ID de la recette?
         $recipeId = $request->route('id');

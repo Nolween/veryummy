@@ -17,7 +17,7 @@ class MyNotebookController extends Controller
      *
      * @return RedirectResponse | View
      */
-    public function list(Request $request)
+    public function list(Request $request): View | RedirectResponse
     {
         $response = [];
 

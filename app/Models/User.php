@@ -100,9 +100,9 @@ class User extends Authenticatable
     /**
      * Indique les commentaires de l'utilisateur signalés par les autres
      *
-     * @return HasManyThrough
+     * @return HasManyThrough<OpinionReport>
      */
-    public function reportedOpinionsByOther()
+    public function reportedOpinionsByOther(): HasManyThrough
     {
         return $this->hasManyThrough(
             OpinionReport::class,
@@ -112,5 +112,6 @@ class User extends Authenticatable
             'id',
             'id'
         );
+
     }
 }

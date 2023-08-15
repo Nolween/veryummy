@@ -27,7 +27,7 @@ class AccountController extends Controller
      *
      * @return RedirectResponse | View
      */
-    public function show()
+    public function show(): View | RedirectResponse
     {
         $response = [];
         // Authentification de l'utilisateur
@@ -47,7 +47,7 @@ class AccountController extends Controller
      *
      * @return RedirectResponse
      */
-    public function edit(Request $request)
+    public function edit(Request $request): RedirectResponse
     {
         // Authentification de l'utilisateur
         $user = Auth::user();
@@ -102,7 +102,7 @@ class AccountController extends Controller
      *
      * @return RedirectResponse
      */
-    public function delete(Request $request)
+    public function delete(Request $request): RedirectResponse
     {
         // Authentification de l'utilisateur
         $user = Auth::user();
@@ -165,7 +165,7 @@ class AccountController extends Controller
      *
      * @return RedirectResponse | View
      */
-    public function list(int $type, Request $request)
+    public function list(int $type, Request $request): View | RedirectResponse
     {
         $response = [];
         // Récupération des infos de l'utilisateur connecté
@@ -237,7 +237,7 @@ class AccountController extends Controller
      *
      * @return RedirectResponse
      */
-    public function ban(Request $request)
+    public function ban(Request $request): RedirectResponse
     {
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
@@ -314,7 +314,7 @@ class AccountController extends Controller
      *
      * @return RedirectResponse
      */
-    public function moderate(Request $request)
+    public function moderate(Request $request): RedirectResponse
     {
 
         // Récupération des infos de l'utilisateur connecté

@@ -1,11 +1,86 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Right side of \\|\\| is always false\\.$#"
-			count: 5
-			path: app/Http/Controllers/IngredientController.php
+			message: "#^Method App\\\\Http\\\\Requests\\\\Auth\\\\LoginRequest\\:\\:rules\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: app/Http/Requests/Auth/LoginRequest.php
 
 		-
-			message: "#^If condition is always true\\.$#"
+			message: "#^Method App\\\\Mail\\\\AcceptedIngredient\\:\\:__construct\\(\\) has parameter \\$informations with no type specified\\.$#"
 			count: 1
-			path: app/Http/Controllers/RecipeCardController.php
+			path: app/Mail/AcceptedIngredient.php
+
+		-
+			message: "#^Property App\\\\Mail\\\\AcceptedIngredient\\:\\:\\$informations has no type specified\\.$#"
+			count: 1
+			path: app/Mail/AcceptedIngredient.php
+
+		-
+			message: "#^Method App\\\\Mail\\\\PendingModeration\\:\\:__construct\\(\\) has parameter \\$informations with no type specified\\.$#"
+			count: 1
+			path: app/Mail/PendingModeration.php
+
+		-
+			message: "#^Property App\\\\Mail\\\\PendingModeration\\:\\:\\$informations has no type specified\\.$#"
+			count: 1
+			path: app/Mail/PendingModeration.php
+
+		-
+			message: "#^Method App\\\\Mail\\\\RefusedIngredient\\:\\:__construct\\(\\) has parameter \\$informations with no type specified\\.$#"
+			count: 1
+			path: app/Mail/RefusedIngredient.php
+
+		-
+			message: "#^Property App\\\\Mail\\\\RefusedIngredient\\:\\:\\$informations has no type specified\\.$#"
+			count: 1
+			path: app/Mail/RefusedIngredient.php
+
+		-
+			message: "#^Method App\\\\Mail\\\\RefusedRecipe\\:\\:__construct\\(\\) has parameter \\$informations with no type specified\\.$#"
+			count: 1
+			path: app/Mail/RefusedRecipe.php
+
+		-
+			message: "#^Property App\\\\Mail\\\\RefusedRecipe\\:\\:\\$informations has no type specified\\.$#"
+			count: 1
+			path: app/Mail/RefusedRecipe.php
+
+		-
+			message: "#^Method App\\\\Models\\\\Recipe\\:\\:opinions\\(\\) return type with generic class Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\HasMany does not specify its types\\: TRelatedModel$#"
+			count: 1
+			path: app/Models/Recipe.php
+
+		-
+			message: "#^Method App\\\\Models\\\\User\\:\\:reportedOpinionsByOther\\(\\) return type with generic class Illuminate\\\\Database\\\\Eloquent\\\\Relations\\\\HasManyThrough does not specify its types\\: TRelatedModel$#"
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: "#^Method App\\\\Rules\\\\PasswordRepetition\\:\\:setData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: app/Rules/PasswordRepetition.php
+
+		-
+			message: "#^Property App\\\\Rules\\\\PasswordRepetition\\:\\:\\$data type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: app/Rules/PasswordRepetition.php
+
+		-
+			message: "#^Method App\\\\View\\\\Components\\\\Elements\\\\RecipeReport\\:\\:__construct\\(\\) has parameter \\$reports with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: app/View/Components/Elements/RecipeReport.php
+
+		-
+			message: "#^Property App\\\\View\\\\Components\\\\Elements\\\\RecipeReport\\:\\:\\$reports type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: app/View/Components/Elements/RecipeReport.php
+
+		-
+			message: "#^Method App\\\\View\\\\Components\\\\Elements\\\\UserReport\\:\\:__construct\\(\\) has parameter \\$opinions with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: app/View/Components/Elements/UserReport.php
+
+		-
+			message: "#^Property App\\\\View\\\\Components\\\\Elements\\\\UserReport\\:\\:\\$opinions type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: app/View/Components/Elements/UserReport.php

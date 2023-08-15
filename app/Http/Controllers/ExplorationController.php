@@ -21,7 +21,7 @@ class ExplorationController extends Controller
      *
      * @return View
      */
-    public function list(Request $request)
+    public function list(Request $request): View
     {
         $response = [];
 

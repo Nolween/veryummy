@@ -13,6 +13,9 @@ class Recipe extends Model
 {
     use HasFactory;
 
+    /**
+     * @var array<string>
+     */
     protected $fillable = [
         'user_id',
         'recipe_type_id',
@@ -82,7 +85,7 @@ class Recipe extends Model
     /**
      * Indique les opinions de la recette
      *
-     * @return HasMany
+     * @return HasMany<RecipeOpinion>
      */
     public function opinions(): HasMany
     {
@@ -98,7 +101,7 @@ class Recipe extends Model
     {
         return $this->hasOne(RecipeOpinion::class)->ofMany([
             'updated_at' => 'max',
-            'id' => 'max',
+            'id'         => 'max',
         ], function ($query) {
             $query->where('user_id', '=', Auth::id());
         });

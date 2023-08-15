@@ -5,15 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Models\User;
+use Illuminate\View\View;
 
 class WelcomeController extends Controller
 {
     /**
      * Page d'accueil
      *
-     * @return \Illuminate\View\View
+     * @return View
      */
-    public function index()
+    public function index(): View
     {
         $response = [];
         // Récupération de 4 recettes au hasard avec plus de 4 en note

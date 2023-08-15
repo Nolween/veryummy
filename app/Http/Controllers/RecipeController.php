@@ -13,6 +13,7 @@ use App\Models\RecipeType;
 use App\Models\Unit;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -23,9 +24,21 @@ use Illuminate\Support\ItemNotFoundException;
 use Illuminate\Support\Str;
 use Illuminate\Database\QueryException;
 
+use Illuminate\View\View;
+
+use function imageavif;
+
 class RecipeController extends Controller
 {
-    public function list(int $type, Request $request)
+
+    /**
+     * Page d'accueil
+     *
+     * @param int $type
+     * @param Request $request
+     * @return View | RedirectResponse
+     */
+    public function list(int $type, Request $request): View | RedirectResponse
     {
         $response = [];
 
@@ -89,7 +102,13 @@ class RecipeController extends Controller
         return view('adminrecipeslist', $response);
     }
 
-    public function allow(Request $request)
+    /**
+     * Page d'accueil
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function allow(Request $request) : RedirectResponse
     {
 
         // Récupération des infos de l'utilisateur connecté
@@ -149,7 +168,13 @@ class RecipeController extends Controller
         }
     }
 
-    public function status(Request $request)
+    /**
+     * Page d'accueil
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function status(Request $request): RedirectResponse
     {
 
         // Récupération des infos de l'utilisateur connecté
@@ -213,7 +238,12 @@ class RecipeController extends Controller
         }
     }
 
-    public function new()
+    /**
+     * Page de nouvelle recette
+     *
+     * @return View | RedirectResponse
+     */
+    public function new(): View | RedirectResponse
     {
 
         // Récupération des infos de l'utilisateur connecté
@@ -239,7 +269,13 @@ class RecipeController extends Controller
         return view('recipenew', $response);
     }
 
-    public function create(Request $request)
+    /**
+     * Création de nouvelle recette
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function create(Request $request): RedirectResponse
     {
 
         // Récupération des infos de l'utilisateur connecté
@@ -359,37 +395,37 @@ class RecipeController extends Controller
                     case 'jpg':
                         $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefromjpeg($request->photoInput->path());
-                        \imageavif($gdImage, 'img/full/'.$newRecipe->image);
+                        imageavif($gdImage, 'img/full/'.$newRecipe->image);
                         $resizeImg = ImageTransformation::image_resize($gdImage, $imgProperties[0], $imgProperties[1]);
-                        \imageavif($resizeImg, 'img/thumbnail/'.$newRecipe->image);
+                        imageavif($resizeImg, 'img/thumbnail/'.$newRecipe->image);
                         // Création d'une miniature
                         break;
                     case 'jpeg':
                         $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefromjpeg($request->photoInput->path());
-                        \imageavif($gdImage, 'img/full/'.$newRecipe->image);
+                        imageavif($gdImage, 'img/full/'.$newRecipe->image);
                         $resizeImg = ImageTransformation::image_resize($gdImage, $imgProperties[0], $imgProperties[1]);
-                        \imageavif($resizeImg, 'img/thumbnail/'.$newRecipe->image);
+                        imageavif($resizeImg, 'img/thumbnail/'.$newRecipe->image);
                         break;
                     case 'png':
                         $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefrompng($request->photoInput->path());
-                        \imageavif($gdImage, 'img/full/'.$newRecipe->image);
+                        imageavif($gdImage, 'img/full/'.$newRecipe->image);
                         $resizeImg = ImageTransformation::image_resize($gdImage, $imgProperties[0], $imgProperties[1]);
-                        \imageavif($resizeImg, 'img/thumbnail/'.$newRecipe->image);
+                        imageavif($resizeImg, 'img/thumbnail/'.$newRecipe->image);
                         break;
                     case 'avif':
                         $gdImage = imagecreatefromavif($request->photoInput->path());
-                        \imageavif($gdImage, 'img/full/'.$newRecipe->image);
+                        imageavif($gdImage, 'img/full/'.$newRecipe->image);
                         $resizeImg = ImageTransformation::image_resize($gdImage, imagesx($gdImage), imagesy($gdImage));
-                        \imageavif($resizeImg, 'img/thumbnail/'.$newRecipe->image);
+                        imageavif($resizeImg, 'img/thumbnail/'.$newRecipe->image);
                         break;
                     default:
                         $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefromjpeg($request->photoInput->path());
-                        \imageavif($gdImage, 'img/full/'.$newRecipe->image);
+                        imageavif($gdImage, 'img/full/'.$newRecipe->image);
                         $resizeImg = ImageTransformation::image_resize($gdImage, $imgProperties[0], $imgProperties[1]);
-                        \imageavif($resizeImg, 'img/thumbnail/'.$newRecipe->image);
+                        imageavif($resizeImg, 'img/thumbnail/'.$newRecipe->image);
                         break;
                 }
                 imagedestroy($gdImage);
@@ -409,7 +445,13 @@ class RecipeController extends Controller
         }
     }
 
-    public function edit(int $id)
+    /**
+     * Page de modification de recette
+     *
+     * @param int $id
+     * @return View | RedirectResponse
+     */
+    public function edit(int $id): View | RedirectResponse
     {
 
         // Récupération des infos de l'utilisateur connecté
@@ -444,7 +486,13 @@ class RecipeController extends Controller
         return view('recipeedit', $response);
     }
 
-    public function update(Request $request)
+    /**
+     * Modification de recette
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function update(Request $request): RedirectResponse
     {
 
         // Récupération des infos de l'utilisateur connecté
@@ -583,37 +631,37 @@ class RecipeController extends Controller
                     case 'jpg':
                         $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefromjpeg($request->photoInput->path());
-                        \imageavif($gdImage, 'img/full/'.$recipe->image);
+                        imageavif($gdImage, 'img/full/'.$recipe->image);
                         $resizeImg = ImageTransformation::image_resize($gdImage, $imgProperties[0], $imgProperties[1]);
-                        \imageavif($resizeImg, 'img/thumbnail/'.$recipe->image);
+                        imageavif($resizeImg, 'img/thumbnail/'.$recipe->image);
                         // Création d'une miniature
                         break;
                     case 'jpeg':
                         $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefromjpeg($request->photoInput->path());
-                        \imageavif($gdImage, 'img/full/'.$recipe->image);
+                        imageavif($gdImage, 'img/full/'.$recipe->image);
                         $resizeImg = ImageTransformation::image_resize($gdImage, $imgProperties[0], $imgProperties[1]);
-                        \imageavif($resizeImg, 'img/thumbnail/'.$recipe->image);
+                        imageavif($resizeImg, 'img/thumbnail/'.$recipe->image);
                         break;
                     case 'png':
                         $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefrompng($request->photoInput->path());
-                        \imageavif($gdImage, 'img/full/'.$recipe->image);
+                        imageavif($gdImage, 'img/full/'.$recipe->image);
                         $resizeImg = ImageTransformation::image_resize($gdImage, $imgProperties[0], $imgProperties[1]);
-                        \imageavif($resizeImg, 'img/thumbnail/'.$recipe->image);
+                        imageavif($resizeImg, 'img/thumbnail/'.$recipe->image);
                         break;
                     case 'avif':
                         $gdImage = imagecreatefromavif($request->photoInput->path());
-                        \imageavif($gdImage, 'img/full/'.$recipe->image);
+                        imageavif($gdImage, 'img/full/'.$recipe->image);
                         $resizeImg = ImageTransformation::image_resize($gdImage, imagesx($gdImage), imagesy($gdImage));
-                        \imageavif($resizeImg, 'img/thumbnail/'.$recipe->image);
+                        imageavif($resizeImg, 'img/thumbnail/'.$recipe->image);
                         break;
                     default:
                         $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefromjpeg($request->photoInput->path());
-                        \imageavif($gdImage, 'img/full/'.$recipe->image);
+                        imageavif($gdImage, 'img/full/'.$recipe->image);
                         $resizeImg = ImageTransformation::image_resize($gdImage, $imgProperties[0], $imgProperties[1]);
-                        \imageavif($resizeImg, 'img/thumbnail/'.$recipe->image);
+                        imageavif($resizeImg, 'img/thumbnail/'.$recipe->image);
                         break;
                 }
                 imagedestroy($gdImage);

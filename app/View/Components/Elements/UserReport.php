@@ -9,14 +9,14 @@ class UserReport extends Component
     /**
      * Les personnes ayant fait le report de l'utilisateur.
      *
-     * @var array
+     * @var array<string>
      */
     public $opinions;
 
     /**
      * Create a new component instance.
      *
-     * @param  array  $opinions
+     * @param  array<string>  $opinions
      * @return void
      */
     public function __construct($opinions)
