@@ -39,7 +39,7 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $userRoleId = Role::where('name', 'Utilisateur')->first()->id;
+        $userRoleId = Role::where('name', 'Utilisateur')->firstOrFail()->id;
 
         $user = User::create([
             'name' => $request->name,

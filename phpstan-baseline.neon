@@ -1,56 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Cannot call method count\\(\\) on Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Models\\\\Recipe\\>\\|int\\.$#"
+			message: "#^Cannot call method hasVerifiedEmail\\(\\) on App\\\\Models\\\\User\\|null\\.$#"
 			count: 1
-			path: app/Http/Controllers/ExplorationController.php
-
-		-
-			message: "#^Cannot call method count\\(\\) on Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Models\\\\Recipe\\>\\|int\\.$#"
-			count: 1
-			path: app/Http/Controllers/MyNotebookController.php
-
-		-
-			message: "#^Cannot call method count\\(\\) on Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Models\\\\Recipe\\>\\|int\\.$#"
-			count: 1
-			path: app/Http/Controllers/MyRecipesController.php
-
-		-
-			message: "#^Part \\$recipeId \\(object\\|string\\) of encapsed string cannot be cast to string\\.$#"
-			count: 2
-			path: app/Http/Controllers/RecipeCardController.php
-
-		-
-			message: "#^Cannot access offset 0 on array\\{0\\: int, 1\\: int, 2\\: int, 3\\: string, mime\\: string, channels\\?\\: int, bits\\?\\: int\\}\\|false\\.$#"
-			count: 8
-			path: app/Http/Controllers/RecipeController.php
-
-		-
-			message: "#^Cannot access offset 1 on array\\{0\\: int, 1\\: int, 2\\: int, 3\\: string, mime\\: string, channels\\?\\: int, bits\\?\\: int\\}\\|false\\.$#"
-			count: 8
-			path: app/Http/Controllers/RecipeController.php
-
-		-
-			message: "#^Parameter \\#1 \\$image of function imageavif expects GdImage, GdImage\\|false given\\.$#"
-			count: 10
-			path: app/Http/Controllers/RecipeController.php
-
-		-
-			message: "#^Parameter \\#1 \\$image of function imagedestroy expects GdImage, GdImage\\|false given\\.$#"
-			count: 2
-			path: app/Http/Controllers/RecipeController.php
-
-		-
-			message: "#^Parameter \\#1 \\$image of function imagesx expects GdImage, GdImage\\|false given\\.$#"
-			count: 2
-			path: app/Http/Controllers/RecipeController.php
-
-		-
-			message: "#^Parameter \\#1 \\$image of function imagesy expects GdImage, GdImage\\|false given\\.$#"
-			count: 2
-			path: app/Http/Controllers/RecipeController.php
-
-		-
-			message: "#^Parameter \\#1 \\$source of static method App\\\\Helpers\\\\ImageTransformation\\:\\:image_resize\\(\\) expects GdImage, GdImage\\|false given\\.$#"
-			count: 10
-			path: app/Http/Controllers/RecipeController.php
+			path: app/Http/Controllers/Auth/EmailVerificationPromptController.php

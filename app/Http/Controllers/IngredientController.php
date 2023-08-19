@@ -24,7 +24,7 @@ class IngredientController extends Controller
      * @param Request $request
      * @return View | RedirectResponse
      */
-    public function list(int $type, Request $request): View | RedirectResponse
+    public function list(int $type, Request $request): View|RedirectResponse
     {
         $response = [];
 
@@ -68,7 +68,7 @@ class IngredientController extends Controller
         }
 
         $response['ingredients'] = $ingredients->paginate(20);
-        $response['search']      = $request->search ?? null;
+        $response['search'] = $request->search ?? null;
         // dd( $response['ingredients']);
 
         return view('adminingredientslist', $response);
@@ -108,7 +108,10 @@ class IngredientController extends Controller
             if (!$ingredient) {
                 return back()->withErrors(['ingredientAllowError' => 'Aucun ingrédient trouvé']);
             }
-            $authorMail              = $ingredient->user->email;
+            $authorMail = null;
+            if($ingredient->user) {
+                $authorMail = $ingredient->user->email;
+            }
             $ingredient->is_accepted = false;
             // Si l'ingrédient est accepté, il passe sur le compte principal, en cas de suppression de compte du demandeur
             $ingredient->user_id = 1;
@@ -121,7 +124,7 @@ class IngredientController extends Controller
                 'message'    => $request->denymessage
             ];
             // Si la modération était en cours
-            if ($request->typeList == 0) {
+            if (!empty($authorMail) && $request->typeList == 0) {
                 Mail::to($authorMail)->send(new RefusedIngredient($informations));
             }
 
@@ -180,23 +183,26 @@ class IngredientController extends Controller
             if (!$ingredient) {
                 return back()->withErrors(['ingredientAllowError' => 'Aucun ingrédient trouvé']);
             }
-            $authorMail              = $ingredient->user->email;
-            $ingredient->name        = $request->finalname;
-            $ingredient->icon        = Str::slug($request->finalname, '_');
+            $authorMail = null;
+            if($ingredient->user) {
+                $authorMail = $ingredient->user->email;
+            }
+            $ingredient->name = $request->finalname;
+            $ingredient->icon = Str::slug($request->finalname, '_');
             $ingredient->is_accepted = $request->allow;
             // Si l'ingrédient est accepté, il passe sur le compte principal, en cas de suppression de compte du demandeur
             $ingredient->user_id = 1;
             // Définition du régime de l'aliment
-            $ingredient->vegetarian_compatible  = $request->vegetarian ?? false;
-            $ingredient->vegan_compatible       = $request->vegan ?? false;
+            $ingredient->vegetarian_compatible = $request->vegetarian ?? false;
+            $ingredient->vegan_compatible = $request->vegan ?? false;
             $ingredient->gluten_free_compatible = $request->glutenfree ?? false;
-            $ingredient->halal_compatible       = $request->halal ?? false;
-            $ingredient->kosher_compatible      = $request->kosher ?? false;
+            $ingredient->halal_compatible = $request->halal ?? false;
+            $ingredient->kosher_compatible = $request->kosher ?? false;
             $ingredient->save();
 
             // Envoi de mail à la personne ayant proposé l'ingrédient
             $informations = ['ingredient' => $request->finalname, 'url' => URL::to('/')];
-            if ($request->typeList == 0) {
+            if ($authorMail && $request->typeList == 0) {
                 Mail::to($authorMail)->send(new AcceptedIngredient($informations));
             }
 
@@ -222,7 +228,7 @@ class IngredientController extends Controller
      * @param Request $request
      * @return View | RedirectResponse
      */
-    public function show(Request $request): View | RedirectResponse
+    public function show(Request $request): View|RedirectResponse
     {
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
@@ -268,10 +274,10 @@ class IngredientController extends Controller
         }
 
         // Création d'un nouvel ingredient
-        $newIngredient              = new Ingredient;
-        $newIngredient->user_id     = $user->id;
-        $newIngredient->name        = $request->ingredient;
-        $newIngredient->icon        = null;
+        $newIngredient = new Ingredient;
+        $newIngredient->user_id = $user->id;
+        $newIngredient->name = $request->ingredient;
+        $newIngredient->icon = null;
         $newIngredient->is_accepted = null;
         $newIngredient->save();
 

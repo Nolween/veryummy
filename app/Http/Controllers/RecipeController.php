@@ -373,7 +373,7 @@ class RecipeController extends Controller
             foreach ($request->ingredients as $ingredient) {
                 if (!empty($ingredient['ingredientId'])) {
                     // Récupération de l'ingrédient
-                    $ingredientCompatible = Ingredient::where('id', $ingredient['ingredientId'])->first();
+                    $ingredientCompatible = Ingredient::where('id', $ingredient['ingredientId'])->firstOrFail();
                     // Si l'ingrédient est compatible avec le régime
                     $compatible['vegan_compatible'] = $ingredientCompatible->vegan_compatible == true ? $compatible['vegan_compatible'] : $compatible['vegan_compatible'] + 1;
                     $compatible['vegetarian_compatible'] = $ingredientCompatible->vegetarian_compatible == true ? $compatible['vegetarian_compatible'] : $compatible['vegetarian_compatible'] + 1;
@@ -625,7 +625,7 @@ class RecipeController extends Controller
             foreach ($request->ingredients as $ingredient) {
                 if (!empty($ingredient['ingredientId'])) {
                     // Récupération de l'ingrédient
-                    $ingredientCompatible = Ingredient::where('id', $ingredient['ingredientId'])->first();
+                    $ingredientCompatible = Ingredient::where('id', $ingredient['ingredientId'])->firstOrFail();
                     // Si l'ingrédient est compatible avec le régime
                     $compatible['vegan_compatible'] = $ingredientCompatible->vegan_compatible == true ? $compatible['vegan_compatible'] : $compatible['vegan_compatible'] + 1;
                     $compatible['vegetarian_compatible'] = $ingredientCompatible->vegetarian_compatible == true ? $compatible['vegetarian_compatible'] : $compatible['vegetarian_compatible'] + 1;

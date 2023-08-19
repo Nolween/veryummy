@@ -28,7 +28,7 @@ class CheckCurrentPassword implements Rule
     public function passes($attribute, $value)
     {
         // Récupérartion du mot de passe actuel
-        $oldPassword = Auth::user()->password;
+        $oldPassword = Auth::user()->password ?? '';
 
         return Hash::check($value, $oldPassword);
     }

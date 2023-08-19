@@ -16,11 +16,11 @@ class VerifyEmailController extends Controller
      */
     public function __invoke(EmailVerificationRequest $request)
     {
-        if ($request->user()->hasVerifiedEmail()) {
+        if ($request->user() && $request->user()->hasVerifiedEmail()) {
             return redirect()->intended(RouteServiceProvider::HOME.'?verified=1');
         }
 
-        if ($request->user()->markEmailAsVerified()) {
+        if ($request->user() && $request->user()->markEmailAsVerified()) {
             // @phpstan-ignore-next-line
             event(new Verified($request->user()));
         }

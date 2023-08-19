@@ -56,7 +56,7 @@ class RecipeCardController extends Controller
         $response['opinion'] = !empty($user) ? RecipeOpinion::whereBelongsTo($user)->where('recipe_id', $id)->first(
         ) : [];
 
-        $response['type'] = RecipeType::where('id', $response['recipe']->recipe_type_id)->first()->name;
+        $response['type'] = RecipeType::where('id', $response['recipe']->recipe_type_id)->firstOrFail()->name;
 
         return view('recipeshow', $response);
     }
