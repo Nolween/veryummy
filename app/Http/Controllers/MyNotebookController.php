@@ -14,10 +14,8 @@ class MyNotebookController extends Controller
 {
     /**
      * Listes des recettes favories de l'utilisateur
-     *
-     * @return RedirectResponse | View
      */
-    public function list(Request $request): View | RedirectResponse
+    public function list(Request $request): View|RedirectResponse
     {
         $response = [];
 

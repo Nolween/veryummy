@@ -24,6 +24,7 @@ class EmailVerificationNotificationController extends Controller
 
                 return back()->with('status', 'verification-link-sent');
             }
+
             return redirect()->intended(RouteServiceProvider::HOME);
         }
     }

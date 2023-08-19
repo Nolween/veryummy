@@ -14,10 +14,8 @@ class MyRecipesController extends Controller
 {
     /**
      * Listes des recettes de l'utilisateur
-     *
-     * @return RedirectResponse | View
      */
-    public function list(Request $request): View | RedirectResponse
+    public function list(Request $request): View|RedirectResponse
     {
         $response = [];
 

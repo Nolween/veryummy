@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\URL;
 /**
  * Création d'un utilisateur
  */
-function initialize_user(bool $banned = false, bool $admin = false) : User
+function initialize_user(bool $banned = false, bool $admin = false): User
 {
     $faker = Faker::create();
     $newName = $faker->firstName().' '.$faker->lastName();

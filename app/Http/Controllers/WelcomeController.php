@@ -11,8 +11,6 @@ class WelcomeController extends Controller
 {
     /**
      * Page d'accueil
-     *
-     * @return View
      */
     public function index(): View
     {

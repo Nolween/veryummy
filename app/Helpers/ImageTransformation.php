@@ -9,10 +9,8 @@ class ImageTransformation
 {
     /**
      * Resizing the full recipe image into thumbnail.
-     * @param GdImage $source
-     * @param int $width
-     * @param int $height
-     * @return GdImage
+     *
+     * @param  GdImage  $source
      */
     public static function image_resize($source, int $width, int $height): GdImage
     {

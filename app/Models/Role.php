@@ -28,6 +28,7 @@ class Role extends Model
 
     /**
      * Get the users that owns the role.
+     *
      * @return HasMany<User>
      */
     public function users(): HasMany

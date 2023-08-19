@@ -8,7 +8,7 @@ use Faker\Factory as Faker;
 /**
  * Création d'un utilisateur
  */
-function initialize_user(bool $banned = false, bool $admin = false) : User
+function initialize_user(bool $banned = false, bool $admin = false): User
 {
     $faker = Faker::create();
     $newName = $faker->firstName().' '.$faker->lastName();
@@ -38,7 +38,7 @@ function initialize_user(bool $banned = false, bool $admin = false) : User
  *
  * @return Role $adminRole
  */
-function check_admin_role_exists() : Role
+function check_admin_role_exists(): Role
 {
     // Le rôle d'administrateur existe t-il?
     $adminRole = Role::where('name', 'Administrateur')->first();

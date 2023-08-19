@@ -18,7 +18,7 @@ class AcceptedIngredient extends Mailable
     /**
      * Create a new message instance.
      *
-     * @param array<string, string> $informations
+     * @param  array<string, string>  $informations
      */
     public function __construct(array $informations)
     {

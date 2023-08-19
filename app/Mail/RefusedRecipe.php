@@ -18,7 +18,7 @@ class RefusedRecipe extends Mailable
     /**
      * Create a new message instance.
      *
-     * @param array<string, string> $informations
+     * @param  array<string, string>  $informations
      * @return void
      */
     public function __construct($informations)

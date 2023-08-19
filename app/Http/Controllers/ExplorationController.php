@@ -18,8 +18,6 @@ class ExplorationController extends Controller
 {
     /**
      * Listes des recettes
-     *
-     * @return View
      */
     public function list(Request $request): View
     {

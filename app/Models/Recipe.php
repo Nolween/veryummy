@@ -124,7 +124,7 @@ class Recipe extends Model
     {
         return $this->hasOne(RecipeOpinion::class)->ofMany([
             'updated_at' => 'max',
-            'id'         => 'max',
+            'id' => 'max',
         ], function ($query) {
             $query->where('user_id', '=', Auth::id());
         });
