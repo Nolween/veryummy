@@ -51,7 +51,7 @@ class RecipeCardController extends Controller
         $user               = Auth::user();
         $response['userId'] = $user->id ?? null;
         // Tous les avis de la recette sauf celui de l'utilisateur connecté
-        $response['comments'] = Recipe::findOrFail($id)->comments->where('user_id', '!=', $response['userId']);
+        $response['comments'] = Recipe::findOrFail($id)->comments()->where('user_id', '!=', $response['userId']);
         // Si utilisateur connecté, récupération de son avis sur la recette (+ fav + report)
         $response['opinion'] = !empty($user) ? RecipeOpinion::whereBelongsTo($user)->where('recipe_id', $id)->first(
         ) : [];
@@ -64,12 +64,14 @@ class RecipeCardController extends Controller
     /**
      * Mettre en favori / Signaler une recette
      *
+     * @param Request $request
+     * @param Recipe $recipe
      * @return RedirectResponse
      */
-    public function status(Request $request): RedirectResponse
+    public function status(Request $request, Recipe $recipe): RedirectResponse
     {
         // Quelle est l'ID de la recette?
-        $recipeId = $request->route('id');
+        $recipeId = $recipe->id;
         // Récupération de l'utilisateur
         $user = Auth::user();
 
@@ -97,7 +99,7 @@ class RecipeCardController extends Controller
             ['is_favorite' => (bool)$request->is_favorite, 'is_reported' => (bool)$request->is_reported]
         );
 
-        return redirect("/recipe/show/$recipeId")->with(
+        return redirect("/recipe/show/" . $recipeId)->with(
             'statusSuccess',
             (bool)$request->is_favorite ? 'Recette mise en favori' : 'Recette signalée'
         );
@@ -106,12 +108,14 @@ class RecipeCardController extends Controller
     /**
      * Poster / Créer un commentaire sur la recette
      *
+     * @param Request $request
+     * @param Recipe $recipe
      * @return RedirectResponse
      */
-    public function comment(Request $request): RedirectResponse
+    public function comment(Request $request, Recipe $recipe): RedirectResponse
     {
         // Quelle est l'ID de la recette?
-        $recipeId = $request->route('id');
+        $recipeId = $recipe->id;
         // Récupération de l'utilisateur
         $user = Auth::user();
 
@@ -168,12 +172,14 @@ class RecipeCardController extends Controller
     /**
      * Supprimer l'opinion et la note de l'utilisateur
      *
+     * @param Request $request
+     * @param Recipe $recipe
      * @return RedirectResponse
      */
-    public function emptyOpinion(Request $request): RedirectResponse
+    public function emptyOpinion(Request $request, Recipe $recipe): RedirectResponse
     {
         // Quelle est l'ID de la recette?
-        $recipeId = $request->route('id');
+        $recipeId = $recipe->id;
         $recipe   = Recipe::findOrFail($recipeId);
         // Récupération de l'utilisateur
         $user = Auth::user();

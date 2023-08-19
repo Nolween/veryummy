@@ -66,9 +66,8 @@ class ExplorationController extends Controller
                 case 5: // casher
                     $recipesCount = $recipes = $recipes->where('kosher_compatible', 1);
                     break;
-
                 default:
-                    $recipesCount = 0;
+                    $recipesCount = $recipes;
                     break;
             }
             $response['total'] = $recipesCount->count();

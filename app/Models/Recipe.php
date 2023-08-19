@@ -9,6 +9,29 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property int $recipe_type_id
+ * @property string $name
+ * @property int $cooking_time
+ * @property int $making_time
+ * @property int $score
+ * @property string $image
+ * @property bool $is_accepted
+ * @property bool $vegan_compatible
+ * @property bool $vegetarian_compatible
+ * @property bool $gluten_free_compatible
+ * @property bool $halal_compatible
+ * @property bool $kosher_compatible
+ * @property-read RecipeType $recipeType
+ * @property-read User $user
+ * @property-read RecipeStep[] $steps
+ * @property-read RecipeOpinion[] $comments
+ * @property-read RecipeIngredients[] $ingredients
+ * @property-read RecipeOpinion[] $opinions
+ * @property-read RecipeOpinion $opinion
+ */
 class Recipe extends Model
 {
     use HasFactory;
