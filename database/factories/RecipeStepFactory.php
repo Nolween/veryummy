@@ -17,12 +17,12 @@ class RecipeStepFactory extends Factory
      */
     public function definition()
     {
-        $recipeId = rand(1, 100);
+        $recipeId = Recipe::inRandomOrder()->first()->id;
 
         return [
             'recipe_id' => $recipeId,
             'order' => Recipe::where('id', $recipeId)->get()->count() + 1,
-            'description' => $this->faker->text(),
+            'description' => fake()->text(),
         ];
     }
 }

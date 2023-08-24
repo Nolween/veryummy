@@ -8,8 +8,6 @@ test('opinion recipe', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $randUser = User::where('is_banned', false)->inRandomOrder()->first();
 
-    dump("Connection avec l'utilisateur $randUser->name");
-
     // Sélection d'une recette existante qui ne lui appartient pas
     $randRecipe = Recipe::where('user_id', '!=', $randUser->id)->where('is_accepted', true)->inRandomOrder()->first();
 
@@ -19,7 +17,6 @@ test('opinion recipe', function () {
         0 => 'Ingrédient signalé',
         1 => 'Ingrédient mis en favori'
     };
-    dump($typeInformation);
     $response = $this->actingAs($randUser)->post('/recipe/status', ['is_favorite' => $favorite, 'is_reported' => ! $favorite, 'recipeid' => $randRecipe->id]);
 
     // Vérification de la redirection et qu'il n'y a pas d'erreur
@@ -29,7 +26,6 @@ test('opinion recipe', function () {
 test('opinion non existing recipe', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $randUser = User::where('is_banned', false)->inRandomOrder()->first();
-    dump("Connection avec l'utilisateur $randUser->name");
 
     // Envoi d'une modification de statut (favori ou signalement) au controller
     $favorite = rand(0, 1);
@@ -46,15 +42,12 @@ test('opinion non existing recipe', function () {
 test('comment recipe', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $randUser = User::where('is_banned', false)->inRandomOrder()->first();
-    dump("Connection avec l'utilisateur $randUser->name");
 
     // Sélection d'une recette existante qui ne lui appartient pas
     $randRecipe = Recipe::where('user_id', '!=', $randUser->id)->where('is_accepted', true)->inRandomOrder()->first();
-    dump("Nom de la recette: $randRecipe->name");
 
     // Envoi d'une modification de statut (favori ou signalement) au controller
     $score = rand(1, 5);
-    dump("Note attribuée: $score");
 
     // Création d'une phrase au hasard
     $faker = Faker::create();
@@ -68,11 +61,9 @@ test('comment recipe', function () {
 test('comment non existing recipe', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $randUser = User::where('is_banned', false)->inRandomOrder()->first();
-    dump("Connection avec l'utilisateur $randUser->name");
 
     // Envoi d'une modification de statut (favori ou signalement) au controller
     $score = rand(1, 5);
-    dump("Note attribuée: $score");
 
     // Création d'une phrase au hasard
     $faker = Faker::create();
@@ -81,21 +72,18 @@ test('comment non existing recipe', function () {
     $response = $this->actingAs($randUser)->post("/recipe/comment/$recipeId", ['score' => $score, 'comment' => $comment]);
 
     // Vérification de la redirection et qu'il n'y a pas d'erreur
-    $response->assertStatus(302)->assertSessionHasErrors('recipeError');
+    $response->assertStatus(404);
 });
 
 test('score overscored recipe', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $randUser = User::where('is_banned', false)->inRandomOrder()->first();
-    dump("Connection avec l'utilisateur $randUser->name");
 
     // Sélection d'une recette existante qui ne lui appartient pas
     $randRecipe = Recipe::where('user_id', '!=', $randUser->id)->where('is_accepted', true)->inRandomOrder()->first();
-    dump("Nom de la recette: $randRecipe->name");
 
     // Attribution d'une note trop élevée
     $score = rand(6, 100);
-    dump("Note attribuée: $score");
 
     // Création d'une phrase au hasard
     $faker = Faker::create();

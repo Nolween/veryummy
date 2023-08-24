@@ -30,7 +30,6 @@ test('new users can register', function () {
         'test' => true,
     ]);
 
-    // dump($response);
     $this->assertAuthenticated();
     $response->assertRedirect(RouteServiceProvider::HOME);
 });

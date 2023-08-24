@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Ingredient;
 use App\Models\Recipe;
+use App\Models\Unit;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,12 +19,12 @@ class RecipeIngredientsFactory extends Factory
      */
     public function definition()
     {
-        $recipeId = rand(1, 100);
 
+        $recipeId = Recipe::inRandomOrder()->first()->id;
         return [
             'recipe_id' => $recipeId,
-            'unit_id' => rand(1, 17),
-            'ingredient_id' => rand(1, 2280),
+            'unit_id' => Unit::inRandomOrder()->first()->id,
+            'ingredient_id' => Ingredient::inRandomOrder()->first()->id,
             'quantity' => rand(1, 5),
             'order' => Recipe::where('id', $recipeId)->get()->count() + 1,
         ];

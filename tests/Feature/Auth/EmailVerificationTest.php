@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Role;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Faker\Factory as Faker;
@@ -8,33 +7,6 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
 
-/**
- * Création d'un utilisateur
- */
-function initialize_user(bool $banned = false, bool $admin = false): User
-{
-    $faker = Faker::create();
-    $newName = $faker->firstName().' '.$faker->lastName();
-    $mail = $faker->email();
-    if ($admin == true) {
-        // Création d'un rôle, nécessaire pour la création d'un utilisateur
-        $role = Role::where('name', 'Administrateur')->first();
-        if (! $role) {
-            $role = Role::factory()->create(['name' => 'Administrateur']);
-        }
-    } else {
-        // Création d'un rôle, nécessaire pour la création d'un utilisateur
-        $role = Role::where('name', 'Utilisateur')->first();
-        if (! $role) {
-            $role = Role::factory()->create(['name' => 'Utilisateur']);
-        }
-    }
-
-    // Création d'un utilisateur
-    $user = User::factory()->create(['name' => $newName, 'email' => $mail, 'password' => bcrypt('123456'), 'role_id' => $role->id, 'is_banned' => $banned, 'email_verified_at' => now()]);
-
-    return $user;
-}
 
 test('email verification screen can be rendered', function () {
     $user = initialize_user();
@@ -56,24 +28,37 @@ test('email can be verified', function () {
     );
 
     $response = $this->actingAs($user)->get($verificationUrl);
-    dump($response);
 
     //! A vérifier
     // Event::assertDispatched(Verified::class);
     expect($user->fresh()->hasVerifiedEmail())->toBeTrue();
-    $response->assertRedirect(RouteServiceProvider::HOME.'?verified=1');
+    $response->assertRedirect(RouteServiceProvider::HOME . '?verified=1');
 });
 
-test('email is not verified with invalid hash', function () {
-    $user = initialize_user();
+test('email is not verified', function () {
+    // Création d'un utilisateur
+    $user = User::factory()->create(
+        [
 
+            'email_verified_at' => null
+        ]
+    );;
+
+    // Generate verification URL with an invalid hash
     $verificationUrl = URL::temporarySignedRoute(
         'verification.verify',
         now()->addMinutes(60),
-        ['id' => $user->id, 'hash' => sha1('wrong-email')]
+        [
+            'id' => $user->id,
+            'hash' => sha1('wrong-email')
+        ]
     );
 
+    // Act as the user and visit the verification URL
     $this->actingAs($user)->get($verificationUrl);
 
-    expect($user->fresh()->hasVerifiedEmail())->toBeFalse();
+    // Refresh the user instance and check the verification status
+    $user = $user->fresh();
+
+    $this->assertFalse($user->hasVerifiedEmail());
 });

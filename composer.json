@@ -2,9 +2,12 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
-        "license": "MIT",
-        "require": {
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
+    "license": "MIT",
+    "require": {
         "php": "^8.1.10",
         "blade-ui-kit/blade-icons": "^1.5.2",
         "doctrine/dbal": "^3.6.5",
@@ -12,9 +15,10 @@
         "laravel/framework": "^v10.18.0",
         "laravel/sanctum": "^v3.2.5",
         "laravel/tinker": "^v2.8.1",
-        "owenvoke/blade-fontawesome": "^v2.4.0"
+        "owenvoke/blade-fontawesome": "^v2.4.0",
+        "ext-gd": "*"
     },
-        "require-dev": {
+    "require-dev": {
         "fakerphp/faker": "^1.11.3",
         "laravel/breeze": "^v1.23.0",
         "laravel/pint": "^1.10",

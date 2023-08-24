@@ -196,7 +196,7 @@
                 <div class="w-3/4 lg:w-1/2 mb-3 px-4 mx-auto" id="photo-div">
                     <label for="photo-input">
                         <img class="w-full h-full object-cover rounded-sm mb-2 cursor-pointer" id="photo"
-                            src="{{ asset('img/full/' . $recipe->image) }}" alt="photo">
+                            src="{{ storage_path('app/public/img/full/' . $recipe->image) }}" alt="photo">
                     </label>
                     <input id="photo-input" type="file" accept=".png, .jpg, .jpeg, .avif" name="photoInput"
                         id="photo-input" onchange="loadFile(event)" style="display: none;" />

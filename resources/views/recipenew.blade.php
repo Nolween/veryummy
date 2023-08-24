@@ -190,7 +190,7 @@
                 <div class="w-4/5 lg:w-2/5 xl:w-7/12 mb-3 px-4 mx-auto" id="photo-div">
                     <label for="photo-input">
                         <img class="w-full h-full max-h-full object-cover rounded-sm mb-2 cursor-pointer" id="photo"
-                            src="{{ asset('img/full/ajout-photo.png') }}" alt="test">
+                            src="{{ storage_path('app/public/img/full/ajout-photo.png') }}" alt="test">
                     </label>
                     <input id="photo-input" type="file" accept=".png, .jpg, .jpeg, .avif" name="photoInput"
                         onchange="loadFile(event)" style="display: none;" />

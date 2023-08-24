@@ -1,38 +1,10 @@
 <?php
 
-use App\Models\Role;
 use App\Models\User;
 use Faker\Factory as Faker;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Notification;
 
-/**
- * Création d'un utilisateur
- */
-function initialize_user(bool $banned = false, bool $admin = false): User
-{
-    $faker = Faker::create();
-    $newName = $faker->firstName().' '.$faker->lastName();
-    $mail = $faker->email();
-    if ($admin == true) {
-        // Création d'un rôle, nécessaire pour la création d'un utilisateur
-        $role = Role::where('name', 'Administrateur')->first();
-        if (! $role) {
-            $role = Role::factory()->create(['name' => 'Administrateur']);
-        }
-    } else {
-        // Création d'un rôle, nécessaire pour la création d'un utilisateur
-        $role = Role::where('name', 'Utilisateur')->first();
-        if (! $role) {
-            $role = Role::factory()->create(['name' => 'Utilisateur']);
-        }
-    }
-
-    // Création d'un utilisateur
-    $user = User::factory()->create(['name' => $newName, 'email' => $mail, 'password' => bcrypt('123456'), 'role_id' => $role->id, 'is_banned' => $banned, 'email_verified_at' => now()]);
-
-    return $user;
-}
 
 test('reset password link screen can be rendered', function () {
     $response = $this->get('/forgot-password');
@@ -58,7 +30,7 @@ test('reset password screen can be rendered', function () {
     $this->post('/forgot-password', ['email' => $user->email]);
 
     Notification::assertSentTo($user, ResetPassword::class, function ($notification) {
-        $response = $this->get('/reset-password/'.$notification->token);
+        $response = $this->get('/reset-password/' . $notification->token);
 
         $response->assertStatus(200);
 
@@ -75,9 +47,9 @@ test('password can be reset with valid token', function () {
 
     Notification::assertSentTo($user, ResetPassword::class, function ($notification) use ($user) {
         $response = $this->post('/reset-password', [
-            'token' => $notification->token,
-            'email' => $user->email,
-            'password' => 'password',
+            'token'                 => $notification->token,
+            'email'                 => $user->email,
+            'password'              => 'password',
             'password_confirmation' => 'password',
         ]);
 

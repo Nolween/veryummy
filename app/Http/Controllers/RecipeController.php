@@ -20,10 +20,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ItemNotFoundException;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+
 use function imageavif;
 
 class RecipeController extends Controller
@@ -38,7 +40,7 @@ class RecipeController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (! $user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
+        if (!$user || $user->role !== 'admin' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 
@@ -54,20 +56,20 @@ class RecipeController extends Controller
             case 0:
                 // Récupération des ingrédients
                 $recipes = Recipe::having('opinions_count', '>', 0)
-                    ->with('user')
-                    ->with([
-                        'opinions' => function ($query) {
-                            $query->where('is_reported', '=', true);
-                        },
-                    ])
-                    ->withCount([
-                        'opinions' => function (Builder $query) {
-                            $query->where('is_reported', '=', true);
-                        },
-                    ]);
+                                 ->with('user')
+                                 ->with([
+                                     'opinions' => function ($query) {
+                                         $query->where('is_reported', '=', true);
+                                     },
+                                 ])
+                                 ->withCount([
+                                     'opinions' => function (Builder $query) {
+                                         $query->where('is_reported', '=', true);
+                                     },
+                                 ]);
 
                 // Si recherche
-                if (! empty($request->search)) {
+                if (!empty($request->search)) {
                     $recipes->where('name', 'like', "%{$request->search}%");
                 }
                 $response['recipes'] = $recipes->paginate(20);
@@ -75,15 +77,15 @@ class RecipeController extends Controller
             case 1:
                 // Récupération des ingrédients
                 $recipes = Recipe::having('opinions_count', '=', 0)
-                    ->with('user')
-                    ->withCount([
-                        'opinions' => function (Builder $query) {
-                            $query->where('is_reported', '=', true);
-                        },
-                    ]);
+                                 ->with('user')
+                                 ->withCount([
+                                     'opinions' => function (Builder $query) {
+                                         $query->where('is_reported', '=', true);
+                                     },
+                                 ]);
 
                 // Si recherche
-                if (! empty($request->search)) {
+                if (!empty($request->search)) {
                     $recipes->where('name', 'like', "%{$request->search}%");
                 }
 
@@ -94,7 +96,7 @@ class RecipeController extends Controller
                 break;
         }
 
-        $response['typeList'] = (int) $type;
+        $response['typeList'] = (int)$type;
         $response['search'] = $request->search;
         // dd( $response['recipes']);
 
@@ -109,7 +111,7 @@ class RecipeController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (! $user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
+        if (!$user || $user->role !== 'admin' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 
@@ -119,7 +121,7 @@ class RecipeController extends Controller
         // Validation du formulaire avec les différentes règles
         $request->validate([
             'recipeid' => ['integer', 'required', 'exists:recipes,id'],
-            'allow' => ['boolean', 'required'],
+            'allow'    => ['boolean', 'required'],
             'typeList' => ['integer', 'required'],
         ]);
 
@@ -127,15 +129,15 @@ class RecipeController extends Controller
         DB::beginTransaction();
         try {
             // Récupération de la recette par son Id
-            $recipe = Recipe::where('id', (int) $request->recipeid)->with('user')->first();
+            $recipe = Recipe::where('id', (int)$request->recipeid)->with('user')->first();
             // Si pas de recette trouvée, erreur
-            if (! $recipe) {
+            if (!$recipe) {
                 return back()->withErrors(['recipeAllowError' => 'Aucun ingrédient trouvé']);
             }
 
             // Si on ignore les signalements
             if ($request->allow == true) {
-                RecipeOpinion::where('recipe_id', (int) $request->recipeid)->where('is_reported', true)->update(
+                RecipeOpinion::where('recipe_id', (int)$request->recipeid)->where('is_reported', true)->update(
                     ['is_reported' => false]
                 );
             } // Si on supprime la recette
@@ -173,7 +175,7 @@ class RecipeController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (! $user || $user->is_banned == true) {
+        if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 
@@ -183,7 +185,7 @@ class RecipeController extends Controller
         $request->validate([
             'is_favorite' => ['boolean', 'nullable'],
             'is_reported' => ['boolean', 'nullable'],
-            'recipeid' => ['integer', 'required', 'exists:recipes,id'],
+            'recipeid'    => ['integer', 'required', 'exists:recipes,id'],
         ]);
         // return dd($test);
 
@@ -191,10 +193,7 @@ class RecipeController extends Controller
         DB::beginTransaction();
         try {
             // La recette existe t-elle?
-            $recipe = Recipe::find($request->recipeid);
-            if (! $recipe) {
-                throw new ItemNotFoundException();
-            }
+            $recipe = Recipe::findOrFail($request->recipeid);
 
             RecipeOpinion::updateOrCreate(
                 ['user_id' => $user->id, 'recipe_id' => $request->recipeid],
@@ -236,7 +235,7 @@ class RecipeController extends Controller
         $user = Auth::user();
 
         // Si pas d'utilisateur
-        if (! $user || $user->is_banned == true) {
+        if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 
@@ -264,7 +263,7 @@ class RecipeController extends Controller
         $user = Auth::user();
 
         // Si pas d'utilisateur
-        if (! $user || $user->is_banned == true) {
+        if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 
@@ -273,19 +272,19 @@ class RecipeController extends Controller
 
         // Validation du formulaire
         $request->validate([
-            'nom' => ['string', 'required', 'min:2'],
-            'photoInput' => 'nullable|mimes:jpg,png,jpeg,gif,svg,avif,webp',
-            'preparation' => ['integer', 'required', 'min:0', 'max:1000'],
-            'cuisson' => ['integer', 'nullable', 'min:0', 'max:1000'],
-            'parts' => ['integer', 'required', 'min:0', 'max:1000'],
-            'stepCount' => ['integer', 'nullable'],
-            'type' => ['integer', 'exists:recipe_types,id', 'required'],
-            'ingredientCount' => ['integer', 'nullable'],
-            '*.ingredientId' => ['integer', 'exists:ingredients,id', 'nullable'],
-            '*.ingredientName' => ['string', 'nullable'],
-            '*.ingredientUnit' => ['numeric', 'exists:units,id', 'nullable'],
+            'nom'                  => ['string', 'required', 'min:2'],
+            'photoInput'           => 'nullable|mimes:jpg,png,jpeg,gif,svg,avif,webp',
+            'preparation'          => ['integer', 'required', 'min:0', 'max:1000'],
+            'cuisson'              => ['integer', 'nullable', 'min:0', 'max:1000'],
+            'parts'                => ['integer', 'required', 'min:0', 'max:1000'],
+            'stepCount'            => ['integer', 'nullable'],
+            'type'                 => ['integer', 'exists:recipe_types,id', 'required'],
+            'ingredientCount'      => ['integer', 'nullable'],
+            '*.ingredientId'       => ['integer', 'exists:ingredients,id', 'nullable'],
+            '*.ingredientName'     => ['string', 'nullable'],
+            '*.ingredientUnit'     => ['numeric', 'exists:units,id', 'nullable'],
             '*.ingredientQuantity' => ['numeric', 'nullable'],
-            '*.stepDescription' => ['string', 'nullable'],
+            '*.stepDescription'    => ['string', 'nullable'],
         ]);
 
         // Transaction pour rollback si erreur
@@ -304,7 +303,7 @@ class RecipeController extends Controller
             //? Création des étapes pour la recette
             $stepOrder = 0;
             foreach ($request->steps as $step) {
-                if (! empty($step['stepDescription'])) {
+                if (!empty($step['stepDescription'])) {
                     // Augmentation de l'ordre de l'étape
                     $stepOrder++;
                     // Construction de l'étape
@@ -318,7 +317,7 @@ class RecipeController extends Controller
             //? Création des ingrédients pour la recette
             $ingredientOrder = 0;
             foreach ($request->ingredients as $ingredient) {
-                if (! empty($ingredient['ingredientId'])) {
+                if (!empty($ingredient['ingredientId'])) {
                     $ingredientOrder++;
                     // Construction de relation ingrédient-recette
                     $newRecipeIngredient = new RecipeIngredients;
@@ -326,15 +325,15 @@ class RecipeController extends Controller
                     $newRecipeIngredient->order = $ingredientOrder;
                     $unit = Unit::where('id', $ingredient['ingredientUnit'])->first();
                     // Si pas d'unité de mesure trouvé, erreur
-                    if (! $unit) {
+                    if (!$unit) {
                         return back()->withErrors(
-                            ['unitError' => 'Unité de mesure non trouvé: '.$ingredient['ingredientUnit']]
+                            ['unitError' => 'Unité de mesure non trouvé: ' . $ingredient['ingredientUnit']]
                         );
                     }
                     $newRecipeIngredient->unit_id = $ingredient['ingredientUnit'];
                     $ingr = Ingredient::where('id', $ingredient['ingredientId'])->first();
                     // Si pas d'ingrédient  trouvé, erreur
-                    if (! $ingr) {
+                    if (!$ingr) {
                         return back()->withErrors(['ingredientError' => 'Ingrédient non trouvé']);
                     }
                     $newRecipeIngredient->ingredient_id = $ingredient['ingredientId'];
@@ -345,15 +344,15 @@ class RecipeController extends Controller
             //? Définition des différentes catégories de la recette
             // Tableau des compatibilités de la recette
             $compatible = [
-                'vegan_compatible' => 0,
-                'vegetarian_compatible' => 0,
+                'vegan_compatible'       => 0,
+                'vegetarian_compatible'  => 0,
                 'gluten_free_compatible' => 0,
-                'halal_compatible' => 0,
-                'kosher_compatible' => 0,
+                'halal_compatible'       => 0,
+                'kosher_compatible'      => 0,
             ];
             // Parcours des ingrédients ajoutés
             foreach ($request->ingredients as $ingredient) {
-                if (! empty($ingredient['ingredientId'])) {
+                if (!empty($ingredient['ingredientId'])) {
                     // Récupération de l'ingrédient
                     $ingredientCompatible = Ingredient::where('id', $ingredient['ingredientId'])->firstOrFail();
                     // Si l'ingrédient est compatible avec le régime
@@ -372,7 +371,7 @@ class RecipeController extends Controller
             $newRecipe->kosher_compatible = $compatible['kosher_compatible'] == 0 ? true : false;
 
             //? Création d'un nom pour l'image
-            $newRecipe->image = $newRecipe->id.'-'.Str::slug($request->nom, '-').'.avif';
+            $newRecipe->image = $newRecipe->id . '-' . Str::slug($request->nom, '-') . '.avif';
             //? Si on a une image valide
             if ($request->photoInput && function_exists('imageavif')) {
                 switch ($request->photoInput->extension()) {
@@ -381,13 +380,13 @@ class RecipeController extends Controller
                         $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefromjpeg($request->photoInput->path());
                         if ($gdImage) {
-                            imageavif($gdImage, 'img/full/'.$newRecipe->image);
+                            imageavif($gdImage, storage_path('app/public/img/full/' . $newRecipe->image));
                             $resizeImg = ImageTransformation::image_resize(
                                 $gdImage,
                                 $imgProperties[0] ?? 0,
                                 $imgProperties[1] ?? 0
                             );
-                            imageavif($resizeImg, 'img/thumbnail/'.$newRecipe->image);
+                            imageavif($resizeImg, storage_path('app/public/img/thumbnail/' . $newRecipe->image));
                         }
                         // Création d'une miniature
                         break;
@@ -395,38 +394,38 @@ class RecipeController extends Controller
                         $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefrompng($request->photoInput->path());
                         if ($gdImage) {
-                            imageavif($gdImage, 'img/full/'.$newRecipe->image);
+                            imageavif($gdImage, storage_path('app/public/img/full/' . $newRecipe->image));
                             $resizeImg = ImageTransformation::image_resize(
                                 $gdImage,
                                 $imgProperties[0] ?? 0,
                                 $imgProperties[1] ?? 0
                             );
-                            imageavif($resizeImg, 'img/thumbnail/'.$newRecipe->image);
+                            imageavif($resizeImg, 'img/thumbnail/' . $newRecipe->image);
                         }
                         break;
                     case 'avif':
                         $gdImage = imagecreatefromavif($request->photoInput->path());
                         if ($gdImage) {
-                            imageavif($gdImage, 'img/full/'.$newRecipe->image);
+                            imageavif($gdImage, storage_path('app/public/img/full/' . $newRecipe->image));
                             $resizeImg = ImageTransformation::image_resize(
                                 $gdImage,
                                 imagesx($gdImage),
                                 imagesy($gdImage)
                             );
-                            imageavif($resizeImg, 'img/thumbnail/'.$newRecipe->image);
+                            imageavif($resizeImg, storage_path('app/public/img/thumbnail/' . $newRecipe->image));
                         }
                         break;
                     default:
                         $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefromjpeg($request->photoInput->path());
                         if ($gdImage) {
-                            imageavif($gdImage, 'img/full/'.$newRecipe->image);
+                            imageavif($gdImage, storage_path('app/public/img/full/' . $newRecipe->image));
                             $resizeImg = ImageTransformation::image_resize(
                                 $gdImage,
                                 $imgProperties[0] ?? 0,
                                 $imgProperties[1] ?? 0
                             );
-                            imageavif($resizeImg, 'img/thumbnail/'.$newRecipe->image);
+                            imageavif($resizeImg, 'img/thumbnail/' . $newRecipe->image);
                         }
                         break;
                 }
@@ -459,7 +458,7 @@ class RecipeController extends Controller
         $user = Auth::user();
 
         // Si pas d'utilisateur
-        if (! $user || $user->is_banned == true) {
+        if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 
@@ -478,7 +477,7 @@ class RecipeController extends Controller
         // Récupération de la recette
         $recipe = Recipe::where('id', $id)->with('ingredients')->with('steps')->first();
         // L'utilisateur est-il propriétaire de la recette ou administrateur?
-        if (! $recipe || ($recipe->user_id !== $user->id && $user->role->name !== 'Administrateur')) {
+        if (!$recipe || ($recipe->user_id !== $user->id && $user->role !== 'admin')) {
             return redirect('/')->withErrors(['statusError' => 'Recette non trouvée']);
         }
 
@@ -496,7 +495,7 @@ class RecipeController extends Controller
         $user = Auth::user();
 
         // Si pas d'utilisateur
-        if (! $user || $user->is_banned == true) {
+        if (!$user || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 
@@ -505,26 +504,26 @@ class RecipeController extends Controller
 
         // Validation du formulaire
         $request->validate([
-            'recipeid' => ['integer', 'required', 'exists:recipes,id'],
-            'nom' => ['string', 'required', 'min:2'],
-            'photoInput' => 'nullable|mimes:jpg,png,jpeg,gif,svg,avif,webp',
-            'preparation' => ['integer', 'required', 'min:0', 'max:1000'],
-            'cuisson' => ['integer', 'nullable', 'min:0', 'max:1000'],
-            'parts' => ['integer', 'required', 'min:0', 'max:1000'],
-            'stepCount' => ['integer', 'nullable'],
-            'type' => ['integer', 'exists:recipe_types,id', 'required'],
-            'ingredientCount' => ['integer', 'nullable'],
-            '*.ingredientId' => ['integer', 'exists:ingredients,id', 'nullable'],
-            '*.ingredientName' => ['string', 'nullable'],
-            '*.ingredientUnit' => ['numeric', 'exists:units,id', 'nullable'],
+            'recipeid'             => ['integer', 'required', 'exists:recipes,id'],
+            'nom'                  => ['string', 'required', 'min:2'],
+            'photoInput'           => 'nullable|mimes:jpg,png,jpeg,gif,svg,avif,webp',
+            'preparation'          => ['integer', 'required', 'min:0', 'max:1000'],
+            'cuisson'              => ['integer', 'nullable', 'min:0', 'max:1000'],
+            'parts'                => ['integer', 'required', 'min:0', 'max:1000'],
+            'stepCount'            => ['integer', 'nullable'],
+            'type'                 => ['integer', 'exists:recipe_types,id', 'required'],
+            'ingredientCount'      => ['integer', 'nullable'],
+            '*.ingredientId'       => ['integer', 'exists:ingredients,id', 'nullable'],
+            '*.ingredientName'     => ['string', 'nullable'],
+            '*.ingredientUnit'     => ['numeric', 'exists:units,id', 'nullable'],
             '*.ingredientQuantity' => ['numeric', 'nullable'],
-            '*.stepDescription' => ['string', 'nullable'],
+            '*.stepDescription'    => ['string', 'nullable'],
         ]);
 
         // La recette existe t-elle et appartient-elle à l'utilisateur?
         $recipe = Recipe::where('id', $request->recipeid)->first();
-        if (! $recipe || $recipe->user_id !== $user->id) {
-            return redirect('/recipe/edit/'.$request->recipeid)->withErrors(['editError' => 'Recette introuvable']);
+        if (!$recipe || $recipe->user_id !== $user->id) {
+            return redirect('/recipe/edit/' . $request->recipeid)->withErrors(['editError' => 'Recette introuvable']);
         }
 
         // Transaction pour rollback si erreur
@@ -548,7 +547,7 @@ class RecipeController extends Controller
             //? Création des étapes pour la recette
             $stepOrder = 0;
             foreach ($request->steps as $step) {
-                if (! empty($step['stepDescription'])) {
+                if (!empty($step['stepDescription'])) {
                     // Augmentation de l'ordre de l'étape
                     $stepOrder++;
                     // Construction de l'étape
@@ -565,21 +564,17 @@ class RecipeController extends Controller
             //? Création des ingrédients pour la recette
             $ingredientOrder = 0;
             foreach ($request->ingredients as $ingredient) {
-                if (! empty($ingredient['ingredientId'])) {
+                if (!empty($ingredient['ingredientId'])) {
                     $ingredientOrder++;
                     // Construction de relation ingrédient-recette
                     $newRecipeIngredient = new RecipeIngredients;
                     $newRecipeIngredient->recipe_id = $recipe->id;
                     $newRecipeIngredient->order = $ingredientOrder;
-                    $unit = Unit::where('id', $ingredient['ingredientUnit'])->first();
-                    // Si pas d'unité de mesure trouvé, erreur
-                    if (! $unit) {
-                        return back()->withErrors(['unitError' => 'Unité de mesure non trouvé']);
-                    }
+                    $unit = Unit::where('id', $ingredient['ingredientUnit'])->firstOrFail();
                     $newRecipeIngredient->unit_id = $ingredient['ingredientUnit'];
                     $ingr = Ingredient::where('id', $ingredient['ingredientId'])->first();
                     // Si pas d'ingrédient  trouvé, erreur
-                    if (! $ingr) {
+                    if (!$ingr) {
                         return back()->withErrors(['ingredientError' => 'Ingrédient non trouvé']);
                     }
                     $newRecipeIngredient->quantity = $ingredient['ingredientQuantity'];
@@ -591,15 +586,15 @@ class RecipeController extends Controller
             //? Définition des différentes catégories de la recette
             // Tableau des compatibilités de la recette
             $compatible = [
-                'vegan_compatible' => 0,
-                'vegetarian_compatible' => 0,
+                'vegan_compatible'       => 0,
+                'vegetarian_compatible'  => 0,
                 'gluten_free_compatible' => 0,
-                'halal_compatible' => 0,
-                'kosher_compatible' => 0,
+                'halal_compatible'       => 0,
+                'kosher_compatible'      => 0,
             ];
             // Parcours des ingrédients ajoutés
             foreach ($request->ingredients as $ingredient) {
-                if (! empty($ingredient['ingredientId'])) {
+                if (!empty($ingredient['ingredientId'])) {
                     // Récupération de l'ingrédient
                     $ingredientCompatible = Ingredient::where('id', $ingredient['ingredientId'])->firstOrFail();
                     // Si l'ingrédient est compatible avec le régime
@@ -618,25 +613,25 @@ class RecipeController extends Controller
             $recipe->kosher_compatible = $compatible['kosher_compatible'] == 0 ? true : false;
 
             //? Création d'un nom pour l'image
-            $recipe->image = $recipe->id.'-'.Str::slug($request->nom, '-').'.avif';
+            $recipe->image = storage_path('app/public/img/full/' . $recipe->id . '-' . Str::slug($request->nom, '-') . '.avif');
             //? Si on a une image valide
             if ($request->photoInput && function_exists('imageavif')) {
                 // Suppression des images existantes
-                File::delete(public_path('img/full/'.$oldImageName));
-                File::delete(public_path('img/thumbnail/'.$oldImageName));
+                File::delete(storage_path('app/public/img/full/' . $oldImageName));
+                File::delete(storage_path('app/public/img/thumbnail/' . $oldImageName));
                 switch ($request->photoInput->extension()) {
                     case 'jpg':
                     case 'jpeg':
                         $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefromjpeg($request->photoInput->path());
                         if ($gdImage) {
-                            imageavif($gdImage, 'img/full/'.$recipe->image);
+                            imageavif($gdImage, storage_path('app/public/img/full/' . $recipe->image));
                             $resizeImg = ImageTransformation::image_resize(
                                 $gdImage,
                                 $imgProperties[0] ?? 0,
                                 $imgProperties[1] ?? 0
                             );
-                            imageavif($resizeImg, 'img/thumbnail/'.$recipe->image);
+                            imageavif($resizeImg, storage_path('app/public/img/thumbnail/' . $recipe->image));
                             // Création d'une miniature
                         }
                         break;
@@ -645,38 +640,38 @@ class RecipeController extends Controller
                         $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefrompng($request->photoInput->path());
                         if ($gdImage) {
-                            imageavif($gdImage, 'img/full/'.$recipe->image);
+                            imageavif($gdImage, storage_path('app/public/img/full/' . $recipe->image));
                             $resizeImg = ImageTransformation::image_resize(
                                 $gdImage,
                                 $imgProperties[0] ?? 0,
                                 $imgProperties[1] ?? 0
                             );
-                            imageavif($resizeImg, 'img/thumbnail/'.$recipe->image);
+                            imageavif($resizeImg, storage_path('app/public/img/thumbnail/' . $recipe->image));
                         }
                         break;
                     case 'avif':
                         $gdImage = imagecreatefromavif($request->photoInput->path());
                         if ($gdImage) {
-                            imageavif($gdImage, 'img/full/'.$recipe->image);
+                            imageavif($gdImage, storage_path('app/public/img/full/' . $recipe->image));
                             $resizeImg = ImageTransformation::image_resize(
                                 $gdImage,
                                 imagesx($gdImage),
                                 imagesy($gdImage)
                             );
-                            imageavif($resizeImg, 'img/thumbnail/'.$recipe->image);
+                            imageavif($resizeImg, storage_path('app/public/img/thumbnail/' . $recipe->image));
                         }
                         break;
                     default:
                         $imgProperties = getimagesize($request->photoInput->path());
                         $gdImage = imagecreatefromjpeg($request->photoInput->path());
                         if ($gdImage) {
-                            imageavif($gdImage, 'img/full/'.$recipe->image);
+                            imageavif($gdImage, storage_path('app/public/img/full/' . $recipe->image));
                             $resizeImg = ImageTransformation::image_resize(
                                 $gdImage,
                                 $imgProperties[0] ?? 0,
                                 $imgProperties[1] ?? 0
                             );
-                            imageavif($resizeImg, 'img/thumbnail/'.$recipe->image);
+                            imageavif($resizeImg, storage_path('app/public/img/thumbnail/' . $recipe->image));
                         }
                         break;
                 }
@@ -688,11 +683,12 @@ class RecipeController extends Controller
                 }
             } // Si pas de nouvelle image mais nouveau nom
             elseif ($newName) {
+                $newName = $recipe->id . '-' . Str::slug($recipe->name, '-') . '.avif';
                 // On renomme l'image de la recette
-                File::move(public_path('img/full/'.$oldImageName), public_path('img/full/'.$recipe->image));
-                File::move(
-                    public_path('img/thumbnail/'.$oldImageName),
-                    public_path('img/thumbnail/'.$recipe->image)
+                Storage::move('public/img/full/' . $oldImageName, 'public/img/full/' . $newName);
+                Storage::move(
+                    'public/img/thumbnail/' . $oldImageName,
+                    'public/img/thumbnail/' . $newName
                 );
             }
             $recipe->save();
@@ -704,7 +700,7 @@ class RecipeController extends Controller
         catch (QueryException $e) {
             DB::rollback();
 
-            return redirect('/recipe/new')->withErrors(['updaterror' => 'Erreur dans la mide à jour de la recette']);
+            return redirect('/recipe/new')->withErrors(['updaterror' => 'Erreur dans la mise à jour de la recette']);
         }
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Recipe;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,15 +18,15 @@ class RecipeOpinionFactory extends Factory
      */
     public function definition()
     {
-        $isFavorite = $this->faker->boolean(30);
+        $isFavorite = fake()->boolean(30);
 
         return [
-            'user_id' => rand(1, 21),
-            'recipe_id' => rand(1, 100),
+            'user_id' => User::inRandomOrder()->first()->id,
+            'recipe_id' => Recipe::inRandomOrder()->first()->id,
             'comment' => $this->faker->paragraph(),
             'score' => rand(1, 5),
             'is_favorite' => $isFavorite,
-            'is_reported' => $isFavorite == true ? false : $this->faker->boolean(30),
+            'is_reported' => $isFavorite == true ? false : fake()->boolean(30),
             'created_at' => now(),
             'updated_at' => now(),
         ];

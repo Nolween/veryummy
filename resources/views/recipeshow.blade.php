@@ -86,7 +86,7 @@
                 {{ $recipe['name'] }}
             </h1>
         </div>
-        
+
         @if ($errors->any())
             <div class="flex flex-wrap justify-center">
                 @foreach ($errors->all() as $error)
@@ -132,7 +132,7 @@
         <div class="flex flex-wrap justify-center px-8 md:px-4 w-3/4 mx-auto mb-6">
             <div class="w-full my-auto lg:w-1/2 lg:pr-3">
                 <img class="w-full h-full max-w-80 max-h-80 object-cover rounded-sm mb-2"
-                    src="{{ asset('img/full/' . $recipe->image) }}" alt="test">
+                    src="{{ storage_path('app/public/img/full/' . $recipe->image) }}" alt="test">
             </div>
             <div
                 class="my-auto w-full lg:w-1/2 px-8 md:px-4 text-4xl sm:text-5xl lg:text-5xl text-center md:text-left bg-slate-50 drop-shadow-md rounded-lg">

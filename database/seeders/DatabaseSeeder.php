@@ -13,9 +13,22 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        // Suppression préalable des images de rectettes dans storage
+        $files = glob(storage_path('app/public/img/full/*'));
+        foreach ($files as $file) {
+            if (is_file($file)) {
+                unlink($file);
+            }
+        }
+        $files = glob(storage_path('app/public/img/thumbnail/*'));
+        foreach ($files as $file) {
+            if (is_file($file)) {
+                unlink($file);
+            }
+        }
+
         // Création des paramètres
         $this->call(UnitSeeder::class);
-        $this->call(RoleSeeder::class);
         $this->call(RecipeTypeSeeder::class);
         // Création des jeux de test
         $this->call(UserSeeder::class);

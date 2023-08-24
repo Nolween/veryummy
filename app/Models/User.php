@@ -16,12 +16,20 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $email
  * @property string $password
  * @property bool $is_banned
- * @property int $role_id
- * @property-read Role $role
+ * @property string $role
+ *
  */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    /**
+     * Constantes des rôles
+     *
+     * @var string
+     */
+    const ROLE_ADMIN = "admin";
+    const ROLE_USER = "user";
 
     /**
      * The attributes that are mass assignable.
@@ -33,7 +41,7 @@ class User extends Authenticatable
         'email',
         'password',
         'is_banned',
-        'role_id',
+        'role',
     ];
 
     /**
@@ -44,7 +52,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'role_id',
+        'role',
     ];
 
     /**
@@ -74,16 +82,6 @@ class User extends Authenticatable
     public function ingredients(): HasMany
     {
         return $this->hasMany(Ingredient::class);
-    }
-
-    /**
-     * Indique le rôle de l'utilisateur
-     *
-     * @return BelongsTo<Role, User>
-     */
-    public function role(): BelongsTo
-    {
-        return $this->belongsTo(Role::class, 'role_id');
     }
 
     /**

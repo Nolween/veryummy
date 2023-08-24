@@ -162,7 +162,7 @@ class AccountController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (! $user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
+        if (! $user || $user->role !== 'admin' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 
@@ -235,7 +235,7 @@ class AccountController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (! $user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
+        if (! $user || $user->role !== 'admin' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 
@@ -255,9 +255,8 @@ class AccountController extends Controller
             $userDelete = User::findOrFail($request->userid);
 
             /** @var User $userDelete */
-            $role = $userDelete->role;
             // Si l'utilisateur est admin, erreur
-            if ($role->name === 'Administrateur') {
+            if ($userDelete->role === 'admin') {
                 return redirect("/admin/users/list/$request->typelist")
                     ->withErrors(['deletionError' => 'Vous ne pouvez pas bannir un administrateur']);
             }
@@ -312,7 +311,7 @@ class AccountController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (! $user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
+        if (! $user || $user->role !== 'admin' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 

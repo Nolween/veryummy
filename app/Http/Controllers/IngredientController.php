@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\AcceptedIngredient;
 use App\Mail\RefusedIngredient;
 use App\Models\Ingredient;
+use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +28,7 @@ class IngredientController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (! $user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
+        if (!$user || $user->role !== User::ROLE_ADMIN || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 
@@ -78,7 +79,7 @@ class IngredientController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (! $user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
+        if (! $user || $user->role !== 'admin' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 
@@ -144,7 +145,7 @@ class IngredientController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (! $user || $user->role->name !== 'Administrateur' || $user->is_banned == true) {
+        if (! $user || $user->role !== 'admin' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 
