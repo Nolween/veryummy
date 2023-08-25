@@ -10,6 +10,7 @@
 
 - Lancer le serveur de la BDD
 - `php artisan serve`: Lancer le serveur PHP
+- `npm run dev`: Lancer la compoilation sous Vite JS
 - Adresse dev local: http://127.0.0.1:8000/
 
 ## Commandes principales annexes
