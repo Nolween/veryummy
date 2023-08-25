@@ -2,6 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Http\Requests\Ingredient\AllowIngredientRequest;
+use App\Http\Requests\Ingredient\DenyIngredientRequest;
+use App\Mail\AcceptedIngredient;
 use App\Mail\RefusedIngredient;
 use App\Models\Ingredient;
 use Exception;
@@ -9,6 +12,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 
 class IngredientRepository
 {
@@ -38,24 +42,24 @@ class IngredientRepository
     /**
      * @details Refuser un ingrédient
      */
-    public function denyIngredient(int $ingredientId, string $denyMessage, int $typeList): bool
+    public function denyIngredient(DenyIngredientRequest $request): bool
     {
         // Transaction pour rollback si erreur
         DB::beginTransaction();
         try {
             // Récupération de l'ingrédient par son Id
-            $ingredient = Ingredient::where('id', $ingredientId)->with('user')->firstOrFail();
+            $ingredient = Ingredient::where('id', $request->ingredientid)->with('user')->firstOrFail();
 
             $authorMail = $ingredient->user->email;
             $ingredient->is_accepted = false;
             $ingredient->save();
 
-            if (!empty($authorMail) && $typeList == 0) {
+            if (!empty($authorMail) && $request->typeList == 0) {
                 // Envoi de mail à la personne ayant proposé l'ingrédient
                 $informations = [
                     'ingredient' => $ingredient->name,
                     'url'        => URL::to('/'),
-                    'message'    => $denyMessage,
+                    'message'    => $request->denymessage,
                 ];
                 Mail::to($authorMail)->send(new RefusedIngredient($informations));
             }
@@ -68,6 +72,45 @@ class IngredientRepository
         catch (Exception $e) {
             DB::rollback();
 
+            return false;
+        }
+    }
+
+    public function allowIngredient(AllowIngredientRequest $request): bool
+    {
+        // Transaction pour rollback si erreur
+        DB::beginTransaction();
+        try {
+            // Récupération de l'ingrédient par son Id
+            $ingredient = Ingredient::where('id', $request->ingredientid)->with('user')->firstOrFail();
+            $authorMail = null;
+            if ($ingredient->user) {
+                $authorMail = $ingredient->user->email;
+            }
+            $ingredient->name = $request->finalname;
+            $ingredient->icon = Str::slug($request->finalname, '_');
+            $ingredient->is_accepted = $request->allow;
+            // Si l'ingrédient est accepté, il passe sur le compte principal, en cas de suppression de compte du demandeur
+            $ingredient->user_id = 1;
+            // Définition du régime de l'aliment
+            $ingredient->vegetarian_compatible = $request->vegetarian ?? false;
+            $ingredient->vegan_compatible = $request->vegan ?? false;
+            $ingredient->gluten_free_compatible = $request->glutenfree ?? false;
+            $ingredient->halal_compatible = $request->halal ?? false;
+            $ingredient->kosher_compatible = $request->kosher ?? false;
+            $ingredient->save();
+
+            // Envoi de mail à la personne ayant proposé l'ingrédient
+            $informations = ['ingredient' => $request->finalname, 'url' => URL::to('/')];
+            if ($authorMail && $request->typeList == 0) {
+                Mail::to($authorMail)->send(new AcceptedIngredient($informations));
+            }
+
+            // Validation de la transaction
+            DB::commit();
+            return true;
+        } catch (Exception $e) {
+            DB::rollback();
             return false;
         }
     }
