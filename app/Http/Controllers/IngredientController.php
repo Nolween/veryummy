@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Ingredient\DenyIngredientRequest;
 use App\Http\Requests\Ingredient\ListIngredientRequest;
 use App\Mail\AcceptedIngredient;
 use App\Mail\RefusedIngredient;
@@ -47,67 +48,21 @@ class IngredientController extends Controller
     }
 
     /**
-     * Refuser un ingrédient
+     * @details Refuser un ingrédient
      */
-    public function deny(Request $request): RedirectResponse
+    public function deny(DenyIngredientRequest $request): RedirectResponse
     {
-        // Récupération des infos de l'utilisateur connecté
-        $user = Auth::user();
-        // Si pas d'utilisateur
-        if (!$user || $user->role !== 'admin' || $user->is_banned == true) {
-            // Déconnexion de l'utilisateur
-            Auth::logout();
-
-            return redirect('/')->withErrors(['badUser' => 'Utilisateur non trouvé']);
-        }
-        // Validation du formulaire avec les différentes règles
-        $request->validate([
-            'ingredientid' => ['integer', 'required'],
-            'deny'         => ['accepted', 'required'],
-            'typeList'     => ['integer', 'required'],
-            'denymessage'  => ['string', 'required', 'min:2'],
-        ]);
-
-        // Transaction pour rollback si erreur
-        DB::beginTransaction();
-        try {
-            // Récupération de l'ingrédient par son Id
-            $ingredient = Ingredient::where('id', (int)$request->ingredientid)->with('user')->first();
-            // Si pas d'ingrédient trouvé, erreur
-            if (!$ingredient) {
-                return back()->withErrors(['ingredientAllowError' => 'Aucun ingrédient trouvé']);
-            }
-            $authorMail = null;
-            if ($ingredient->user) {
-                $authorMail = $ingredient->user->email;
-            }
-            $ingredient->is_accepted = false;
-            // Si l'ingrédient est accepté, il passe sur le compte principal, en cas de suppression de compte du demandeur
-            $ingredient->user_id = 1;
-            $ingredient->save();
-
-            // Envoi de mail à la personne ayant proposé l'ingrédient
-            $informations = [
-                'ingredient' => $ingredient->name,
-                'url'        => URL::to('/'),
-                'message'    => $request->denymessage,
-            ];
-            // Si la modération était en cours
-            if (!empty($authorMail) && $request->typeList == 0) {
-                Mail::to($authorMail)->send(new RefusedIngredient($informations));
-            }
-
-            // Validation de la transaction
-            DB::commit();
-
-            return redirect("/admin/ingredients/list/$request->typeList")->with(
+        // Intéraction avec la DB pour refuser l'ingrédient
+        if ($this->ingredientRepository->denyIngredient(
+            $request->ingredientid,
+            $request->denymessage,
+            $request->typeList
+        )) {
+            return redirect("/admin/ingredients/index/$request->typeList")->with(
                 'ingredientAllowSuccess',
                 "L'ingrédient a été modéré"
             );
-        } // Si erreur dans la transaction
-        catch (QueryException $e) {
-            DB::rollback();
-
+        } else {
             return back()->withErrors(['ingredientAllowError' => "Erreur dans la modération de l'ingrédient"]);
         }
     }
@@ -174,7 +129,7 @@ class IngredientController extends Controller
             // Validation de la transaction
             DB::commit();
 
-            return redirect("/admin/ingredients/list/$request->typeList")->with(
+            return redirect("/admin/ingredients/index/$request->typeList")->with(
                 'ingredientAllowSuccess',
                 "L'ingrédient a été modéré"
             );

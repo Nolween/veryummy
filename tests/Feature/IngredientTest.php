@@ -34,7 +34,7 @@ test('access handling ingredients list', function () {
         1 => 'Liste ingrédients acceptés',
         2 => 'Liste ingrédients refusés'
     };
-    $response = $this->actingAs($simpleUser)->get("/admin/ingredients/list/$typeList");
+    $response = $this->actingAs($simpleUser)->get("/admin/ingredients/index/$typeList");
 
     $response->assertStatus(200);
 });
@@ -50,7 +50,7 @@ test('access handling ingredients list as simple user', function () {
         1 => 'Liste ingrédients acceptés',
         2 => 'Liste ingrédients refusés'
     };
-    $response = $this->actingAs($simpleUser)->get("/admin/ingredients/list/$typeList");
+    $response = $this->actingAs($simpleUser)->get("/admin/ingredients/index/$typeList");
 
     $response->assertStatus(302);
 });
