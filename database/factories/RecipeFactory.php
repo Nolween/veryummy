@@ -51,7 +51,7 @@ class RecipeFactory extends Factory
             'user_id'                => User::inRandomOrder()->first()->id,
             'recipe_type_id'         => RecipeType::inRandomOrder()->first()->id,
             'name'                   => fake()->sentence(),
-            'image'                  => storage_path('app/public/img/full/' . $filename . '.avif'),
+            'image'                  => $filename . '.avif',
             'making_time'            => rand(1, 100),
             'cooking_time'           => rand(1, 180),
             'servings'               => rand(1, 20),

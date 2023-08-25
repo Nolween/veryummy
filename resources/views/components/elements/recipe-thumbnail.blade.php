@@ -69,7 +69,7 @@
         href="{{ Route::currentRouteName() === 'my-recipes.list' ? route('my-recipes.edit', [$attributes->get('recipeId')]) : route('recipe.show', [$attributes->get('recipeId')]) }}">
         <div>
             <img class="w-60 h-40 object-cover rounded-t-md mb-0 mx-auto"
-                src="{{ asset('/img/thumbnail/' . $attributes->get('photo')) }}" alt="test">
+                src="{{ asset('storage/img/thumbnail/' . $attributes->get('photo')) }}" alt="test">
         </div>
         <div class="bg-gray-100 drop-shadow-md w-60">
             <p class="my-0 text-center h-36 pt-2 px-1"><span

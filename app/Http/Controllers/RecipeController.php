@@ -613,7 +613,7 @@ class RecipeController extends Controller
             $recipe->kosher_compatible = $compatible['kosher_compatible'] == 0 ? true : false;
 
             //? Création d'un nom pour l'image
-            $recipe->image = storage_path('app/public/img/full/' . $recipe->id . '-' . Str::slug($request->nom, '-') . '.avif');
+            $recipe->image = $recipe->id . '-' . Str::slug($request->nom, '-') . '.avif';
             //? Si on a une image valide
             if ($request->photoInput && function_exists('imageavif')) {
                 // Suppression des images existantes
