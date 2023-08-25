@@ -16,7 +16,7 @@
                 COMPTE</a>
         </div>
         <div class="px-1 basis-1/3 sm:flex-1"><span class="cursor-pointer"><a
-                    href="{{ route('admin-ingredients.list', 0) }}" class="cursor-pointer">ADMIN</a></span></div>
+                    href="{{ route('admin-ingredients.index', 0) }}" class="cursor-pointer">ADMIN</a></span></div>
         <div class="px-1 basis-1/3 sm:flex-1">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf

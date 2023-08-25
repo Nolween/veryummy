@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
-class AccountController extends Controller
+class UserController extends Controller
 {
     /**
      * Affichage des informations de compte

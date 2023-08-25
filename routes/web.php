@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AccountController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ExplorationController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\MyNotebookController;
@@ -49,7 +49,7 @@ Route::controller(MyNotebookController::class)->group(function () {
     Route::get('/my-notebook', 'list')->name('my-notebook.list');
 });
 // Regroupement des méthods du controller des informations utilisateur
-Route::controller(AccountController::class)->group(function () {
+Route::controller(UserController::class)->group(function () {
     Route::get('/my-account', 'show')->name('my-account.show');
     Route::put('/my-account/edit', 'edit')->name('my-account.edit');
     Route::delete('/my-account/delete', 'delete')->name('my-account.delete');
@@ -59,7 +59,7 @@ Route::controller(AccountController::class)->group(function () {
 });
 // Regroupement des méthods du controller des ingrédients enregistrés par l'utilisateur
 Route::controller(IngredientController::class)->group(function () {
-    Route::get('/admin/ingredients/list/{type}', 'list')->name('admin-ingredients.list');
+    Route::get('/admin/ingredients/index/{type}', 'index')->name('admin-ingredients.index');
     Route::post('/admin/ingredients/deny', 'deny')->name('admin-ingredients.deny');
     Route::post('/admin/ingredients/allow', 'allow')->name('admin-ingredients.allow');
     Route::get('/ingredients/new', 'show')->name('new-ingredient.show');
