@@ -62,7 +62,7 @@ Route::controller(IngredientController::class)->group(function () {
     Route::get('/admin/ingredients/index/{type}', 'index')->name('admin-ingredients.index');
     Route::post('/admin/ingredients/deny', 'deny')->name('admin-ingredients.deny');
     Route::post('/admin/ingredients/allow', 'allow')->name('admin-ingredients.allow');
-    Route::get('/ingredients/new', 'show')->name('new-ingredient.show');
+    Route::get('/ingredients/create', 'create')->name('new-ingredient.create');
     Route::post('/ingredients/propose', 'propose')->name('new-ingredient.propose');
 });
 

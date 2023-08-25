@@ -219,7 +219,7 @@ test('access ingredient proposition', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $simpleUser = User::where('is_banned', false)->inRandomOrder()->first();
 
-    $response = $this->actingAs($simpleUser)->get('/ingredients/new');
+    $response = $this->actingAs($simpleUser)->get('/ingredients/create');
 
     $response->assertStatus(200);
 });
@@ -231,7 +231,7 @@ test('access ingredient proposition with banned user', function () {
         $simpleUser = initialize_user(true, false);
     }
 
-    $response = $this->actingAs($simpleUser)->get('/ingredients/new');
+    $response = $this->actingAs($simpleUser)->get('/ingredients/create');
 
     $response->assertStatus(302);
 });

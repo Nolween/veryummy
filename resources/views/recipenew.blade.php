@@ -373,7 +373,7 @@
         //Chargement des ingrédients
         var ingredients = {{ Illuminate\Support\Js::from($ingredients) }};
 
-        autocomplete(document.getElementById("ingredient0"), ingredients, 0, {{ Illuminate\Support\Js::from(route('new-ingredient.show')) }});
+        autocomplete(document.getElementById("ingredient0"), ingredients, 0, {{ Illuminate\Support\Js::from(route('new-ingredient.create')) }});
     </script>
 </body>
 

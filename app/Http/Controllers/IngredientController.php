@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Ingredient\AllowIngredientRequest;
 use App\Http\Requests\Ingredient\DenyIngredientRequest;
 use App\Http\Requests\Ingredient\ListIngredientRequest;
+use App\Http\Requests\Ingredient\CreateIngredientRequest;
 use App\Mail\AcceptedIngredient;
 use App\Mail\RefusedIngredient;
 use App\Models\Ingredient;
@@ -81,22 +82,11 @@ class IngredientController extends Controller
 
 
     /**
-     * Affichage de la page de proposition d'un ingrédient
+     * @details Affichage de la page de proposition d'un ingrédient
      */
-    public function show(Request $request): View|RedirectResponse
+    public function create(CreateIngredientRequest $request): View|RedirectResponse
     {
-        // Récupération des infos de l'utilisateur connecté
-        $user = Auth::user();
-        // Si pas d'utilisateur
-        if (!$user || $user->is_banned == true) {
-            // Déconnexion de l'utilisateur
-            Auth::logout();
-
-            return redirect('/')->withErrors(['badUser' => 'Utilisateur non trouvé']);
-        }
-        $response = [];
-
-        return view('newingredient', $response);
+        return view('newingredient');
     }
 
     /**
