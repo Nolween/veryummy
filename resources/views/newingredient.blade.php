@@ -66,7 +66,7 @@
         </div>
 
         {{-- Formulaire --}}
-        <form method="POST" action="{{ route('new-ingredient.propose') }}">
+        <form method="POST" action="{{ route('new-ingredient.store') }}">
             @method('POST')
             @csrf
 

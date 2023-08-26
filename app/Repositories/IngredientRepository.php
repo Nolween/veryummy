@@ -4,11 +4,13 @@ namespace App\Repositories;
 
 use App\Http\Requests\Ingredient\AllowIngredientRequest;
 use App\Http\Requests\Ingredient\DenyIngredientRequest;
+use App\Http\Requests\Ingredient\StoreIngredientRequest;
 use App\Mail\AcceptedIngredient;
 use App\Mail\RefusedIngredient;
 use App\Models\Ingredient;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
@@ -31,10 +33,8 @@ class IngredientRepository
         if (!empty($search)) {
             $ingredients->where('name', 'like', "%{$search}%");
         }
-        // Si ingédients autorisés ou refusés seulement
-        if ($type !== null) {
-            $ingredients->where('is_accepted', $type);
-        }
+        $ingredients->where('is_accepted', $type);
+
 
         return $ingredients->with('user')->paginate(20);
     }
@@ -114,4 +114,16 @@ class IngredientRepository
             return false;
         }
     }
+
+    public function storeIngredient(StoreIngredientRequest $request)
+    {
+        // Création d'un nouvel ingredient
+        $newIngredient = new Ingredient;
+        $newIngredient->user_id = Auth::user()->id;
+        $newIngredient->name = $request->ingredient;
+        $newIngredient->icon = null;
+        $newIngredient->is_accepted = null;
+        return $newIngredient->save();
+    }
+
 }

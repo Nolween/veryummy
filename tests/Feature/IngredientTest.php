@@ -245,7 +245,7 @@ test('proposing ingredient', function () {
         'rulescheck' => 'true',
     ];
 
-    $response = $this->actingAs($user)->post('/ingredients/propose', $dataToSend);
+    $response = $this->actingAs($user)->post('/ingredients/store', $dataToSend);
 
     $response->assertStatus(302)->assertSessionHas('ingredientProposeSuccess')->assertSessionHasNoErrors();
 });
@@ -260,7 +260,7 @@ test('proposing ingredient with false datas', function () {
         'rulescheck' => 'true',
     ];
 
-    $response = $this->actingAs($user)->post('/ingredients/propose', $dataToSend);
+    $response = $this->actingAs($user)->post('/ingredients/store', $dataToSend);
 
     $response->assertSessionMissing('ingredientProposeSuccess')->assertSessionHasErrors();
 
@@ -270,7 +270,7 @@ test('proposing ingredient with false datas', function () {
         'rulescheck' => 'false',
     ];
 
-    $response = $this->actingAs($user)->post('/ingredients/propose', $dataToSend);
+    $response = $this->actingAs($user)->post('/ingredients/store', $dataToSend);
 
     $response->assertSessionMissing('ingredientProposeSuccess')->assertSessionHasErrors();
 });

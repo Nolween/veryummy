@@ -63,7 +63,7 @@ Route::controller(IngredientController::class)->group(function () {
     Route::post('/admin/ingredients/deny', 'deny')->name('admin-ingredients.deny');
     Route::post('/admin/ingredients/allow', 'allow')->name('admin-ingredients.allow');
     Route::get('/ingredients/create', 'create')->name('new-ingredient.create');
-    Route::post('/ingredients/propose', 'propose')->name('new-ingredient.propose');
+    Route::post('/ingredients/store', 'store')->name('new-ingredient.store');
 });
 
 // Regroupement des methods du controller des recettes enregistrées par l'utilisateur
