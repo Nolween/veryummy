@@ -156,7 +156,7 @@
                     <p>Toutes vos informations seront perdues</p>
                 </div>
                 {{-- Formulaire --}}
-                <form method="POST" action="{{ route('my-account.delete') }}">
+                <form method="POST" action="{{ route('my-account.destroy') }}">
                     @method('DELETE')
                     @csrf
                     @error('delete-account-password')

@@ -151,7 +151,7 @@ test('deleting account', function () {
     ];
 
     // Accès à la route
-    $response = $this->actingAs($user)->delete('/my-account/delete', $dataToSend);
+    $response = $this->actingAs($user)->delete('/my-account/destroy', $dataToSend);
     $response->assertStatus(302)->assertSessionMissing('transactionError');
 
     //? Utilisateur banni
@@ -164,7 +164,7 @@ test('deleting account', function () {
     ];
 
     // Accès à la route
-    $response = $this->actingAs($user)->delete('/my-account/delete', $dataToSend);
+    $response = $this->actingAs($user)->delete('/my-account/destroy', $dataToSend);
     $response->assertStatus(302)->assertSessionHasErrors('badUser')->assertSessionMissing('userDeletionSuccess');
     User::destroy($user->id);
 
@@ -178,7 +178,7 @@ test('deleting account', function () {
     ];
 
     // Accès à la route
-    $response = $this->actingAs($user)->delete('/my-account/delete', $dataToSend);
+    $response = $this->actingAs($user)->delete('/my-account/destroy', $dataToSend);
     $response->assertStatus(302)->assertSessionHasErrors('delete-account-password')->assertSessionMissing(
         'userDeletionSuccess'
     );

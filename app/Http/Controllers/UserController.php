@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\UserDestroyRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Models\OpinionReport;
 use App\Models\Recipe;
@@ -59,63 +60,15 @@ class UserController extends Controller
     /**
      * Suppression du compte de l'utilisateur
      */
-    public function delete(Request $request): RedirectResponse
+    public function destroy(UserDestroyRequest $request): RedirectResponse
     {
-        // Authentification de l'utilisateur
-        $user = Auth::user();
-        if (!$user || $user->is_banned == true) {
+        if ($this->userRepository->destroyUser($request)) {
+            // Déconnexion de l'utilisateur
             Auth::logout();
-
-            return redirect('/')->withErrors(['badUser' => 'Utilisateur introuvable']);
-        }
-        // Validation du formulaire avec les différentes règles
-        $request->validate([
-            'delete-account-password' => ['string', 'nullable', new CheckCurrentPassword],
-        ]);
-
-        // Transaction pour rollback si erreur
-        DB::beginTransaction();
-        try {
-            // Récupération de l'utilisateur
-            $userDelete = User::findOrFail($user->id);
-            // Récupération des recettes de l'utilisateur, avec pour chacune son compte d'opinion en favori
-            $recipesWithFavoriteCount = Recipe::whereBelongsTo($userDelete)
-                                              ->withCount([
-                                                  'opinions' => function (Builder $query) {
-                                                      $query->where('is_favorite', '=', true);
-                                                  },
-                                              ])
-                                              ->get();
-            // Filtre des recettes qui ne sont pas en favori
-            $recipesWithoutFavorite = $recipesWithFavoriteCount->filter(function ($value) {
-                return $value->opinions_count === 0;
-            });
-            // Suppression des recettes qui ne sont jamais en favori
-            $recipesWithoutFavorite = Recipe::destroy($recipesWithoutFavorite->pluck('id')->all());
-
-            // Filtre des recettes qui ont des favoris
-            $recipesWithFavorite = $recipesWithFavoriteCount->filter(function ($value) {
-                return $value->opinions_count > 0;
-            });
-            // Si l'utilisateur a des recettes chez d'autres en favoris
-            if ($recipesWithFavorite->isNotEmpty()) {
-                // Mise à jour de toutes les recettes de l'utilisateur vers le compte d'archives
-                $recipesWithFavorite->toQuery()->update(['user_id' => 1]);
-            }
-            // Suppression de l'utilisateur
-            $userDestroy = User::destroy($userDelete->id);
-            // Validation de la transaction
-            DB::commit();
-        } // Si erreur dans la transaction
-        catch (QueryException $e) {
-            DB::rollback();
-
+            return redirect('/')->with(['userDeletionSuccess', 'Votre compte a bien été supprimé!']);
+        } else {
             return redirect('/')->withErrors(['transactionError' => 'Erreur dans la suppression du compte']);
         }
-        // Déconnexion de l'utilisateur
-        Auth::logout();
-
-        return redirect('/')->with(['userDeletionSuccess', 'Votre compte a bien été supprimé!']);
     }
 
     /**
