@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\UserUpdateRequest;
 use App\Models\OpinionReport;
 use App\Models\Recipe;
 use App\Models\RecipeOpinion;
 use App\Models\User;
+use App\Repositories\UserRepository;
 use App\Rules\CheckCurrentPassword;
 use App\Rules\PasswordRepetition;
 use App\Rules\UserMailExists;
@@ -21,6 +23,15 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
+
+    private UserRepository $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
+
     /**
      * @details Affichage des informations de compte
      */
@@ -36,53 +47,13 @@ class UserController extends Controller
     /**
      * Edition des informations de l'utilisateur
      */
-    public function update(Request $request): RedirectResponse
+    public function update(UserUpdateRequest $request): RedirectResponse
     {
-        // Authentification de l'utilisateur
-        $user = Auth::user();
-        if (! $user || $user->is_banned == true) {
-            Auth::logout();
-
-            return redirect('/')->withErrors(['badUser' => 'Utilisateur non trouvé']);
-        }
-        // Validation du formulaire avec les différentes règles
-        $request->validate([
-            'email' => ['email', new UserMailExists],
-            'name' => ['string', new UserNameExists],
-            'current-password' => ['string', 'required', new CheckCurrentPassword],
-            'password' => ['string', 'nullable', new PasswordRepetition],
-            'confirmation' => ['string', 'nullable'],
-        ]);
-
-        // Transaction pour rollback si erreur
-        DB::beginTransaction();
-        try {
-            // Récupération de l'utilisateur
-            $userUpdate = User::findOrFail($user->id);
-            // Si modification du mail
-            if ($request->email !== $userUpdate->email) {
-                $userUpdate->email = $request->email;
-            }
-            // Si modification du pseudo
-            if ($request->name !== $userUpdate->name) {
-                $userUpdate->name = $request->name;
-            }
-            // Modification du mot de passe
-            if (! empty($request->password)) {
-                $userUpdate->password = Hash::make($request->password);
-            }
-            $userUpdate->save();
-
-            // Validation de la transaction
-            DB::commit();
-        } // Si erreur dans la transaction
-        catch (QueryException $e) {
-            DB::rollback();
-
+        if ($this->userRepository->updateUser($request)) {
+            return redirect()->back()->with('userUpdateSuccess', 'Vos informations on été mises à jour!');
+        } else {
             return redirect('/')->withErrors(['userUpdateError' => 'Erreur dans la mise à jour du compte']);
         }
-
-        return redirect()->back()->with('userUpdateSuccess', 'Vos informations on été mises à jour!');
     }
 
     /**
@@ -92,7 +63,7 @@ class UserController extends Controller
     {
         // Authentification de l'utilisateur
         $user = Auth::user();
-        if (! $user || $user->is_banned == true) {
+        if (!$user || $user->is_banned == true) {
             Auth::logout();
 
             return redirect('/')->withErrors(['badUser' => 'Utilisateur introuvable']);
@@ -109,12 +80,12 @@ class UserController extends Controller
             $userDelete = User::findOrFail($user->id);
             // Récupération des recettes de l'utilisateur, avec pour chacune son compte d'opinion en favori
             $recipesWithFavoriteCount = Recipe::whereBelongsTo($userDelete)
-                ->withCount([
-                    'opinions' => function (Builder $query) {
-                        $query->where('is_favorite', '=', true);
-                    },
-                ])
-                ->get();
+                                              ->withCount([
+                                                  'opinions' => function (Builder $query) {
+                                                      $query->where('is_favorite', '=', true);
+                                                  },
+                                              ])
+                                              ->get();
             // Filtre des recettes qui ne sont pas en favori
             $recipesWithoutFavorite = $recipesWithFavoriteCount->filter(function ($value) {
                 return $value->opinions_count === 0;
@@ -156,7 +127,7 @@ class UserController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (! $user || $user->role !== 'admin' || $user->is_banned == true) {
+        if (!$user || $user->role !== 'admin' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 
@@ -175,39 +146,39 @@ class UserController extends Controller
             case 0:
                 // Tableau des id de commentaires ayant des signalements
                 $reportedOpinions = RecipeOpinion::having('reports_count', '>', 0)
-                    ->with('reports')
-                    ->withCount('reports')->pluck('id');
+                                                 ->with('reports')
+                                                 ->withCount('reports')->pluck('id');
 
                 $users = User::having('reported_opinions_by_other_count', '>', 0)
-                    ->where('is_banned', 0)
-                    ->with([
-                        'opinions' => function ($query) use ($reportedOpinions) {
-                            $query->whereIn('id', $reportedOpinions);
-                        },
-                    ])
-                    ->withCount('reportedOpinionsByOther');
+                             ->where('is_banned', 0)
+                             ->with([
+                                 'opinions' => function ($query) use ($reportedOpinions) {
+                                     $query->whereIn('id', $reportedOpinions);
+                                 },
+                             ])
+                             ->withCount('reportedOpinionsByOther');
                 // Si recherche
-                if (! empty($request->search)) {
+                if (!empty($request->search)) {
                     $users->where('name', 'like', "%{$request->search}%");
                 }
                 $response['users'] = $users->paginate(20);
                 break;
-                // Tous les utilisateurs
+            // Tous les utilisateurs
             case 1:
                 // Tableau des id de commentaires ayant des signalements
                 $reportedOpinions = RecipeOpinion::having('reports_count', '>', 0)
-                    ->with('reports')
-                    ->withCount('reports')->pluck('id');
+                                                 ->with('reports')
+                                                 ->withCount('reports')->pluck('id');
 
                 $users = User::where('is_banned', 0)
-                    ->with([
-                        'opinions' => function ($query) use ($reportedOpinions) {
-                            $query->whereIn('id', $reportedOpinions);
-                        },
-                    ])
-                    ->withCount('reportedOpinionsByOther');
+                             ->with([
+                                 'opinions' => function ($query) use ($reportedOpinions) {
+                                     $query->whereIn('id', $reportedOpinions);
+                                 },
+                             ])
+                             ->withCount('reportedOpinionsByOther');
                 // Si recherche
-                if (! empty($request->search)) {
+                if (!empty($request->search)) {
                     $users->where('name', 'like', "%{$request->search}%");
                 }
                 $response['users'] = $users->paginate(20);
@@ -215,7 +186,7 @@ class UserController extends Controller
             default:
                 return redirect('/')->withErrors(['badType' => 'Liste introuvable']);
         }
-        $response['typeList'] = (int) $type;
+        $response['typeList'] = (int)$type;
         // dd( $response['recipes']);
 
         return view('adminuserslist', $response);
@@ -229,7 +200,7 @@ class UserController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (! $user || $user->role !== 'admin' || $user->is_banned == true) {
+        if (!$user || $user->role !== 'admin' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 
@@ -239,7 +210,7 @@ class UserController extends Controller
         // Validation du formulaire
         $request->validate([
             'typelist' => ['integer', 'required', 'min:0', 'max:1'],
-            'userid' => ['integer', 'required', 'exists:users,id'],
+            'userid'   => ['integer', 'required', 'exists:users,id'],
         ]);
 
         // Transaction pour rollback si erreur
@@ -257,12 +228,12 @@ class UserController extends Controller
 
             // Récupération des recettes de l'utilisateur, avec pour chacune son compte d'opinion en favori
             $recipesWithFavoriteCount = Recipe::whereBelongsTo($userDelete)
-                ->withCount([
-                    'opinions' => function (Builder $query) {
-                        $query->where('is_favorite', '=', true);
-                    },
-                ])
-                ->get();
+                                              ->withCount([
+                                                  'opinions' => function (Builder $query) {
+                                                      $query->where('is_favorite', '=', true);
+                                                  },
+                                              ])
+                                              ->get();
             // Filtre des recettes qui ne sont pas en favori
             $recipesWithoutFavorite = $recipesWithFavoriteCount->filter(function ($value) {
                 return $value->opinions_count === 0;
@@ -305,7 +276,7 @@ class UserController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
         // Si pas d'utilisateur
-        if (! $user || $user->role !== 'admin' || $user->is_banned == true) {
+        if (!$user || $user->role !== 'admin' || $user->is_banned == true) {
             // Déconnexion de l'utilisateur
             Auth::logout();
 
@@ -315,8 +286,8 @@ class UserController extends Controller
         // Validation du champ
         $request->validate([
             'opinionid' => ['integer', 'required', 'exists:recipe_opinions,id'],
-            'destroy' => ['boolean', 'required'],
-            'typelist' => ['integer', 'required', 'min:0', 'max:1'],
+            'destroy'   => ['boolean', 'required'],
+            'typelist'  => ['integer', 'required', 'min:0', 'max:1'],
         ]);
         // Transaction pour rollback si erreur
         DB::beginTransaction();

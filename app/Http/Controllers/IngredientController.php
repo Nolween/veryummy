@@ -25,6 +25,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class IngredientController extends Controller
 {
 
+    private IngredientRepository $ingredientRepository;
+
     public function __construct(IngredientRepository $ingredientRepository)
     {
         $this->ingredientRepository = $ingredientRepository;
