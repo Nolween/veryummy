@@ -92,7 +92,7 @@
         {{-- FIN NOTIFICATIONS --}}
 
         {{-- Formulaire --}}
-        <form method="POST" action="{{ route('my-account.edit') }}">
+        <form method="POST" action="{{ route('my-account.update') }}">
             @method('PUT')
             @csrf
 

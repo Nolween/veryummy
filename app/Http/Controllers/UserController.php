@@ -22,19 +22,13 @@ use Illuminate\View\View;
 class UserController extends Controller
 {
     /**
-     * Affichage des informations de compte
+     * @details Affichage des informations de compte
      */
-    public function show(): View|RedirectResponse
+    public function edit(): View|RedirectResponse
     {
         $response = [];
-        // Authentification de l'utilisateur
-        $user = Auth::user();
-        if (! $user || $user->is_banned == true) {
-            Auth::logout();
 
-            return redirect('/')->withErrors(['badUser' => 'Utilisateur non trouvé']);
-        }
-        $response['informations'] = User::select('name', 'email')->where('id', $user->id)->first();
+        $response['informations'] = User::select('name', 'email')->where('id', Auth::user()->id)->firstOrFail();
 
         return view('myaccount', $response);
     }
@@ -42,7 +36,7 @@ class UserController extends Controller
     /**
      * Edition des informations de l'utilisateur
      */
-    public function edit(Request $request): RedirectResponse
+    public function update(Request $request): RedirectResponse
     {
         // Authentification de l'utilisateur
         $user = Auth::user();

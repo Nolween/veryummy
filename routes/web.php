@@ -50,8 +50,8 @@ Route::controller(MyNotebookController::class)->group(function () {
 });
 // Regroupement des méthods du controller des informations utilisateur
 Route::controller(UserController::class)->group(function () {
-    Route::get('/my-account', 'show')->name('my-account.show');
-    Route::put('/my-account/edit', 'edit')->name('my-account.edit');
+    Route::get('/my-account', 'edit')->name('my-account.edit');
+    Route::put('/my-account/update', 'update')->name('my-account.update');
     Route::delete('/my-account/delete', 'delete')->name('my-account.delete');
     Route::get('/admin/users/list/{type}', 'list')->name('admin-users.list');
     Route::delete('/admin/users/ban/', 'ban')->name('admin-users.ban');

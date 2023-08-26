@@ -12,7 +12,7 @@
         <div class="px-1 basis-1/3 sm:flex-1"><a href="{{ route('my-notebook.list') }}" class="cursor-pointer">MON
                 CARNET</a>
         </div>
-        <div class="px-1 basis-1/3 sm:flex-1"><a href="{{ route('my-account.show') }}" class="cursor-pointer">MON
+        <div class="px-1 basis-1/3 sm:flex-1"><a href="{{ route('my-account.edit') }}" class="cursor-pointer">MON
                 COMPTE</a>
         </div>
         <div class="px-1 basis-1/3 sm:flex-1"><span class="cursor-pointer"><a

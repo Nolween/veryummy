@@ -49,7 +49,7 @@ test('edit account', function () {
     ];
 
     // Accès à la route
-    $response = $this->actingAs($user)->put('/my-account/edit', $dataToSend);
+    $response = $this->actingAs($user)->put('/my-account/update', $dataToSend);
     $response->assertStatus(302)->assertSessionHasNoErrors()->assertSessionHas('userUpdateSuccess');
 
     // Destruction de l'utilisateur créé pour l'occasion
@@ -69,7 +69,7 @@ test('edit account', function () {
     ];
 
     // Accès à la route
-    $response = $this->actingAs($user)->put('/my-account/edit', $dataToSend);
+    $response = $this->actingAs($user)->put('/my-account/update', $dataToSend);
     $response->assertStatus(302)->assertSessionHasErrors('badUser')->assertSessionMissing('userUpdateSuccess');
 
     // Destruction de l'utilisateur
@@ -89,7 +89,7 @@ test('edit account', function () {
     ];
 
     // Accès à la route
-    $response = $this->actingAs($user)->put('/my-account/edit', $dataToSend);
+    $response = $this->actingAs($user)->put('/my-account/update', $dataToSend);
     $response->assertStatus(302)->assertSessionHasErrors('current-password')->assertSessionMissing('userUpdateSuccess');
 
     // Destruction de l'utilisateur
@@ -109,7 +109,7 @@ test('edit account', function () {
     ];
 
     // Accès à la route
-    $response = $this->actingAs($user)->put('/my-account/edit', $dataToSend);
+    $response = $this->actingAs($user)->put('/my-account/update', $dataToSend);
     $response->assertStatus(302)->assertSessionHasErrors('password')->assertSessionMissing('userUpdateSuccess');
 
     // Destruction de l'utilisateur
@@ -132,7 +132,7 @@ test('edit account', function () {
     ];
 
     // Accès à la route
-    $response = $this->actingAs($user)->put('/my-account/edit', $dataToSend);
+    $response = $this->actingAs($user)->put('/my-account/update', $dataToSend);
     $response->assertStatus(302)->assertSessionHasErrors(['email', 'name'])->assertSessionMissing('userUpdateSuccess');
 
     // Destruction de l'utilisateur
