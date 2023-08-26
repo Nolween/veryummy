@@ -3,12 +3,15 @@
 namespace App\Repositories;
 
 use App\Http\Requests\User\UserDestroyRequest;
+use App\Http\Requests\User\UserIndexRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Models\Recipe;
+use App\Models\RecipeOpinion;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -93,6 +96,56 @@ class UserRepository
             return false;
         }
         return true;
+    }
+
+
+    public function getUsers(int $type, UserIndexRequest $request): LengthAwarePaginator
+    {
+        $users = User::where('is_banned', 0);
+
+        switch ($type) {
+            // Les utilisateurs ayant des commentaires signalés (au moins un)
+            case 0:
+                // Tableau des id de commentaires ayant des signalements
+                $reportedOpinions = RecipeOpinion::having('reports_count', '>', 0)
+                                                 ->with('reports')
+                                                 ->withCount('reports')->pluck('id');
+
+                $users = $users->having('reported_opinions_by_other_count', '>', 0)
+                             ->with([
+                                 'opinions' => function ($query) use ($reportedOpinions) {
+                                     $query->whereIn('id', $reportedOpinions);
+                                 },
+                             ])
+                             ->withCount('reportedOpinionsByOther');
+                // Si recherche
+                if (!empty($request->search)) {
+                    $users->where('name', 'like', "%{$request->search}%");
+                }
+                break;
+            // Tous les utilisateurs
+            case 1:
+                // Tableau des id de commentaires ayant des signalements
+                $reportedOpinions = RecipeOpinion::having('reports_count', '>', 0)
+                                                 ->with('reports')
+                                                 ->withCount('reports')->pluck('id');
+
+                $users = $users->where('is_banned', 0)
+                             ->with([
+                                 'opinions' => function ($query) use ($reportedOpinions) {
+                                     $query->whereIn('id', $reportedOpinions);
+                                 },
+                             ])
+                             ->withCount('reportedOpinionsByOther');
+                // Si recherche
+                if (!empty($request->search)) {
+                    $users->where('name', 'like', "%{$request->search}%");
+                }
+                break;
+        }
+
+        return $users->paginate(20);
+
     }
 
 

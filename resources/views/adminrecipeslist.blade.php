@@ -58,7 +58,7 @@
                     class="bg-veryummy-secondary text-5xl text-white py-2 px-5 w-56 mb-5">INGREDIENTS</button>
             </a>
             <button type="button" class="bg-veryummy-primary text-5xl text-white py-2 px-5 w-56 mb-5">RECETTES</button>
-            <a href="{{ route('admin-users.list', 0) }}">
+            <a href="{{ route('admin-users.index', 0) }}">
                 <button type="button"
                     class="bg-veryummy-secondary text-5xl text-white py-2 px-5 w-56 mb-5">UTILISATEURS</button>
             </a>

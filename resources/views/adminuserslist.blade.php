@@ -62,7 +62,7 @@
                 class="bg-veryummy-primary text-5xl text-white py-2 px-5 w-56 mb-5">UTILISATEURS</button>
         </div>
         {{-- Formulaire --}}
-        <form action="{{ route('admin-users.list', $typeList) }}" method="GET">
+        <form action="{{ route('admin-users.index', $typeList) }}" method="GET">
             @csrf
             @method('GET')
             <div class="flex flex-wrap justify-center mb-7">
@@ -74,11 +74,11 @@
                             RECHERCHER</span></button>
                 </div>
                 <div class="w-full lg:w-1/3 mb-5 text-center">
-                    <a href="{{ route('admin-users.list', 0) }}"><button type="button"
+                    <a href="{{ route('admin-users.index', 0) }}"><button type="button"
                             class="{{ $typeList == 0 ? 'bg-veryummy-primary' : 'bg-veryummy-secondary' }} text-4xl w-28 p-2 rounded-sm"><span
                                 class="text-white" id="registration-button">
                                 SIGNALES</span></button></a>
-                    <a href="{{ route('admin-users.list', 1) }}"><button type="button"
+                    <a href="{{ route('admin-users.index', 1) }}"><button type="button"
                             class="{{ $typeList == 1 ? 'bg-veryummy-primary' : 'bg-veryummy-secondary' }} text-4xl w-28 p-2 rounded-sm"><span
                                 class="text-white" id="registration-button">
                                 TOUS</span></button></a>

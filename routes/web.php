@@ -53,7 +53,7 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/my-account', 'edit')->name('my-account.edit');
     Route::put('/my-account/update', 'update')->name('my-account.update');
     Route::delete('/my-account/destroy', 'destroy')->name('my-account.destroy');
-    Route::get('/admin/users/list/{type}', 'list')->name('admin-users.list');
+    Route::get('/admin/users/index/{type}', 'index')->name('admin-users.index');
     Route::delete('/admin/users/ban/', 'ban')->name('admin-users.ban');
     Route::delete('/admin/users/moderate/', 'moderate')->name('admin-users.moderate');
 });

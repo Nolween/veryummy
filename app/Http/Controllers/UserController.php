@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\User\UserDestroyRequest;
+use App\Http\Requests\User\UserIndexRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Models\OpinionReport;
 use App\Models\Recipe;
@@ -46,7 +47,7 @@ class UserController extends Controller
     }
 
     /**
-     * Edition des informations de l'utilisateur
+     * @details Edition des informations de l'utilisateur
      */
     public function update(UserUpdateRequest $request): RedirectResponse
     {
@@ -58,7 +59,7 @@ class UserController extends Controller
     }
 
     /**
-     * Suppression du compte de l'utilisateur
+     * @details Suppression du compte de l'utilisateur
      */
     public function destroy(UserDestroyRequest $request): RedirectResponse
     {
@@ -72,75 +73,15 @@ class UserController extends Controller
     }
 
     /**
-     * Affichage de la liste des utilisateurs
+     * @details Affichage de la liste des utilisateurs
      */
-    public function list(int $type, Request $request): View|RedirectResponse
+    public function index(int $type, UserIndexRequest $request): View|RedirectResponse
     {
-        $response = [];
-        // Récupération des infos de l'utilisateur connecté
-        $user = Auth::user();
-        // Si pas d'utilisateur
-        if (!$user || $user->role !== 'admin' || $user->is_banned == true) {
-            // Déconnexion de l'utilisateur
-            Auth::logout();
-
-            return redirect('/')->withErrors(['badUser' => 'Utilisateur introuvable']);
-        }
-
-        // Champ de recherche
-        $request->validate([
-            'search' => ['string', 'nullable'],
-        ]);
-
-        $response['search'] = $request->search ?? null;
-
-        switch ($type) {
-            // Les utilisateurs ayant des commentaires signalés (au moins un)
-            case 0:
-                // Tableau des id de commentaires ayant des signalements
-                $reportedOpinions = RecipeOpinion::having('reports_count', '>', 0)
-                                                 ->with('reports')
-                                                 ->withCount('reports')->pluck('id');
-
-                $users = User::having('reported_opinions_by_other_count', '>', 0)
-                             ->where('is_banned', 0)
-                             ->with([
-                                 'opinions' => function ($query) use ($reportedOpinions) {
-                                     $query->whereIn('id', $reportedOpinions);
-                                 },
-                             ])
-                             ->withCount('reportedOpinionsByOther');
-                // Si recherche
-                if (!empty($request->search)) {
-                    $users->where('name', 'like', "%{$request->search}%");
-                }
-                $response['users'] = $users->paginate(20);
-                break;
-            // Tous les utilisateurs
-            case 1:
-                // Tableau des id de commentaires ayant des signalements
-                $reportedOpinions = RecipeOpinion::having('reports_count', '>', 0)
-                                                 ->with('reports')
-                                                 ->withCount('reports')->pluck('id');
-
-                $users = User::where('is_banned', 0)
-                             ->with([
-                                 'opinions' => function ($query) use ($reportedOpinions) {
-                                     $query->whereIn('id', $reportedOpinions);
-                                 },
-                             ])
-                             ->withCount('reportedOpinionsByOther');
-                // Si recherche
-                if (!empty($request->search)) {
-                    $users->where('name', 'like', "%{$request->search}%");
-                }
-                $response['users'] = $users->paginate(20);
-                break;
-            default:
-                return redirect('/')->withErrors(['badType' => 'Liste introuvable']);
-        }
-        $response['typeList'] = (int)$type;
-        // dd( $response['recipes']);
+        $response = [
+            'typeList' => $type,
+            'users'    => $this->userRepository->getUsers($type, $request),
+            'search'   => $request->search ?? null,
+        ];
 
         return view('adminuserslist', $response);
     }

@@ -21,9 +21,6 @@ class IngredientRepository
 
     /**
      * @details Récupération des ingrédients
-     * @param int $type
-     * @param string|null $search
-     * @return LengthAwarePaginator
      */
     public function getIngredients(?int $type, ?string $search): LengthAwarePaginator
     {
