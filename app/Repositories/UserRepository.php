@@ -5,7 +5,9 @@ namespace App\Repositories;
 use App\Http\Requests\User\UserBanRequest;
 use App\Http\Requests\User\UserDestroyRequest;
 use App\Http\Requests\User\UserIndexRequest;
+use App\Http\Requests\User\UserModerateRequest;
 use App\Http\Requests\User\UserUpdateRequest;
+use App\Models\OpinionReport;
 use App\Models\Recipe;
 use App\Models\RecipeOpinion;
 use App\Models\User;
@@ -206,5 +208,35 @@ class UserRepository
         }
     }
 
+    /**
+     * @details Modération d'un utilisateur
+     */
+    public function moderateUser(UserModerateRequest $request): int
+    {
+        // Transaction pour rollback si erreur
+        DB::beginTransaction();
+        try {
+            // Si destruction du commentaire
+            if ($request->destroy == true) {
+                // Destruction du commentaire
+                RecipeOpinion::destroy($request->opinionid);
+                $returnType = 1;
+            } // Si suppression des signalements liés à ce commentaire
+            else {
+                $test = OpinionReport::where('opinion_id', $request->opinionid)->delete();
+                $returnType = 2;
+            }
+
+            // Validation de la transaction
+            DB::commit();
+
+            return $returnType;
+        } // Si erreur dans la transaction
+        catch (QueryException $e) {
+            DB::rollback();
+
+            return 0;
+        }
+    }
 
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\User\UserBanRequest;
 use App\Http\Requests\User\UserDestroyRequest;
 use App\Http\Requests\User\UserIndexRequest;
+use App\Http\Requests\User\UserModerateRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Models\OpinionReport;
 use App\Models\Recipe;
@@ -101,49 +102,19 @@ class UserController extends Controller
     }
 
     /**
-     * Modérer un utilisateur
+     * @details Modérer un utilisateur
      */
-    public function moderate(Request $request): RedirectResponse
+    public function moderate(UserModerateRequest $request): RedirectResponse
     {
-        // Récupération des infos de l'utilisateur connecté
-        $user = Auth::user();
-        // Si pas d'utilisateur
-        if (!$user || $user->role !== 'admin' || $user->is_banned == true) {
-            // Déconnexion de l'utilisateur
-            Auth::logout();
-
-            return redirect('/')->withErrors(['badUser' => 'Utilisateur introuvable']);
-        }
-
-        // Validation du champ
-        $request->validate([
-            'opinionid' => ['integer', 'required', 'exists:recipe_opinions,id'],
-            'destroy'   => ['boolean', 'required'],
-            'typelist'  => ['integer', 'required', 'min:0', 'max:1'],
-        ]);
-        // Transaction pour rollback si erreur
-        DB::beginTransaction();
-        try {
-            // Si destruction du commentaire
-            if ($request->destroy == true) {
-                // Destruction du commentaire
-                RecipeOpinion::destroy($request->opinionid);
-                $successMessage = 'Le commentaire a été supprimé';
-            } // Si suppression des signalements liés à ce commentaire
-            else {
-                $test = OpinionReport::where('opinion_id', $request->opinionid)->delete();
-                $successMessage = 'Les signalements du commentaire on été supprimés';
-            }
-
-            // Validation de la transaction
-            DB::commit();
-
+        $moderateUSer = $this->userRepository->moderateUser($request);
+        if ($moderateUSer === 1) {
             return redirect("/admin/users/index/$request->typelist")
-                ->with('deletionSuccess', $successMessage);
-        } // Si erreur dans la transaction
-        catch (QueryException $e) {
-            DB::rollback();
-
+                ->with('deletionSuccess', "Le commentaire a été supprimé");
+        }
+        if ($moderateUSer === 2) {
+            return redirect("/admin/users/index/$request->typelist")
+                ->with('deletionSuccess', "Le commentaire a été supprimé");
+        } else {
             return back()->withErrors(['deletionError' => 'Erreur dans la modération du commentaire']);
         }
     }
