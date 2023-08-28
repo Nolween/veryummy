@@ -11,6 +11,8 @@ use App\Models\RecipeOpinion;
 use App\Models\RecipeStep;
 use App\Models\RecipeType;
 use App\Models\Unit;
+use App\Models\User;
+use App\Repositories\RecipeRepository;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
@@ -30,6 +32,25 @@ use function imageavif;
 
 class RecipeController extends Controller
 {
+
+    private RecipeRepository $recipeRepository;
+
+    public function __construct(RecipeRepository $recipeRepository)
+    {
+        $this->recipeRepository = $recipeRepository;
+    }
+
+    /**
+     * @details Page d'accueil
+     */
+    public function welcomeIndex(): View
+    {
+        $response = $this->recipeRepository->getWelcomeIndex();
+
+        return view('welcome', $response);
+    }
+
+
     /**
      * Page d'accueil
      */

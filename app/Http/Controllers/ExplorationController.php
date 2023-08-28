@@ -12,7 +12,7 @@ use Illuminate\View\View;
 /**
  * Page d'accueil
  *
- * @return \Illuminate\View\View
+ * @return View
  */
 class ExplorationController extends Controller
 {

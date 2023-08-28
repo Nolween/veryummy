@@ -25,10 +25,7 @@ use Illuminate\Support\Facades\Route;
 //     return view('dashboard');
 // })->middleware(['auth'])->name('dashboard');
 
-// Regroupement des méthods du controller de la page d'accueil
-Route::controller(WelcomeController::class)->group(function () {
-    Route::get('/', 'index')->name('home');
-});
+
 // Regroupement des méthods du controller de la page recette
 Route::controller(RecipeCardController::class)->group(function () {
     Route::get('/recipe/show/{id}', 'show')->name('recipe.show');
@@ -68,6 +65,7 @@ Route::controller(IngredientController::class)->group(function () {
 
 // Regroupement des methods du controller des recettes enregistrées par l'utilisateur
 Route::controller(RecipeController::class)->group(function () {
+    Route::get('/', 'welcomeIndex')->name('home');
     Route::get('/admin/recipes/list/{type}', 'list')->name('admin-recipes.list');
     Route::post('/admin/recipes/allow}', 'allow')->name('admin-recipes-allow');
     Route::post('/recipe/status', 'status')->name('recipes.status');
@@ -83,4 +81,4 @@ Route::get('/registration', function () {
     return view('registration');
 })->name('registration');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
