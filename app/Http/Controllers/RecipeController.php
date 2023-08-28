@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ImageTransformation;
+use App\Http\Requests\Recipe\RecipeExplorationRequest;
 use App\Mail\RefusedRecipe;
 use App\Models\Ingredient;
 use App\Models\Recipe;
@@ -13,6 +14,7 @@ use App\Models\RecipeType;
 use App\Models\Unit;
 use App\Models\User;
 use App\Repositories\RecipeRepository;
+use App\Rules\DietExists;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
@@ -49,6 +51,20 @@ class RecipeController extends Controller
 
         return view('welcome', $response);
     }
+
+
+    /**
+     * Listes des recettes
+     */
+    public function explorationIndex(RecipeExplorationRequest $request): View
+    {
+        $response = $this->recipeRepository->getExplorationIndex($request);
+
+
+        return view('exploration', $response);
+    }
+
+
 
 
     /**

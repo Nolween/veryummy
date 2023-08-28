@@ -35,7 +35,6 @@ Route::controller(RecipeCardController::class)->group(function () {
 });
 // Regroupement des méthods du controller d'exploration des recettes
 Route::controller(ExplorationController::class)->group(function () {
-    Route::get('/exploration', 'list')->name('exploration.list');
 });
 // Regroupement des méthods du controller des recettes crées
 Route::controller(MyRecipesController::class)->group(function () {
@@ -66,6 +65,7 @@ Route::controller(IngredientController::class)->group(function () {
 // Regroupement des methods du controller des recettes enregistrées par l'utilisateur
 Route::controller(RecipeController::class)->group(function () {
     Route::get('/', 'welcomeIndex')->name('home');
+    Route::get('/exploration', 'explorationIndex')->name('exploration.index');
     Route::get('/admin/recipes/list/{type}', 'list')->name('admin-recipes.list');
     Route::post('/admin/recipes/allow}', 'allow')->name('admin-recipes-allow');
     Route::post('/recipe/status', 'status')->name('recipes.status');

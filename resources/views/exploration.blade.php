@@ -43,7 +43,7 @@
         <div class="mb-4 pt-20 sm:pt-10">
             <h1 class="text-veryummy-secondary text-8xl md:text-9xl w-full text-center">EXPLORATION</h1>
         </div>
-        <form method="GET" action="{{ route('exploration.list') }}">
+        <form method="GET" action="{{ route('exploration.index') }}">
             @csrf
             @method('GET')
             <div class="flex flex-wrap px-4 lg:px-8">

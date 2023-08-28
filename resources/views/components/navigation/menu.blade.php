@@ -1,7 +1,7 @@
 <div
     class="drop-shadow-md z-40 fixed w-full text-4xl bg-white  text-veryummy-primary flex flex-wrap text-center mb-4 justify-center">
     <div class="px-1 basis-1/3 sm:flex-1"><a href="{{ route('home') }}" class="cursor-pointer">ACCUEIL</a></div>
-    <div class="px-1 basis-1/3 sm:flex-1"><a href="{{ route('exploration.list') }}"
+    <div class="px-1 basis-1/3 sm:flex-1"><a href="{{ route('exploration.index') }}"
             class="cursor-pointer">EXPLORATION</a>
     </div>
     @guest
