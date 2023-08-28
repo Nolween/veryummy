@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\UserBanRequest;
 use App\Http\Requests\User\UserDestroyRequest;
 use App\Http\Requests\User\UserIndexRequest;
 use App\Http\Requests\User\UserUpdateRequest;
@@ -87,77 +88,14 @@ class UserController extends Controller
     }
 
     /**
-     * Bannir un utilisateur
+     * @details Bannir un utilisateur
      */
-    public function ban(Request $request): RedirectResponse
+    public function ban(UserBanRequest $request): RedirectResponse
     {
-        // Récupération des infos de l'utilisateur connecté
-        $user = Auth::user();
-        // Si pas d'utilisateur
-        if (!$user || $user->role !== 'admin' || $user->is_banned == true) {
-            // Déconnexion de l'utilisateur
-            Auth::logout();
-
-            return redirect('/')->withErrors(['badUser' => 'Utilisateur introuvable']);
-        }
-
-        // Validation du formulaire
-        $request->validate([
-            'typelist' => ['integer', 'required', 'min:0', 'max:1'],
-            'userid'   => ['integer', 'required', 'exists:users,id'],
-        ]);
-
-        // Transaction pour rollback si erreur
-        DB::beginTransaction();
-        try {
-            // Récupération de l'utilisateur
-            $userDelete = User::findOrFail($request->userid);
-
-            /** @var User $userDelete */
-            // Si l'utilisateur est admin, erreur
-            if ($userDelete->role === 'admin') {
-                return redirect("/admin/users/list/$request->typelist")
-                    ->withErrors(['deletionError' => 'Vous ne pouvez pas bannir un administrateur']);
-            }
-
-            // Récupération des recettes de l'utilisateur, avec pour chacune son compte d'opinion en favori
-            $recipesWithFavoriteCount = Recipe::whereBelongsTo($userDelete)
-                                              ->withCount([
-                                                  'opinions' => function (Builder $query) {
-                                                      $query->where('is_favorite', '=', true);
-                                                  },
-                                              ])
-                                              ->get();
-            // Filtre des recettes qui ne sont pas en favori
-            $recipesWithoutFavorite = $recipesWithFavoriteCount->filter(function ($value) {
-                return $value->opinions_count === 0;
-            });
-            // Suppression des recettes qui ne sont jamais en favori
-            $recipesWithoutFavorite = Recipe::destroy($recipesWithoutFavorite);
-
-            // Filtre des recettes qui ont des favoris
-            $recipesWithFavorite = $recipesWithFavoriteCount->filter(function ($value) {
-                return $value->opinions_count > 0;
-            });
-            // dd($recipesWithFavorite);
-            // Si l'utilisateur a des recettes chez d'autres en favoris
-            if ($recipesWithFavorite->isNotEmpty()) {
-                // Mise à jour de toutes les recettes de l'utilisateur vers le compte d'archives
-                $recipesWithFavorite->toQuery()->update(['user_id' => 1]);
-            }
-            // Banissement de l'utilisateur
-            $userDelete->is_banned = true;
-            $userDelete->save();
-
-            // Validation de la transaction
-            DB::commit();
-
-            return redirect("/admin/users/list/$request->typelist")
+        if ($this->userRepository->banUser($request)) {
+            return redirect("/admin/users/index/$request->typelist")
                 ->with('deletionSuccess', "Bannissement de l'utilisateur effectué");
-        } // Si erreur dans la transaction
-        catch (QueryException $e) {
-            DB::rollback();
-
+        } else {
             return back()->withErrors(['deletionError' => "Erreur dans le bannissement de l'utilisateur"]);
         }
     }
@@ -200,7 +138,7 @@ class UserController extends Controller
             // Validation de la transaction
             DB::commit();
 
-            return redirect("/admin/users/list/$request->typelist")
+            return redirect("/admin/users/index/$request->typelist")
                 ->with('deletionSuccess', $successMessage);
         } // Si erreur dans la transaction
         catch (QueryException $e) {

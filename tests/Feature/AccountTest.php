@@ -208,27 +208,27 @@ test('access admin users list', function () {
     }
 
     $typeList = rand(0, 1);
-    $response = $this->actingAs($user)->get("/admin/users/list/$typeList");
+    $response = $this->actingAs($user)->get("/admin/users/index/$typeList");
     $response->assertStatus(200);
 
     //? Utilisateur non admin
     $nonAdminUser = initialize_user(false, false);
     $typeList = rand(0, 1);
-    $response = $this->actingAs($nonAdminUser)->get("/admin/users/list/$typeList");
+    $response = $this->actingAs($nonAdminUser)->get("/admin/users/index/$typeList");
     $response->assertStatus(302)->assertSessionHasErrors('badUser');
 
     //? Utilisateur banni
     $nonAdminUser->role = User::ROLE_ADMIN;
     $nonAdminUser->is_banned = true;
     $nonAdminUser->save();
-    $response = $this->actingAs($nonAdminUser)->get("/admin/users/list/$typeList");
+    $response = $this->actingAs($nonAdminUser)->get("/admin/users/index/$typeList");
     $response->assertStatus(302)->assertSessionHasErrors('badUser');
 });
 
 test('access admin users list with bad type', function () {
     $user = initialize_user(false, true);
     $typeList = 500;
-    $response = $this->actingAs($user)->get("/admin/users/list/$typeList");
+    $response = $this->actingAs($user)->get("/admin/users/index/$typeList");
     $response->assertStatus(302)->assertSessionHasErrors('badType');
 });
 

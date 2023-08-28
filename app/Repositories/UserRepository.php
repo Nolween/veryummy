@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Http\Requests\User\UserBanRequest;
 use App\Http\Requests\User\UserDestroyRequest;
 use App\Http\Requests\User\UserIndexRequest;
 use App\Http\Requests\User\UserUpdateRequest;
@@ -101,7 +102,8 @@ class UserRepository
 
     public function getUsers(int $type, UserIndexRequest $request): LengthAwarePaginator
     {
-        $users = User::where('is_banned', 0);
+        // On ne liste que les utilisateurs non admin
+        $users = User::where('is_banned', 0)->where('role', '!=', User::ROLE_ADMIN);
 
         switch ($type) {
             // Les utilisateurs ayant des commentaires signalés (au moins un)
@@ -112,12 +114,12 @@ class UserRepository
                                                  ->withCount('reports')->pluck('id');
 
                 $users = $users->having('reported_opinions_by_other_count', '>', 0)
-                             ->with([
-                                 'opinions' => function ($query) use ($reportedOpinions) {
-                                     $query->whereIn('id', $reportedOpinions);
-                                 },
-                             ])
-                             ->withCount('reportedOpinionsByOther');
+                               ->with([
+                                   'opinions' => function ($query) use ($reportedOpinions) {
+                                       $query->whereIn('id', $reportedOpinions);
+                                   },
+                               ])
+                               ->withCount('reportedOpinionsByOther');
                 // Si recherche
                 if (!empty($request->search)) {
                     $users->where('name', 'like', "%{$request->search}%");
@@ -131,12 +133,12 @@ class UserRepository
                                                  ->withCount('reports')->pluck('id');
 
                 $users = $users->where('is_banned', 0)
-                             ->with([
-                                 'opinions' => function ($query) use ($reportedOpinions) {
-                                     $query->whereIn('id', $reportedOpinions);
-                                 },
-                             ])
-                             ->withCount('reportedOpinionsByOther');
+                               ->with([
+                                   'opinions' => function ($query) use ($reportedOpinions) {
+                                       $query->whereIn('id', $reportedOpinions);
+                                   },
+                               ])
+                               ->withCount('reportedOpinionsByOther');
                 // Si recherche
                 if (!empty($request->search)) {
                     $users->where('name', 'like', "%{$request->search}%");
@@ -144,8 +146,64 @@ class UserRepository
                 break;
         }
 
-        return $users->paginate(20);
+        return $users->orderBy('name')->paginate(20);
+    }
 
+    /**
+     * @details Bannir un utilisateur
+     */
+    public function banUser(UserBanRequest $request): bool
+    {
+        // Transaction pour rollback si erreur
+        DB::beginTransaction();
+        try {
+            // Récupération de l'utilisateur
+            $userDelete = User::findOrFail($request->userid);
+
+            /** @var User $userDelete */
+            // Si l'utilisateur est admin, erreur
+            if ($userDelete->role === 'admin') {
+                return false;
+            }
+
+            // Récupération des recettes de l'utilisateur, avec pour chacune son compte d'opinion en favori
+            $recipesWithFavoriteCount = Recipe::whereBelongsTo($userDelete)
+                                              ->withCount([
+                                                  'opinions' => function (Builder $query) {
+                                                      $query->where('is_favorite', '=', true);
+                                                  },
+                                              ])
+                                              ->get();
+            // Filtre des recettes qui ne sont pas en favori
+            $recipesWithoutFavorite = $recipesWithFavoriteCount->filter(function ($value) {
+                return $value->opinions_count === 0;
+            });
+            // Suppression des recettes qui ne sont jamais en favori
+            $recipesWithoutFavorite = Recipe::destroy($recipesWithoutFavorite);
+
+            // Filtre des recettes qui ont des favoris
+            $recipesWithFavorite = $recipesWithFavoriteCount->filter(function ($value) {
+                return $value->opinions_count > 0;
+            });
+            // Si l'utilisateur a des recettes chez d'autres en favoris
+            if ($recipesWithFavorite->isNotEmpty()) {
+                // Mise à jour de toutes les recettes de l'utilisateur vers le compte d'archives
+                $recipesWithFavorite->toQuery()->update(['user_id' => 1]);
+            }
+            // Bannissement de l'utilisateur
+            $userDelete->is_banned = true;
+            $userDelete->save();
+
+            // Validation de la transaction
+            DB::commit();
+
+            return true;
+        } // Si erreur dans la transaction
+        catch (Exception $e) {
+            DB::rollback();
+
+            return false;
+        }
     }
 
 

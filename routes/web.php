@@ -54,7 +54,7 @@ Route::controller(UserController::class)->group(function () {
     Route::put('/my-account/update', 'update')->name('my-account.update');
     Route::delete('/my-account/destroy', 'destroy')->name('my-account.destroy');
     Route::get('/admin/users/index/{type}', 'index')->name('admin-users.index');
-    Route::delete('/admin/users/ban/', 'ban')->name('admin-users.ban');
+    Route::patch('/admin/users/ban/', 'ban')->name('admin-users.ban');
     Route::delete('/admin/users/moderate/', 'moderate')->name('admin-users.moderate');
 });
 // Regroupement des méthods du controller des ingrédients enregistrés par l'utilisateur

@@ -148,7 +148,7 @@
             </div>
             {{-- Formulaire --}}
             <form method="POST" action="{{ route('admin-users.ban') }}">
-                @method('DELETE')
+                @method('PATCH')
                 @csrf
                 <input id="user-id-input" type="hidden" value="0" name="userid">
                 <input id="typelist" type="hidden" value="0" name="typelist" value="{{ $typeList }}">
