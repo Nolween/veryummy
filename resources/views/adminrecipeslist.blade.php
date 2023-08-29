@@ -65,7 +65,7 @@
         </div>
 
         {{-- Formulaire --}}
-        <form action="{{ route('admin-recipes.list', $typeList) }}" method="GET">
+        <form action="{{ route('admin-recipes.index', $typeList) }}" method="GET">
             @csrf
             @method('GET')
             <div class="flex flex-wrap justify-center mb-7">
@@ -77,11 +77,11 @@
                             RECHERCHER</span></button>
                 </div>
                 <div class="w-full lg:w-1/3 mb-5 text-center">
-                    <a href="{{ route('admin-recipes.list', 0) }}"><button type="button"
+                    <a href="{{ route('admin-recipes.index', 0) }}"><button type="button"
                             class="{{ $typeList == 0 ? 'bg-veryummy-primary' : 'bg-veryummy-secondary'}} text-4xl w-28 p-2 rounded-sm"><span class="text-white"
                                 id="registration-button">
                                 SIGNALLEES</span></button></a>
-                    <a href="{{ route('admin-recipes.list', 1) }}"><button type="button"
+                    <a href="{{ route('admin-recipes.index', 1) }}"><button type="button"
                             class="{{ $typeList == 1 ? 'bg-veryummy-primary' : 'bg-veryummy-secondary'}} text-4xl w-28 p-2 rounded-sm"><span class="text-white"
                                 id="registration-button">
                                 ACCEPTES</span></button></a>

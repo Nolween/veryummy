@@ -66,7 +66,7 @@ Route::controller(IngredientController::class)->group(function () {
 Route::controller(RecipeController::class)->group(function () {
     Route::get('/', 'welcomeIndex')->name('home');
     Route::get('/exploration', 'explorationIndex')->name('exploration.index');
-    Route::get('/admin/recipes/list/{type}', 'list')->name('admin-recipes.list');
+    Route::get('/admin/recipes/index/{type}', 'adminIndex')->name('admin-recipes.index');
     Route::post('/admin/recipes/allow}', 'allow')->name('admin-recipes-allow');
     Route::post('/recipe/status', 'status')->name('recipes.status');
     Route::get('/recipe/new', 'new')->name('my-recipes.new');

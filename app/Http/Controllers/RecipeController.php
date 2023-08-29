@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ImageTransformation;
+use App\Http\Requests\Recipe\RecipeAdminIndexRequest;
 use App\Http\Requests\Recipe\RecipeExplorationRequest;
 use App\Mail\RefusedRecipe;
 use App\Models\Ingredient;
@@ -54,7 +55,7 @@ class RecipeController extends Controller
 
 
     /**
-     * Listes des recettes
+     * @details Listes des recettes d'exploration
      */
     public function explorationIndex(RecipeExplorationRequest $request): View
     {
@@ -70,72 +71,9 @@ class RecipeController extends Controller
     /**
      * Page d'accueil
      */
-    public function list(int $type, Request $request): View|RedirectResponse
+    public function adminIndex(int $type, RecipeAdminIndexRequest $request): View|RedirectResponse
     {
-        $response = [];
-
-        // Récupération des infos de l'utilisateur connecté
-        $user = Auth::user();
-        // Si pas d'utilisateur
-        if (!$user || $user->role !== 'admin' || $user->is_banned == true) {
-            // Déconnexion de l'utilisateur
-            Auth::logout();
-
-            return redirect('/')->withErrors(['badUser' => 'Utilisateur non reconnu']);
-        }
-
-        // Champ de recherche
-        $request->validate([
-            'search' => ['string', 'nullable'],
-        ]);
-
-        switch ($type) {
-            case 0:
-                // Récupération des ingrédients
-                $recipes = Recipe::having('opinions_count', '>', 0)
-                                 ->with('user')
-                                 ->with([
-                                     'opinions' => function ($query) {
-                                         $query->where('is_reported', '=', true);
-                                     },
-                                 ])
-                                 ->withCount([
-                                     'opinions' => function (Builder $query) {
-                                         $query->where('is_reported', '=', true);
-                                     },
-                                 ]);
-
-                // Si recherche
-                if (!empty($request->search)) {
-                    $recipes->where('name', 'like', "%{$request->search}%");
-                }
-                $response['recipes'] = $recipes->paginate(20);
-                break;
-            case 1:
-                // Récupération des ingrédients
-                $recipes = Recipe::having('opinions_count', '=', 0)
-                                 ->with('user')
-                                 ->withCount([
-                                     'opinions' => function (Builder $query) {
-                                         $query->where('is_reported', '=', true);
-                                     },
-                                 ]);
-
-                // Si recherche
-                if (!empty($request->search)) {
-                    $recipes->where('name', 'like', "%{$request->search}%");
-                }
-
-                $response['recipes'] = $recipes->paginate(20);
-                break;
-            default:
-                $type = null;
-                break;
-        }
-
-        $response['typeList'] = (int)$type;
-        $response['search'] = $request->search;
-        // dd( $response['recipes']);
+        $response = $this->recipeRepository->getAdminIndex($request, $type);
 
         return view('adminrecipeslist', $response);
     }

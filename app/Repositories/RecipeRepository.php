@@ -2,11 +2,13 @@
 
 namespace App\Repositories;
 
+use App\Http\Requests\Recipe\RecipeAdminIndexRequest;
 use App\Http\Requests\Recipe\RecipeExplorationRequest;
 use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Models\RecipeType;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 class RecipeRepository
@@ -56,9 +58,8 @@ class RecipeRepository
     }
 
 
-    public function getExplorationIndex(RecipeExplorationRequest $request) :array
+    public function getExplorationIndex(RecipeExplorationRequest $request): array
     {
-
         $userId = Auth::user()->id;
 
         $response = [];
@@ -74,13 +75,13 @@ class RecipeRepository
         }
 
         // Si on a un type de plat (entrée, plat, dessert,...)
-        if ($request->typeId && (int) $request->typeId > 0) {
+        if ($request->typeId && (int)$request->typeId > 0) {
             $recipes = $recipes->where('recipe_type_id', $request->typeId);
         }
 
         // Si on a un filtre sur le type de régime
         if ($request->diet && $request->diet > 0) {
-            switch ((int) $request->diet) {
+            switch ((int)$request->diet) {
                 case 1: // Végétarien
                     $recipesCount = $recipes = $recipes->where('vegetarian_compatible', 1);
                     break;
@@ -101,8 +102,7 @@ class RecipeRepository
                     break;
             }
             $response['total'] = $recipesCount->count();
-        }
-        // Si pas de filtre de type
+        } // Si pas de filtre de type
         else {
             $response['total'] = $recipes->count();
         }
@@ -123,5 +123,62 @@ class RecipeRepository
 
         return $response;
     }
+
+
+    public function getAdminIndex(RecipeAdminIndexRequest $request, int $type): array
+    {
+        $response = [];
+
+        switch ($type) {
+            case 0:
+                // Récupération des ingrédients
+                $recipes = Recipe::having('opinions_count', '>', 0)
+                                 ->with('user')
+                                 ->with([
+                                     'opinions' => function ($query) {
+                                         $query->where('is_reported', '=', true);
+                                     },
+                                 ])
+                                 ->withCount([
+                                     'opinions' => function (Builder $query) {
+                                         $query->where('is_reported', '=', true);
+                                     },
+                                 ]);
+
+                // Si recherche
+                if (!empty($request->search)) {
+                    $recipes->where('name', 'like', "%{$request->search}%");
+                }
+                $response['recipes'] = $recipes->paginate(20);
+                break;
+            case 1:
+                // Récupération des ingrédients
+                $recipes = Recipe::having('opinions_count', '=', 0)
+                                 ->with('user')
+                                 ->withCount([
+                                     'opinions' => function (Builder $query) {
+                                         $query->where('is_reported', '=', true);
+                                     },
+                                 ]);
+
+                // Si recherche
+                if (!empty($request->search)) {
+                    $recipes->where('name', 'like', "%{$request->search}%");
+                }
+
+                $response['recipes'] = $recipes->paginate(20);
+                break;
+            default:
+                $type = null;
+                $response['recipes'] = [];
+                break;
+        }
+
+        $response['typeList'] = (int)$type;
+        $response['search'] = $request->search;
+
+        return $response;
+    }
+
 
 }
