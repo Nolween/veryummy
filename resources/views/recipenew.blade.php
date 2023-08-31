@@ -177,7 +177,7 @@
             </div>
         @endif
 
-        <form id="create-form" action="{{ route('my-recipes.create') }}" enctype="multipart/form-data" method="POST">
+        <form id="create-form" action="{{ route('my-recipes.store') }}" enctype="multipart/form-data" method="POST">
             @csrf
             @method('PUT')
             {{-- Nom de la recette --}}

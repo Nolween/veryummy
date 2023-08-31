@@ -69,8 +69,8 @@ Route::controller(RecipeController::class)->group(function () {
     Route::get('/admin/recipes/index/{type}', 'adminIndex')->name('admin-recipes.index');
     Route::patch('/admin/recipes/allow}', 'moderate')->name('admin.recipes.moderate');
     Route::post('/recipe/status', 'status')->name('recipes.status');
-    Route::get('/recipe/new', 'new')->name('my-recipes.new');
-    Route::put('/recipe/create', 'create')->name('my-recipes.create');
+    Route::get('/recipe/create', 'create')->name('my-recipes.create');
+    Route::put('/recipe/store', 'store')->name('my-recipes.store');
     Route::post('/recipe/update', 'update')->name('my-recipes.update');
     Route::get('/recipe/edit/{id}', 'edit')->name('my-recipes.edit');
 });

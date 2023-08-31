@@ -86,7 +86,7 @@
                                 class="bg-veryummy-secondary pt-3 pb-2 px-3 text-white rounded-sm">MES
                                 RECETTES</span></button>
                     </a>
-                    <a href="{{ route('my-recipes.new') }}">
+                    <a href="{{ route('my-recipes.create') }}">
                         <button type="button" class="bg-white text-3xl" id="newRecipe"><span
                                 class="bg-veryummy-primary pt-3 pb-2 px-3 text-white rounded-sm">NOUVELLE
                                 RECETTE</span></button>
