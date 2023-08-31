@@ -3,13 +3,21 @@
 namespace App\Repositories;
 
 use App\Http\Requests\Recipe\RecipeAdminIndexRequest;
+use App\Http\Requests\Recipe\RecipeAllowRequest;
 use App\Http\Requests\Recipe\RecipeExplorationRequest;
+use App\Mail\RefusedRecipe;
 use App\Models\Ingredient;
 use App\Models\Recipe;
+use App\Models\RecipeOpinion;
 use App\Models\RecipeType;
 use App\Models\User;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 
 class RecipeRepository
 {
@@ -178,6 +186,42 @@ class RecipeRepository
         $response['search'] = $request->search;
 
         return $response;
+    }
+
+
+    public function moderateRecipe(RecipeAllowRequest $request): bool
+    {
+        $user = Auth::user();
+
+        // Transaction pour rollback si erreur
+        DB::beginTransaction();
+        try {
+            // Récupération de la recette par son Id
+            $recipe = Recipe::where('id', $request->recipeid)->with('user')->firstOrFail();
+
+            // Si on ignore les signalements
+            if ($request->allow == true) {
+                RecipeOpinion::where('recipe_id', $request->recipeid)->where('is_reported', true)->update(
+                    ['is_reported' => false]
+                );
+            } // Si on supprime la recette
+            elseif ($request->allow == false) {
+                Recipe::destroy($recipe->id);
+                // Envoi de mail de désactivation à la personne ayant proposé la recette
+                $informations = ['recipe' => $recipe->name, 'url' => URL::to('/')];
+                Mail::to($user->email)->send(new RefusedRecipe($informations));
+            }
+
+            // Validation de la transaction
+            DB::commit();
+
+            return true;
+        } // Si erreur dans la transaction
+        catch (Exception $e) {
+            DB::rollback();
+
+            return false;
+        }
     }
 
 

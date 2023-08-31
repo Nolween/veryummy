@@ -113,9 +113,9 @@
         {{ $recipes->links() }}
     </div>
     {{-- Eléments --}}
-    <form id="allow-form" name="allow-form" action="{{ route('admin-recipes-allow') }}" method="POST">
+    <form id="allow-form" name="allow-form" action="{{ route('admin.recipes.moderate') }}" method="POST">
         @csrf
-        @method('POST')
+        @method('PATCH')
         <input id="recipe-id-input" type="hidden" value="0" name="recipeid">
         <input id="allow-input" type="hidden" value="0" name="allow">
         <input id="list-type" type="hidden" value="{{ $typeList }}" name="typeList">

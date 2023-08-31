@@ -67,7 +67,7 @@ Route::controller(RecipeController::class)->group(function () {
     Route::get('/', 'welcomeIndex')->name('home');
     Route::get('/exploration', 'explorationIndex')->name('exploration.index');
     Route::get('/admin/recipes/index/{type}', 'adminIndex')->name('admin-recipes.index');
-    Route::post('/admin/recipes/allow}', 'allow')->name('admin-recipes-allow');
+    Route::patch('/admin/recipes/allow}', 'moderate')->name('admin.recipes.moderate');
     Route::post('/recipe/status', 'status')->name('recipes.status');
     Route::get('/recipe/new', 'new')->name('my-recipes.new');
     Route::put('/recipe/create', 'create')->name('my-recipes.create');

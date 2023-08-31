@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ImageTransformation;
 use App\Http\Requests\Recipe\RecipeAdminIndexRequest;
+use App\Http\Requests\Recipe\RecipeAllowRequest;
 use App\Http\Requests\Recipe\RecipeExplorationRequest;
 use App\Mail\RefusedRecipe;
 use App\Models\Ingredient;
@@ -66,10 +67,8 @@ class RecipeController extends Controller
     }
 
 
-
-
     /**
-     * Page d'accueil
+     * @details Recettes dans l'administation
      */
     public function adminIndex(int $type, RecipeAdminIndexRequest $request): View|RedirectResponse
     {
@@ -79,65 +78,17 @@ class RecipeController extends Controller
     }
 
     /**
-     * Page d'accueil
+     * @details  Modérer une recette
      */
-    public function allow(Request $request): RedirectResponse
+    public function moderate(RecipeAllowRequest $request): RedirectResponse
     {
-        // Récupération des infos de l'utilisateur connecté
-        $user = Auth::user();
-        // Si pas d'utilisateur
-        if (!$user || $user->role !== 'admin' || $user->is_banned == true) {
-            // Déconnexion de l'utilisateur
-            Auth::logout();
 
-            return redirect('/')->withErrors(['badUser' => 'Utilisateur non reconnu']);
-        }
-        $response = [];
-        // Validation du formulaire avec les différentes règles
-        $request->validate([
-            'recipeid' => ['integer', 'required', 'exists:recipes,id'],
-            'allow'    => ['boolean', 'required'],
-            'typeList' => ['integer', 'required'],
-        ]);
-
-        // Transaction pour rollback si erreur
-        DB::beginTransaction();
-        try {
-            // Récupération de la recette par son Id
-            $recipe = Recipe::where('id', (int)$request->recipeid)->with('user')->first();
-            // Si pas de recette trouvée, erreur
-            if (!$recipe) {
-                return back()->withErrors(['recipeAllowError' => 'Aucun ingrédient trouvé']);
-            }
-
-            // Si on ignore les signalements
-            if ($request->allow == true) {
-                RecipeOpinion::where('recipe_id', (int)$request->recipeid)->where('is_reported', true)->update(
-                    ['is_reported' => false]
-                );
-            } // Si on supprime la recette
-            elseif ($request->allow == false) {
-                Recipe::destroy($recipe->id);
-            }
-
-            // Envoi de mail de désactivation à la personne ayant proposé la recette
-            $informations = ['recipe' => $recipe->name, 'url' => URL::to('/')];
-            // dd($informations);
-            if ($request->allow == false) {
-                Mail::to($user->email)->send(new RefusedRecipe($informations));
-            }
-
-            // Validation de la transaction
-            DB::commit();
-
-            return redirect("/admin/recipes/list/$request->typeList")->with(
+        if ($this->recipeRepository->moderateRecipe($request)) {
+            return redirect("/admin/recipes/index/$request->typeList")->with(
                 'recipeAllowSuccess',
                 'La recette a été modérée'
             );
-        } // Si erreur dans la transaction
-        catch (QueryException $e) {
-            DB::rollback();
-
+        } else {
             return back()->withErrors(['recipeAllowError' => 'Erreur dans la modération de la recette']);
         }
     }
