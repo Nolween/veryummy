@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Http\Requests\Recipe\RecipeAdminIndexRequest;
 use App\Http\Requests\Recipe\RecipeAllowRequest;
 use App\Http\Requests\Recipe\RecipeExplorationRequest;
+use App\Http\Requests\Recipe\RecipeStatusRequest;
 use App\Mail\RefusedRecipe;
 use App\Models\Ingredient;
 use App\Models\Recipe;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\ItemNotFoundException;
 
 class RecipeRepository
 {
@@ -224,5 +226,36 @@ class RecipeRepository
         }
     }
 
+
+    public function updateStatus(RecipeStatusRequest $request) :bool
+    {
+
+        // Récupération des infos de l'utilisateur connecté
+        $user = Auth::user();
+
+        // Transaction pour rollback si erreur
+        DB::beginTransaction();
+        try {
+            // La recette existe t-elle?
+            $recipe = Recipe::findOrFail($request->recipeid);
+
+            RecipeOpinion::updateOrCreate(
+                ['user_id' => $user->id, 'recipe_id' => $request->recipeid],
+                ['is_favorite' => $request->is_favorite, 'is_reported' => $request->is_reported]
+            );
+
+            // Validation de la transaction
+            DB::commit();
+
+            return true;
+
+        } // Si erreur dans la transaction
+        catch (Exception $e) {
+            DB::rollback();
+
+            return false;
+
+        }
+    }
 
 }

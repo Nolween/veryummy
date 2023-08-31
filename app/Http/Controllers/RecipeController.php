@@ -6,6 +6,7 @@ use App\Helpers\ImageTransformation;
 use App\Http\Requests\Recipe\RecipeAdminIndexRequest;
 use App\Http\Requests\Recipe\RecipeAllowRequest;
 use App\Http\Requests\Recipe\RecipeExplorationRequest;
+use App\Http\Requests\Recipe\RecipeStatusRequest;
 use App\Mail\RefusedRecipe;
 use App\Models\Ingredient;
 use App\Models\Recipe;
@@ -82,7 +83,6 @@ class RecipeController extends Controller
      */
     public function moderate(RecipeAllowRequest $request): RedirectResponse
     {
-
         if ($this->recipeRepository->moderateRecipe($request)) {
             return redirect("/admin/recipes/index/$request->typeList")->with(
                 'recipeAllowSuccess',
@@ -94,38 +94,11 @@ class RecipeController extends Controller
     }
 
     /**
-     * Page d'accueil
+     * @details Aimer ou signaler une recette
      */
-    public function status(Request $request): RedirectResponse
+    public function status(RecipeStatusRequest $request): RedirectResponse
     {
-        // Récupération des infos de l'utilisateur connecté
-        $user = Auth::user();
-        // Si pas d'utilisateur
-        if (!$user || $user->is_banned == true) {
-            // Déconnexion de l'utilisateur
-            Auth::logout();
-
-            return redirect('/')->withErrors(['badUser' => 'Utilisateur non reconnu']);
-        }
-        // Validation du formulaire
-        $request->validate([
-            'is_favorite' => ['boolean', 'nullable'],
-            'is_reported' => ['boolean', 'nullable'],
-            'recipeid'    => ['integer', 'required', 'exists:recipes,id'],
-        ]);
-        // return dd($test);
-
-        // Transaction pour rollback si erreur
-        DB::beginTransaction();
-        try {
-            // La recette existe t-elle?
-            $recipe = Recipe::findOrFail($request->recipeid);
-
-            RecipeOpinion::updateOrCreate(
-                ['user_id' => $user->id, 'recipe_id' => $request->recipeid],
-                ['is_favorite' => $request->is_favorite, 'is_reported' => $request->is_reported]
-            );
-
+        if ($this->recipeRepository->updateStatus($request)) {
             // Définition du message de retour
             if ($request->is_reported == null) {
                 $message = $request->is_favorite == 1 ? 'La recette a été ajoutée à vos favoris' : 'La recette a été retirée de vos favoris';
@@ -134,23 +107,12 @@ class RecipeController extends Controller
             } else {
                 $message = 'Erreur inconnue';
             }
-
-            // Validation de la transaction
-            DB::commit();
-
             return back()->with('statusSuccess', $message);
-        } // Si erreur dans la transaction
-        catch (ItemNotFoundException $e) {
-            DB::rollback();
-
-            return back()->withErrors(['statusError' => 'Recette introuvable']);
-        } // Si erreur dans la transaction
-        catch (Exception $e) {
-            DB::rollback();
-
+        } else {
             return back()->withErrors(['statusError' => 'Erreur dans la mise à jour du statut']);
         }
     }
+
 
     /**
      * Page de nouvelle recette
