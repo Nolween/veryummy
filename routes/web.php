@@ -71,7 +71,7 @@ Route::controller(RecipeController::class)->group(function () {
     Route::post('/recipe/status', 'status')->name('recipes.status');
     Route::get('/recipe/create', 'create')->name('my-recipes.create');
     Route::put('/recipe/store', 'store')->name('my-recipes.store');
-    Route::post('/recipe/update', 'update')->name('my-recipes.update');
+    Route::patch('/recipe/update', 'update')->name('my-recipes.update');
     Route::get('/recipe/edit/{id}', 'edit')->name('my-recipes.edit');
 });
 

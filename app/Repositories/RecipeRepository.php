@@ -8,6 +8,7 @@ use App\Http\Requests\Recipe\RecipeAllowRequest;
 use App\Http\Requests\Recipe\RecipeExplorationRequest;
 use App\Http\Requests\Recipe\RecipeStatusRequest;
 use App\Http\Requests\Recipe\RecipeStoreRequest;
+use App\Http\Requests\Recipe\RecipeUpdateRequest;
 use App\Mail\RefusedRecipe;
 use App\Models\Ingredient;
 use App\Models\Recipe;
@@ -22,7 +23,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ItemNotFoundException;
 use Illuminate\Support\Str;
@@ -417,6 +420,186 @@ class RecipeRepository
 
             return false;
 
+        }
+    }
+
+    public function updateRecipe(RecipeUpdateRequest $request, Recipe $recipe): bool
+    {
+
+        $user = Auth::user();
+
+        // Transaction pour rollback si erreur
+        DB::beginTransaction();
+        try {
+            $newName = $recipe->name !== $request->nom;
+            $oldImageName = $recipe->image;
+            $recipe->name = $request->nom;
+            $recipe->recipe_type_id = $request->type;
+            $recipe->cooking_time = $request->cuisson;
+            $recipe->making_time = $request->preparation;
+            $recipe->servings = $request->parts;
+            $recipe->recipe_type_id = $request->type;
+            $recipe->user_id = $user->id;
+            // Sauvegarde de la recette
+            $recipe->save();
+
+            // On efface les étapes de la recette avant de les refaire
+            $stepsDelete = RecipeStep::where('recipe_id', $recipe->id)->delete();
+
+            //? Création des étapes pour la recette
+            $stepOrder = 0;
+            foreach ($request->steps as $step) {
+                if (!empty($step['stepDescription'])) {
+                    // Augmentation de l'ordre de l'étape
+                    $stepOrder++;
+                    // Construction de l'étape
+                    $newStep = new RecipeStep;
+                    $newStep->order = $stepOrder;
+                    $newStep->description = $step['stepDescription'];
+                    $newStep->recipe_id = $recipe->id;
+                    $newStep->save();
+                }
+            }
+
+            // On efface les étapes de la recette avant de les refaire
+            $ingredientsDelete = RecipeIngredients::where('recipe_id', $recipe->id)->delete();
+            //? Création des ingrédients pour la recette
+            $ingredientOrder = 0;
+            foreach ($request->ingredients as $ingredient) {
+                if (!empty($ingredient['ingredientId'])) {
+                    $ingredientOrder++;
+                    // Construction de relation ingrédient-recette
+                    $newRecipeIngredient = new RecipeIngredients;
+                    $newRecipeIngredient->recipe_id = $recipe->id;
+                    $newRecipeIngredient->order = $ingredientOrder;
+                    $unit = Unit::where('id', $ingredient['ingredientUnit'])->firstOrFail();
+                    $newRecipeIngredient->unit_id = $ingredient['ingredientUnit'];
+                    $ingr = Ingredient::where('id', $ingredient['ingredientId'])->firstOrFail();
+
+                    $newRecipeIngredient->quantity = $ingredient['ingredientQuantity'];
+                    $newRecipeIngredient->ingredient_id = $ingredient['ingredientId'];
+                    $newRecipeIngredient->save();
+                }
+            }
+
+            //? Définition des différentes catégories de la recette
+            // Tableau des compatibilités de la recette
+            $compatible = [
+                'vegan_compatible'       => 0,
+                'vegetarian_compatible'  => 0,
+                'gluten_free_compatible' => 0,
+                'halal_compatible'       => 0,
+                'kosher_compatible'      => 0,
+            ];
+            // Parcours des ingrédients ajoutés
+            foreach ($request->ingredients as $ingredient) {
+                if (!empty($ingredient['ingredientId'])) {
+                    // Récupération de l'ingrédient
+                    $ingredientCompatible = Ingredient::where('id', $ingredient['ingredientId'])->firstOrFail();
+                    // Si l'ingrédient est compatible avec le régime
+                    $compatible['vegan_compatible'] = $ingredientCompatible->vegan_compatible == true ? $compatible['vegan_compatible'] : $compatible['vegan_compatible'] + 1;
+                    $compatible['vegetarian_compatible'] = $ingredientCompatible->vegetarian_compatible == true ? $compatible['vegetarian_compatible'] : $compatible['vegetarian_compatible'] + 1;
+                    $compatible['gluten_free_compatible'] = $ingredientCompatible->gluten_free_compatible == true ? $compatible['gluten_free_compatible'] : $compatible['gluten_free_compatible'] + 1;
+                    $compatible['halal_compatible'] = $ingredientCompatible->halal_compatible == true ? $compatible['halal_compatible'] : $compatible['halal_compatible'] + 1;
+                    $compatible['kosher_compatible'] = $ingredientCompatible->kosher_compatible == true ? $compatible['kosher_compatible'] : $compatible['kosher_compatible'] + 1;
+                }
+            }
+            // Parcours des résultats de compatibilité
+            $recipe->vegan_compatible = $compatible['vegan_compatible'] == 0 ? true : false;
+            $recipe->vegetarian_compatible = $compatible['vegetarian_compatible'] == 0 ? true : false;
+            $recipe->gluten_free_compatible = $compatible['gluten_free_compatible'] == 0 ? true : false;
+            $recipe->halal_compatible = $compatible['halal_compatible'] == 0 ? true : false;
+            $recipe->kosher_compatible = $compatible['kosher_compatible'] == 0 ? true : false;
+
+            //? Création d'un nom pour l'image
+            $recipe->image = $recipe->id . '-' . Str::slug($request->nom, '-') . '.avif';
+            //? Si on a une image valide
+            if ($request->photoInput && function_exists('imageavif')) {
+                // Suppression des images existantes
+                File::delete(storage_path('app/public/img/full/' . $oldImageName));
+                File::delete(storage_path('app/public/img/thumbnail/' . $oldImageName));
+                switch ($request->photoInput->extension()) {
+                    case 'jpg':
+                    case 'jpeg':
+                        $imgProperties = getimagesize($request->photoInput->path());
+                        $gdImage = imagecreatefromjpeg($request->photoInput->path());
+                        if ($gdImage) {
+                            imageavif($gdImage, storage_path('app/public/img/full/' . $recipe->image));
+                            $resizeImg = ImageTransformation::image_resize(
+                                $gdImage,
+                                $imgProperties[0] ?? 0,
+                                $imgProperties[1] ?? 0
+                            );
+                            imageavif($resizeImg, storage_path('app/public/img/thumbnail/' . $recipe->image));
+                            // Création d'une miniature
+                        }
+                        break;
+
+                    case 'png':
+                        $imgProperties = getimagesize($request->photoInput->path());
+                        $gdImage = imagecreatefrompng($request->photoInput->path());
+                        if ($gdImage) {
+                            imageavif($gdImage, storage_path('app/public/img/full/' . $recipe->image));
+                            $resizeImg = ImageTransformation::image_resize(
+                                $gdImage,
+                                $imgProperties[0] ?? 0,
+                                $imgProperties[1] ?? 0
+                            );
+                            imageavif($resizeImg, storage_path('app/public/img/thumbnail/' . $recipe->image));
+                        }
+                        break;
+                    case 'avif':
+                        $gdImage = imagecreatefromavif($request->photoInput->path());
+                        if ($gdImage) {
+                            imageavif($gdImage, storage_path('app/public/img/full/' . $recipe->image));
+                            $resizeImg = ImageTransformation::image_resize(
+                                $gdImage,
+                                imagesx($gdImage),
+                                imagesy($gdImage)
+                            );
+                            imageavif($resizeImg, storage_path('app/public/img/thumbnail/' . $recipe->image));
+                        }
+                        break;
+                    default:
+                        $imgProperties = getimagesize($request->photoInput->path());
+                        $gdImage = imagecreatefromjpeg($request->photoInput->path());
+                        if ($gdImage) {
+                            imageavif($gdImage, storage_path('app/public/img/full/' . $recipe->image));
+                            $resizeImg = ImageTransformation::image_resize(
+                                $gdImage,
+                                $imgProperties[0] ?? 0,
+                                $imgProperties[1] ?? 0
+                            );
+                            imageavif($resizeImg, storage_path('app/public/img/thumbnail/' . $recipe->image));
+                        }
+                        break;
+                }
+                if ($gdImage) {
+                    imagedestroy($gdImage);
+                }
+                if (isset($resizeImg)) {
+                    imagedestroy($resizeImg);
+                }
+            } // Si pas de nouvelle image mais nouveau nom
+            elseif ($newName) {
+                $newName = $recipe->id . '-' . Str::slug($recipe->name, '-') . '.avif';
+                // On renomme l'image de la recette
+                Storage::move('public/img/full/' . $oldImageName, 'public/img/full/' . $newName);
+                Storage::move(
+                    'public/img/thumbnail/' . $oldImageName,
+                    'public/img/thumbnail/' . $newName
+                );
+            }
+            $recipe->save();
+
+            DB::commit();
+
+            return true;
+        } // Si erreur dans la transaction
+        catch (Exception $e) {
+            DB::rollback();
+
+            return false;
         }
     }
 

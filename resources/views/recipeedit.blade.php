@@ -184,7 +184,7 @@
         @endif
         <form id="edition-form" action="{{ route('my-recipes.update') }}" enctype="multipart/form-data" method="POST">
             @csrf
-            @method('POST')
+            @method('PATCH')
             <input type="hidden" name="recipeid" value="{{ $recipe->id }}">
             {{-- Nom de la recette --}}
             <div class="w-3/4 lg:w-1/2 mb-3 px-4 mx-auto">

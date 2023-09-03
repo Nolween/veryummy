@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Helpers\ImageTransformation;
 use App\Http\Requests\Recipe\RecipeAdminIndexRequest;
 use App\Http\Requests\Recipe\RecipeAllowRequest;
+use App\Http\Requests\Recipe\RecipeEditRequest;
 use App\Http\Requests\Recipe\RecipeExplorationRequest;
 use App\Http\Requests\Recipe\RecipeStatusRequest;
 use App\Http\Requests\Recipe\RecipeStoreRequest;
+use App\Http\Requests\Recipe\RecipeUpdateRequest;
 use App\Mail\RefusedRecipe;
 use App\Models\Ingredient;
 use App\Models\Recipe;
@@ -130,7 +132,7 @@ class RecipeController extends Controller
     }
 
     /**
-     * Création de nouvelle recette
+     * @details Création de nouvelle recette
      */
     public function store(RecipeStoreRequest $request): RedirectResponse
     {
@@ -142,38 +144,21 @@ class RecipeController extends Controller
     }
 
     /**
-     * Page de modification de recette
+     * @details Page de vue de recette
      */
-    public function edit(int $id): View|RedirectResponse
+    public function edit(RecipeEditRequest $request, int $id): View|RedirectResponse
     {
-        // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
 
-        // Si pas d'utilisateur
-        if (!$user || $user->is_banned == true) {
-            // Déconnexion de l'utilisateur
-            Auth::logout();
-
-            return redirect('/')->withErrors(['badUser' => 'Utilisateur non reconnu']);
-        }
-
-        $response = [];
-
-        // Récupération de tous les ingrédients
-        $response['ingredientsList'] = Ingredient::pluck('name', 'id');
-        // Récupération des unités de mesures
-        $response['units'] = Unit::all();
-        // Récupération des différents types de recette
-        $response['types'] = RecipeType::all();
-
         // Récupération de la recette
-        $recipe = Recipe::where('id', $id)->with('ingredients')->with('steps')->first();
-        // L'utilisateur est-il propriétaire de la recette ou administrateur?
-        if (!$recipe || ($recipe->user_id !== $user->id && $user->role !== 'admin')) {
-            return redirect('/')->withErrors(['statusError' => 'Recette non trouvée']);
-        }
+        $recipe = Recipe::where('id', $id)->with('ingredients')->with('steps')->firstOrFail();
 
-        $response['recipe'] = $recipe;
+        $response = [
+            'ingredientsList' => Ingredient::pluck('name', 'id'),
+            'units'           => Unit::all(),
+            'types'           => RecipeType::all(),
+            'recipe'          => $recipe,
+        ];
 
         return view('recipeedit', $response);
     }
@@ -181,217 +166,20 @@ class RecipeController extends Controller
     /**
      * Modification de recette
      */
-    public function update(Request $request): RedirectResponse
+    public function update(RecipeUpdateRequest $request): RedirectResponse
     {
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
 
-        // Si pas d'utilisateur
-        if (!$user || $user->is_banned == true) {
-            // Déconnexion de l'utilisateur
-            Auth::logout();
-
-            return redirect('/')->withErrors(['badUser' => 'Utilisateur non reconnu']);
-        }
-
-        // Validation du formulaire
-        $request->validate([
-            'recipeid'             => ['integer', 'required', 'exists:recipes,id'],
-            'nom'                  => ['string', 'required', 'min:2'],
-            'photoInput'           => 'nullable|mimes:jpg,png,jpeg,gif,svg,avif,webp',
-            'preparation'          => ['integer', 'required', 'min:0', 'max:1000'],
-            'cuisson'              => ['integer', 'nullable', 'min:0', 'max:1000'],
-            'parts'                => ['integer', 'required', 'min:0', 'max:1000'],
-            'stepCount'            => ['integer', 'nullable'],
-            'type'                 => ['integer', 'exists:recipe_types,id', 'required'],
-            'ingredientCount'      => ['integer', 'nullable'],
-            '*.ingredientId'       => ['integer', 'exists:ingredients,id', 'nullable'],
-            '*.ingredientName'     => ['string', 'nullable'],
-            '*.ingredientUnit'     => ['numeric', 'exists:units,id', 'nullable'],
-            '*.ingredientQuantity' => ['numeric', 'nullable'],
-            '*.stepDescription'    => ['string', 'nullable'],
-        ]);
-
         // La recette existe t-elle et appartient-elle à l'utilisateur?
-        $recipe = Recipe::where('id', $request->recipeid)->first();
-        if (!$recipe || $recipe->user_id !== $user->id) {
-            return redirect('/recipe/edit/' . $request->recipeid)->withErrors(['editError' => 'Recette introuvable']);
+        $recipe = Recipe::findOrFail($request->recipeid);
+        if ($recipe->user_id !== $user->id && $user->role !== User::ROLE_ADMIN) {
+            abort(403, 'Unauthorized action.');
         }
 
-        // Transaction pour rollback si erreur
-        DB::beginTransaction();
-        try {
-            $newName = $recipe->name !== $request->nom;
-            $oldImageName = $recipe->image;
-            $recipe->name = $request->nom;
-            $recipe->recipe_type_id = $request->type;
-            $recipe->cooking_time = $request->cuisson;
-            $recipe->making_time = $request->preparation;
-            $recipe->servings = $request->parts;
-            $recipe->recipe_type_id = $request->type;
-            $recipe->user_id = $user->id;
-            // Sauvegarde de la recette
-            $recipe->save();
-
-            // On efface les étapes de la recette avant de les refaire
-            $stepsDelete = RecipeStep::where('recipe_id', $recipe->id)->delete();
-
-            //? Création des étapes pour la recette
-            $stepOrder = 0;
-            foreach ($request->steps as $step) {
-                if (!empty($step['stepDescription'])) {
-                    // Augmentation de l'ordre de l'étape
-                    $stepOrder++;
-                    // Construction de l'étape
-                    $newStep = new RecipeStep;
-                    $newStep->order = $stepOrder;
-                    $newStep->description = $step['stepDescription'];
-                    $newStep->recipe_id = $recipe->id;
-                    $newStep->save();
-                }
-            }
-
-            // On efface les étapes de la recette avant de les refaire
-            $ingredientsDelete = RecipeIngredients::where('recipe_id', $recipe->id)->delete();
-            //? Création des ingrédients pour la recette
-            $ingredientOrder = 0;
-            foreach ($request->ingredients as $ingredient) {
-                if (!empty($ingredient['ingredientId'])) {
-                    $ingredientOrder++;
-                    // Construction de relation ingrédient-recette
-                    $newRecipeIngredient = new RecipeIngredients;
-                    $newRecipeIngredient->recipe_id = $recipe->id;
-                    $newRecipeIngredient->order = $ingredientOrder;
-                    $unit = Unit::where('id', $ingredient['ingredientUnit'])->firstOrFail();
-                    $newRecipeIngredient->unit_id = $ingredient['ingredientUnit'];
-                    $ingr = Ingredient::where('id', $ingredient['ingredientId'])->first();
-                    // Si pas d'ingrédient  trouvé, erreur
-                    if (!$ingr) {
-                        return back()->withErrors(['ingredientError' => 'Ingrédient non trouvé']);
-                    }
-                    $newRecipeIngredient->quantity = $ingredient['ingredientQuantity'];
-                    $newRecipeIngredient->ingredient_id = $ingredient['ingredientId'];
-                    $newRecipeIngredient->save();
-                }
-            }
-
-            //? Définition des différentes catégories de la recette
-            // Tableau des compatibilités de la recette
-            $compatible = [
-                'vegan_compatible'       => 0,
-                'vegetarian_compatible'  => 0,
-                'gluten_free_compatible' => 0,
-                'halal_compatible'       => 0,
-                'kosher_compatible'      => 0,
-            ];
-            // Parcours des ingrédients ajoutés
-            foreach ($request->ingredients as $ingredient) {
-                if (!empty($ingredient['ingredientId'])) {
-                    // Récupération de l'ingrédient
-                    $ingredientCompatible = Ingredient::where('id', $ingredient['ingredientId'])->firstOrFail();
-                    // Si l'ingrédient est compatible avec le régime
-                    $compatible['vegan_compatible'] = $ingredientCompatible->vegan_compatible == true ? $compatible['vegan_compatible'] : $compatible['vegan_compatible'] + 1;
-                    $compatible['vegetarian_compatible'] = $ingredientCompatible->vegetarian_compatible == true ? $compatible['vegetarian_compatible'] : $compatible['vegetarian_compatible'] + 1;
-                    $compatible['gluten_free_compatible'] = $ingredientCompatible->gluten_free_compatible == true ? $compatible['gluten_free_compatible'] : $compatible['gluten_free_compatible'] + 1;
-                    $compatible['halal_compatible'] = $ingredientCompatible->halal_compatible == true ? $compatible['halal_compatible'] : $compatible['halal_compatible'] + 1;
-                    $compatible['kosher_compatible'] = $ingredientCompatible->kosher_compatible == true ? $compatible['kosher_compatible'] : $compatible['kosher_compatible'] + 1;
-                }
-            }
-            // Parcours des résultats de compatibilité
-            $recipe->vegan_compatible = $compatible['vegan_compatible'] == 0 ? true : false;
-            $recipe->vegetarian_compatible = $compatible['vegetarian_compatible'] == 0 ? true : false;
-            $recipe->gluten_free_compatible = $compatible['gluten_free_compatible'] == 0 ? true : false;
-            $recipe->halal_compatible = $compatible['halal_compatible'] == 0 ? true : false;
-            $recipe->kosher_compatible = $compatible['kosher_compatible'] == 0 ? true : false;
-
-            //? Création d'un nom pour l'image
-            $recipe->image = $recipe->id . '-' . Str::slug($request->nom, '-') . '.avif';
-            //? Si on a une image valide
-            if ($request->photoInput && function_exists('imageavif')) {
-                // Suppression des images existantes
-                File::delete(storage_path('app/public/img/full/' . $oldImageName));
-                File::delete(storage_path('app/public/img/thumbnail/' . $oldImageName));
-                switch ($request->photoInput->extension()) {
-                    case 'jpg':
-                    case 'jpeg':
-                        $imgProperties = getimagesize($request->photoInput->path());
-                        $gdImage = imagecreatefromjpeg($request->photoInput->path());
-                        if ($gdImage) {
-                            imageavif($gdImage, storage_path('app/public/img/full/' . $recipe->image));
-                            $resizeImg = ImageTransformation::image_resize(
-                                $gdImage,
-                                $imgProperties[0] ?? 0,
-                                $imgProperties[1] ?? 0
-                            );
-                            imageavif($resizeImg, storage_path('app/public/img/thumbnail/' . $recipe->image));
-                            // Création d'une miniature
-                        }
-                        break;
-
-                    case 'png':
-                        $imgProperties = getimagesize($request->photoInput->path());
-                        $gdImage = imagecreatefrompng($request->photoInput->path());
-                        if ($gdImage) {
-                            imageavif($gdImage, storage_path('app/public/img/full/' . $recipe->image));
-                            $resizeImg = ImageTransformation::image_resize(
-                                $gdImage,
-                                $imgProperties[0] ?? 0,
-                                $imgProperties[1] ?? 0
-                            );
-                            imageavif($resizeImg, storage_path('app/public/img/thumbnail/' . $recipe->image));
-                        }
-                        break;
-                    case 'avif':
-                        $gdImage = imagecreatefromavif($request->photoInput->path());
-                        if ($gdImage) {
-                            imageavif($gdImage, storage_path('app/public/img/full/' . $recipe->image));
-                            $resizeImg = ImageTransformation::image_resize(
-                                $gdImage,
-                                imagesx($gdImage),
-                                imagesy($gdImage)
-                            );
-                            imageavif($resizeImg, storage_path('app/public/img/thumbnail/' . $recipe->image));
-                        }
-                        break;
-                    default:
-                        $imgProperties = getimagesize($request->photoInput->path());
-                        $gdImage = imagecreatefromjpeg($request->photoInput->path());
-                        if ($gdImage) {
-                            imageavif($gdImage, storage_path('app/public/img/full/' . $recipe->image));
-                            $resizeImg = ImageTransformation::image_resize(
-                                $gdImage,
-                                $imgProperties[0] ?? 0,
-                                $imgProperties[1] ?? 0
-                            );
-                            imageavif($resizeImg, storage_path('app/public/img/thumbnail/' . $recipe->image));
-                        }
-                        break;
-                }
-                if ($gdImage) {
-                    imagedestroy($gdImage);
-                }
-                if (isset($resizeImg)) {
-                    imagedestroy($resizeImg);
-                }
-            } // Si pas de nouvelle image mais nouveau nom
-            elseif ($newName) {
-                $newName = $recipe->id . '-' . Str::slug($recipe->name, '-') . '.avif';
-                // On renomme l'image de la recette
-                Storage::move('public/img/full/' . $oldImageName, 'public/img/full/' . $newName);
-                Storage::move(
-                    'public/img/thumbnail/' . $oldImageName,
-                    'public/img/thumbnail/' . $newName
-                );
-            }
-            $recipe->save();
-
-            DB::commit();
-
+        if ($this->recipeRepository->updateRecipe($request, $recipe)) {
             return redirect('/my-recipes')->with('updateSuccess', 'Recette mise à jour avec succès!');
-        } // Si erreur dans la transaction
-        catch (QueryException $e) {
-            DB::rollback();
-
+        } else {
             return redirect('/recipe/new')->withErrors(['updaterror' => 'Erreur dans la mise à jour de la recette']);
         }
     }
