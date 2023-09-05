@@ -16,48 +16,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class RecipeCardController extends Controller
 {
-    /**
-     * Page d'accueil
-     *
-     */
-    public function show(int $id): View
-    {
-        $response = [];
-        // Récupération de la recette grâce à son od
-        $response['recipe'] = Recipe::select(
-            'id',
-            'user_id',
-            'name',
-            'servings',
-            'cooking_time as cookingTime',
-            'making_time as makingTime',
-            'image',
-            'score',
-            'recipe_type_id',
-            'vegan_compatible',
-            'vegetarian_compatible',
-            'gluten_free_compatible',
-            'halal_compatible',
-            'kosher_compatible'
-        )
-                                    ->withCount('steps') // Nombre d'étapes possède la recette
-                                    ->withCount('ingredients') // Nombre d'ingrédients dans la recette
-                                    ->findOrFail($id);
-        $response['ingredients'] = Recipe::findOrFail($id)->ingredients()->get();
-        $response['steps'] = Recipe::findOrFail($id)->steps()->get();
-        // Si l'utilisateur est connecté
-        $user = Auth::user();
-        $response['userId'] = $user->id ?? null;
-        // Tous les avis de la recette sauf celui de l'utilisateur connecté
-        $response['comments'] = Recipe::findOrFail($id)->comments()->where('user_id', '!=', $response['userId'])->get();
-        // Si utilisateur connecté, récupération de son avis sur la recette (+ fav + report)
-        $response['opinion'] = !empty($user) ? RecipeOpinion::whereBelongsTo($user)->where('recipe_id', $id)->first(
-        ) : [];
-
-        $response['type'] = RecipeType::where('id', $response['recipe']->recipe_type_id)->firstOrFail()->name;
-
-        return view('recipeshow', $response);
-    }
 
     /**
      * Mettre en favori / Signaler une recette

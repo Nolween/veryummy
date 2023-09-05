@@ -7,6 +7,7 @@ use App\Http\Requests\Recipe\RecipeAdminIndexRequest;
 use App\Http\Requests\Recipe\RecipeAllowRequest;
 use App\Http\Requests\Recipe\RecipeEditRequest;
 use App\Http\Requests\Recipe\RecipeExplorationRequest;
+use App\Http\Requests\Recipe\RecipeShowRequest;
 use App\Http\Requests\Recipe\RecipeStatusRequest;
 use App\Http\Requests\Recipe\RecipeStoreRequest;
 use App\Http\Requests\Recipe\RecipeUpdateRequest;
@@ -183,4 +184,31 @@ class RecipeController extends Controller
             return redirect('/recipe/new')->withErrors(['updaterror' => 'Erreur dans la mise à jour de la recette']);
         }
     }
+
+
+    /**
+     * @details Page d'accueil
+     *
+     */
+    public function show(RecipeShowRequest $request, int $id): View
+    {
+        $user = Auth::user();
+        $userId = $user->id ?? null;
+        $recipe = $this->recipeRepository->showRecipe($id);
+
+        $response = [
+            'recipe'      => $recipe,
+            'ingredients' => Recipe::findOrFail($id)->ingredients()->get(),
+            'steps'       => Recipe::findOrFail($id)->steps()->get(),
+            'comments'    => Recipe::findOrFail($id)->comments()->where('user_id', '!=', $userId)->get(),
+            'userId'      => $userId,
+            'opinion'     => !empty($user) ? RecipeOpinion::whereBelongsTo($user)->where('recipe_id', $id)->first(
+            ) : [],
+            'type'        => RecipeType::where('id', $recipe->recipe_type_id)->firstOrFail()->name,
+        ];
+
+        return view('recipeshow', $response);
+    }
+
+
 }

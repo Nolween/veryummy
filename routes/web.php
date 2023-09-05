@@ -28,7 +28,6 @@ use Illuminate\Support\Facades\Route;
 
 // Regroupement des méthods du controller de la page recette
 Route::controller(RecipeCardController::class)->group(function () {
-    Route::get('/recipe/show/{id}', 'show')->name('recipe.show');
     Route::post('/recipe/status/{id}', 'status')->name('recipe.status');
     Route::post('/recipe/comment/{id}', 'comment')->name('recipe.comment');
     Route::patch('/recipe/opinion/empty/{id}', 'emptyOpinion')->name('recipe-opinion.empty');
@@ -73,6 +72,7 @@ Route::controller(RecipeController::class)->group(function () {
     Route::put('/recipe/store', 'store')->name('my-recipes.store');
     Route::patch('/recipe/update', 'update')->name('my-recipes.update');
     Route::get('/recipe/edit/{id}', 'edit')->name('my-recipes.edit');
+    Route::get('/recipe/show/{id}', 'show')->name('recipe.show');
 });
 
 // Regroupement des methods du controller de gestion des utilisateurs

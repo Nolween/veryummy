@@ -68,9 +68,9 @@ class RecipeRepository
                                            ->get();
         // Compteur des informations
         $response['counts'] = [
-            'totalRecipes' => Recipe::where('is_accepted', true)->count(),
+            'totalRecipes'     => Recipe::where('is_accepted', true)->count(),
             'totalIngredients' => Ingredient::count(),
-            'totalUsers' => User::where('is_banned', false)->count(),
+            'totalUsers'       => User::where('is_banned', false)->count(),
         ];
 
         return $response;
@@ -265,7 +265,7 @@ class RecipeRepository
     }
 
 
-    public function storeRecipe(RecipeStoreRequest $request) :bool
+    public function storeRecipe(RecipeStoreRequest $request): bool
     {
         // Transaction pour rollback si erreur
         DB::beginTransaction();
@@ -413,19 +413,16 @@ class RecipeRepository
             DB::commit();
 
             return true;
-
         } // Si erreur dans la transaction
         catch (Exception $e) {
             DB::rollback();
 
             return false;
-
         }
     }
 
     public function updateRecipe(RecipeUpdateRequest $request, Recipe $recipe): bool
     {
-
         $user = Auth::user();
 
         // Transaction pour rollback si erreur
@@ -601,6 +598,29 @@ class RecipeRepository
 
             return false;
         }
+    }
+
+    public function showRecipe(int $id): Recipe
+    {
+        return Recipe::select(
+            'id',
+            'user_id',
+            'name',
+            'servings',
+            'cooking_time as cookingTime',
+            'making_time as makingTime',
+            'image',
+            'score',
+            'recipe_type_id',
+            'vegan_compatible',
+            'vegetarian_compatible',
+            'gluten_free_compatible',
+            'halal_compatible',
+            'kosher_compatible'
+        )
+                     ->withCount('steps') // Nombre d'étapes possède la recette
+                     ->withCount('ingredients') // Nombre d'ingrédients dans la recette
+                     ->findOrFail($id);
     }
 
 }
