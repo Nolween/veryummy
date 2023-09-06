@@ -28,12 +28,8 @@ use Illuminate\Support\Facades\Route;
 
 // Regroupement des méthods du controller de la page recette
 Route::controller(RecipeCardController::class)->group(function () {
-    Route::post('/recipe/status/{id}', 'status')->name('recipe.status');
     Route::post('/recipe/comment/{id}', 'comment')->name('recipe.comment');
     Route::patch('/recipe/opinion/empty/{id}', 'emptyOpinion')->name('recipe-opinion.empty');
-});
-// Regroupement des méthods du controller d'exploration des recettes
-Route::controller(ExplorationController::class)->group(function () {
 });
 // Regroupement des méthods du controller des recettes crées
 Route::controller(MyRecipesController::class)->group(function () {
@@ -67,7 +63,7 @@ Route::controller(RecipeController::class)->group(function () {
     Route::get('/exploration', 'explorationIndex')->name('exploration.index');
     Route::get('/admin/recipes/index/{type}', 'adminIndex')->name('admin-recipes.index');
     Route::patch('/admin/recipes/allow}', 'moderate')->name('admin.recipes.moderate');
-    Route::post('/recipe/status', 'status')->name('recipes.status');
+    Route::post('/recipe/status', 'status')->name('recipe.status');
     Route::get('/recipe/create', 'create')->name('my-recipes.create');
     Route::put('/recipe/store', 'store')->name('my-recipes.store');
     Route::patch('/recipe/update', 'update')->name('my-recipes.update');

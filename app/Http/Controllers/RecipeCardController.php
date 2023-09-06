@@ -18,41 +18,6 @@ class RecipeCardController extends Controller
 {
 
     /**
-     * Mettre en favori / Signaler une recette
-     */
-    public function status(Request $request, int $recipeId): RedirectResponse
-    {
-        // Récupération de l'utilisateur
-        $user = Auth::user();
-
-        // Si pas d'utilisateur
-        if (!$user || $user->is_banned == true) {
-            // Déconnexion de l'utilisateur
-            Auth::logout();
-
-            return redirect('/')->withErrors(['badUser' => 'Utilisateur non trouvé']);
-        }
-
-        // La recette existe t-elle?
-        $recipe = Recipe::findOrFail($recipeId);
-        // Validation du formulaire
-        $request->validate([
-            'is_favorite' => ['boolean', 'nullable'],
-            'is_reported' => ['boolean', 'nullable'],
-        ]);
-
-        RecipeOpinion::updateOrCreate(
-            ['user_id' => $user->id, 'recipe_id' => $recipeId],
-            ['is_favorite' => (bool)$request->is_favorite, 'is_reported' => (bool)$request->is_reported]
-        );
-
-        return redirect('/recipe/show/' . $recipeId)->with(
-            'statusSuccess',
-            (bool)$request->is_favorite ? 'Recette mise en favori' : 'Recette signalée'
-        );
-    }
-
-    /**
      * Poster / Créer un commentaire sur la recette
      */
     public function comment(Request $request, int $recipeId): RedirectResponse

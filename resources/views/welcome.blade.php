@@ -68,7 +68,7 @@
                 </div>
             @endif
         </div>
-        <form id="status-form" name="status-form" action="{{ route('recipes.status') }}" method="POST">
+        <form id="status-form" name="status-form" action="{{ route('recipe.status') }}" method="POST">
             @csrf
             @method('POST')
             <input id="recipe-id-input" type="hidden" value="0" name="recipeid">
