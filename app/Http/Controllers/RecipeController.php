@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\ImageTransformation;
 use App\Http\Requests\Recipe\RecipeAdminIndexRequest;
 use App\Http\Requests\Recipe\RecipeAllowRequest;
+use App\Http\Requests\Recipe\RecipeCommentRequest;
 use App\Http\Requests\Recipe\RecipeEditRequest;
 use App\Http\Requests\Recipe\RecipeExplorationRequest;
 use App\Http\Requests\Recipe\RecipeShowRequest;
@@ -22,6 +23,7 @@ use App\Models\Unit;
 use App\Models\User;
 use App\Repositories\RecipeRepository;
 use App\Rules\DietExists;
+use App\Rules\Score;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
@@ -209,6 +211,23 @@ class RecipeController extends Controller
 
         return view('recipeshow', $response);
     }
+
+
+    /**
+     * @details Poster / Créer un commentaire sur la recette
+     */
+    public function comment(RecipeCommentRequest $request, Recipe $recipe): RedirectResponse
+    {
+
+        if($this->recipeRepository->commentRecipe($request, $recipe)) {
+            return back()->with('success', 'Commentaire effectué');
+        } else {
+            return back()->withErrors(['error' => 'Erreur dans la mise à jour du statut']);
+        }
+
+    }
+
+
 
 
 }

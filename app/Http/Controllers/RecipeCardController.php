@@ -18,66 +18,6 @@ class RecipeCardController extends Controller
 {
 
     /**
-     * Poster / Créer un commentaire sur la recette
-     */
-    public function comment(Request $request, int $recipeId): RedirectResponse
-    {
-        // Quelle est l'ID de la recette?
-        $recipe = Recipe::findOrFail($recipeId);
-        // Récupération de l'utilisateur
-        $user = Auth::user();
-
-        // Si pas d'utilisateur
-        if (!$user || $user->is_banned == true) {
-            // Déconnexion de l'utilisateur
-            Auth::logout();
-
-            return redirect('/')->withErrors(['error' => "Pas d'utilisateur"]);
-        }
-        // Validation des données
-        $request->validate([
-            'score' => [new Score, 'required', 'max:5', 'min:1'],
-            // Le socre doit passer la règle Score de App/Rules/Score
-            'comment' => ['string', 'required', 'min:2', 'max:65535'],
-        ]);
-
-        // Transaction pour rollback si erreur
-        DB::beginTransaction();
-        try {
-            // Calcul de la nouvelle note moyenne de la recette
-            $recipe = Recipe::find($recipeId);
-            // Si pas de recette trouvée, erreur
-            if (!$recipe) {
-                return back()->withErrors(['recipeError' => 'Recette inexistante']);
-            }
-
-            RecipeOpinion::updateOrCreate(
-                ['user_id' => $user->id, 'recipe_id' => $recipeId],
-                ['score' => $request->score, 'comment' => $request->comment]
-            );
-
-            $average = RecipeOpinion::whereBelongsTo($recipe)->avg('score');
-            $recipe->score = $average;
-            $recipe->save();
-
-            // Validation de la transaction
-            DB::commit();
-
-            return back()->with('success', 'Commentaire effectué');
-        } // Si erreur dans la transaction
-        catch (ItemNotFoundException $e) {
-            DB::rollback();
-
-            return back()->withErrors(['error' => 'Recette introuvable']);
-        } // Si erreur dans la transaction
-        catch (Exception $e) {
-            DB::rollback();
-
-            return back()->withErrors(['error' => 'Erreur dans la mise à jour du statut']);
-        }
-    }
-
-    /**
      * Supprimer l'opinion et la note de l'utilisateur
      */
     public function emptyOpinion(Request $request, int $recipeId): RedirectResponse

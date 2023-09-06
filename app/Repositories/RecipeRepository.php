@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Helpers\ImageTransformation;
 use App\Http\Requests\Recipe\RecipeAdminIndexRequest;
 use App\Http\Requests\Recipe\RecipeAllowRequest;
+use App\Http\Requests\Recipe\RecipeCommentRequest;
 use App\Http\Requests\Recipe\RecipeExplorationRequest;
 use App\Http\Requests\Recipe\RecipeStatusRequest;
 use App\Http\Requests\Recipe\RecipeStoreRequest;
@@ -621,6 +622,36 @@ class RecipeRepository
                      ->withCount('steps') // Nombre d'étapes possède la recette
                      ->withCount('ingredients') // Nombre d'ingrédients dans la recette
                      ->findOrFail($id);
+    }
+
+    public function commentRecipe(RecipeCommentRequest $request, Recipe $recipe) :bool
+    {
+        // Transaction pour rollback si erreur
+        DB::beginTransaction();
+        try {
+            // Calcul de la nouvelle note moyenne de la recette
+            // $recipe = Recipe::findOrFail($recipeId);
+
+            $user = Auth::user();
+
+            RecipeOpinion::updateOrCreate(
+                ['user_id' => $user->id, 'recipe_id' => $recipe->id],
+                ['score' => $request->score, 'comment' => $request->comment]
+            );
+
+            $average = RecipeOpinion::whereBelongsTo($recipe)->avg('score');
+            $recipe->score = $average;
+            $recipe->save();
+
+            // Validation de la transaction
+            DB::commit();
+            return true;
+        }// Si erreur dans la transaction
+        catch (Exception $e) {
+            DB::rollback();
+            return false;
+        }
+
     }
 
 }
