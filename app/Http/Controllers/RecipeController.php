@@ -7,6 +7,7 @@ use App\Http\Requests\Recipe\RecipeAdminIndexRequest;
 use App\Http\Requests\Recipe\RecipeAllowRequest;
 use App\Http\Requests\Recipe\RecipeCommentRequest;
 use App\Http\Requests\Recipe\RecipeEditRequest;
+use App\Http\Requests\Recipe\RecipeEmptyOpiniontRequest;
 use App\Http\Requests\Recipe\RecipeExplorationRequest;
 use App\Http\Requests\Recipe\RecipeShowRequest;
 use App\Http\Requests\Recipe\RecipeStatusRequest;
@@ -218,16 +219,25 @@ class RecipeController extends Controller
      */
     public function comment(RecipeCommentRequest $request, Recipe $recipe): RedirectResponse
     {
-
-        if($this->recipeRepository->commentRecipe($request, $recipe)) {
+        if ($this->recipeRepository->commentRecipe($request, $recipe)) {
             return back()->with('success', 'Commentaire effectué');
         } else {
             return back()->withErrors(['error' => 'Erreur dans la mise à jour du statut']);
         }
-
     }
 
 
+    /**
+     * @details Supprimer l'opinion et la note de l'utilisateur
+     */
+    public function emptyOpinion(RecipeEmptyOpiniontRequest $request, Recipe $recipe): RedirectResponse
+    {
+        if ($this->recipeRepository->emptyOpinionRecipe($recipe)) {
+            return back()->with('success', 'Commentaire supprimé');
+        } else {
+            return back()->withErrors(['error' => 'Erreur dans la suppression du commentaire']);
+        }
+    }
 
 
 }

@@ -629,9 +629,6 @@ class RecipeRepository
         // Transaction pour rollback si erreur
         DB::beginTransaction();
         try {
-            // Calcul de la nouvelle note moyenne de la recette
-            // $recipe = Recipe::findOrFail($recipeId);
-
             $user = Auth::user();
 
             RecipeOpinion::updateOrCreate(
@@ -652,6 +649,31 @@ class RecipeRepository
             return false;
         }
 
+    }
+
+    public function emptyOpinionRecipe(Recipe $recipe) :bool
+    {
+
+        DB::beginTransaction();
+        try {
+            $user = Auth::user();
+            // Trouver l'opinion de la recette par l'utilisateur
+            $recipeOpinion = $recipe->opinions()->where('user_id', $user->id)->firstOrFail();
+            // Réinitialisation du commentaire et de la note de l'avis sur la recette
+            $recipeOpinion->score = null;
+            $recipeOpinion->comment = null;
+            $recipeOpinion->save();
+            // Définition de la nouvelle moyenne
+            $average = RecipeOpinion::whereBelongsTo($recipe)->avg('score');
+            $recipe->score = $average;
+            $recipe->save();
+            DB::commit();
+            return true;
+        }
+        catch (Exception $e) {
+            DB::rollback();
+            return false;
+        }
     }
 
 }

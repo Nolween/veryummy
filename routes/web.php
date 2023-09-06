@@ -26,10 +26,6 @@ use Illuminate\Support\Facades\Route;
 // })->middleware(['auth'])->name('dashboard');
 
 
-// Regroupement des méthods du controller de la page recette
-Route::controller(RecipeCardController::class)->group(function () {
-    Route::patch('/recipe/opinion/empty/{id}', 'emptyOpinion')->name('recipe-opinion.empty');
-});
 // Regroupement des méthods du controller des recettes crées
 Route::controller(MyRecipesController::class)->group(function () {
     Route::get('/my-recipes', 'list')->name('my-recipes.list');
@@ -69,6 +65,8 @@ Route::controller(RecipeController::class)->group(function () {
     Route::get('/recipe/edit/{id}', 'edit')->name('my-recipes.edit');
     Route::get('/recipe/show/{id}', 'show')->name('recipe.show');
     Route::post('/recipe/comment/{recipe}', 'comment')->name('recipe.comment');
+    Route::patch('/recipe/opinion/empty/{recipe}', 'emptyOpinion')->name('recipe-opinion.empty');
+
 
 });
 
