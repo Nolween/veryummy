@@ -3,30 +3,23 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
-class DietExists implements Rule
+class ValidateRecipeTypeId implements Rule
 {
-    /**
-     * Create a new rule instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed $value
      * @return bool
      */
     public function passes($attribute, $value)
     {
-
-        return $value >= 0 && $value <= 5;
+        if ($value == "0") {
+            return true;
+        }
+        return DB::table('recipe_types')->where('id', $value)->exists();
     }
 
     /**
@@ -36,6 +29,6 @@ class DietExists implements Rule
      */
     public function message()
     {
-        return 'Le régime sélectionné doit exister';
+        return 'Le type de recette est invalide';
     }
 }

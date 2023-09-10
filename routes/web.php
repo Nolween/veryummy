@@ -28,7 +28,6 @@ use Illuminate\Support\Facades\Route;
 
 // Regroupement des méthods du controller des recettes crées
 Route::controller(MyRecipesController::class)->group(function () {
-    Route::get('/my-recipes', 'list')->name('my-recipes.list');
 });
 // Regroupement des méthods du controller des recettes enregistrées par l'utilisateur
 Route::controller(MyNotebookController::class)->group(function () {
@@ -66,6 +65,7 @@ Route::controller(RecipeController::class)->group(function () {
     Route::get('/recipe/show/{id}', 'show')->name('recipe.show');
     Route::post('/recipe/comment/{recipe}', 'comment')->name('recipe.comment');
     Route::patch('/recipe/opinion/empty/{recipe}', 'emptyOpinion')->name('recipe-opinion.empty');
+    Route::get('/my-recipes', 'userIndex')->name('my-recipes.list');
 
 
 });

@@ -10,6 +10,7 @@ use App\Http\Requests\Recipe\RecipeExplorationRequest;
 use App\Http\Requests\Recipe\RecipeStatusRequest;
 use App\Http\Requests\Recipe\RecipeStoreRequest;
 use App\Http\Requests\Recipe\RecipeUpdateRequest;
+use App\Http\Requests\Recipe\RecipeUserIndexRequest;
 use App\Mail\RefusedRecipe;
 use App\Models\Ingredient;
 use App\Models\Recipe;
@@ -674,6 +675,51 @@ class RecipeRepository
             DB::rollback();
             return false;
         }
+    }
+
+    public function userIndex(RecipeUserIndexRequest $request): Builder
+    {
+
+        // Récupération des infos de l'utilisateur connecté
+        $user = Auth::user();
+
+        // Début de la requête
+        $recipes = Recipe::select('id', 'name', 'score', 'making_time', 'cooking_time', 'image')
+                         ->where('name', 'like', "%{$request->name}%")
+                         ->where('user_id', '=', $user->id)
+                         ->withCount('ingredients')
+                         ->withCount('steps');
+
+        // Si on a un type de plat (entrée, plat, dessert,...)
+        if ($request->typeId && (int) $request->typeId > 0) {
+            $recipes = $recipes->where('recipe_type_id', $request->typeId);
+        }
+
+        // Si on a un filtre sur le type de diet
+        if ($request->diet && $request->diet > 0) {
+            switch ((int) $request->diet) {
+                case 1: // Végétarien
+                    $recipes = $recipes->where('vegetarian_compatible', 1);
+                    break;
+                case 2: // Vegan
+                    $recipes = $recipes->where('vegan_compatible', 1);
+                    break;
+                case 3: // Sans gluten
+                    $recipes = $recipes->where('gluten_free_compatible', 1);
+                    break;
+                case 4: // Halal
+                    $recipes = $recipes->where('halal_compatible', 1);
+                    break;
+                case 5: // casher
+                    $recipes = $recipes->where('kosher_compatible', 1);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return $recipes;
+
     }
 
 }

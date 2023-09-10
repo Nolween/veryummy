@@ -13,6 +13,7 @@ use App\Http\Requests\Recipe\RecipeShowRequest;
 use App\Http\Requests\Recipe\RecipeStatusRequest;
 use App\Http\Requests\Recipe\RecipeStoreRequest;
 use App\Http\Requests\Recipe\RecipeUpdateRequest;
+use App\Http\Requests\Recipe\RecipeUserIndexRequest;
 use App\Mail\RefusedRecipe;
 use App\Models\Ingredient;
 use App\Models\Recipe;
@@ -239,5 +240,29 @@ class RecipeController extends Controller
         }
     }
 
+    /**
+     * @details Listes des recettes de l'utilisateur
+     */
+    public function userIndex(RecipeUserIndexRequest $request): View|RedirectResponse
+    {
+        $response = [];
+
+        $recipesQuery = $this->recipeRepository->userIndex($request);
+
+        // Création d'un type temporaire tous
+        $allTypes = new RecipeType();
+        $allTypes->id = 0;
+        $allTypes->name = 'Tous';
+        $response = [
+            'recipes' => $recipesQuery->paginate(20),
+            'total'   => $recipesQuery->count(),
+            'types'   => RecipeType::all()->prepend($allTypes),
+            'diet'    => $request->diet ?? null,
+            'search'  => $request->name ?? null,
+            'typeId'  => $request->typeId ?? null,
+        ];
+
+        return view('myrecipes', $response);
+    }
 
 }
