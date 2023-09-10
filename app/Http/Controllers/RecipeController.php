@@ -9,6 +9,7 @@ use App\Http\Requests\Recipe\RecipeCommentRequest;
 use App\Http\Requests\Recipe\RecipeEditRequest;
 use App\Http\Requests\Recipe\RecipeEmptyOpiniontRequest;
 use App\Http\Requests\Recipe\RecipeExplorationRequest;
+use App\Http\Requests\Recipe\RecipeNoteBookIndexRequest;
 use App\Http\Requests\Recipe\RecipeShowRequest;
 use App\Http\Requests\Recipe\RecipeStatusRequest;
 use App\Http\Requests\Recipe\RecipeStoreRequest;
@@ -250,9 +251,8 @@ class RecipeController extends Controller
         $recipesQuery = $this->recipeRepository->userIndex($request);
 
         // Création d'un type temporaire tous
-        $allTypes = new RecipeType();
-        $allTypes->id = 0;
-        $allTypes->name = 'Tous';
+        $allTypes = new RecipeType(['name' => 'Tous', 'id' => 0]);
+
         $response = [
             'recipes' => $recipesQuery->paginate(20),
             'total'   => $recipesQuery->count(),
@@ -264,5 +264,29 @@ class RecipeController extends Controller
 
         return view('myrecipes', $response);
     }
+
+
+    /**
+     * @details Listes des recettes favories de l'utilisateur
+     */
+    public function noteBookIndex(RecipeNoteBookIndexRequest $request): View|RedirectResponse
+    {
+        $recipesQuery = $this->recipeRepository->noteBookIndex($request);
+
+        // Création d'un type temporaire tous
+        $allTypes = new RecipeType(['name' => 'Tous', 'id' => 0]);
+
+        $response = [
+            'recipes' => $recipesQuery->paginate(20),
+            'total'   => $recipesQuery->count(),
+            'types'   => RecipeType::all()->prepend($allTypes),
+            'search'  => $request->name ?? null,
+            'diet'    => $request->diet ?? null,
+            'typeId'  => $request->typeId ?? null,
+        ];
+
+        return view('mynotebook', $response);
+    }
+
 
 }

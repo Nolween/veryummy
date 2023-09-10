@@ -26,13 +26,6 @@ use Illuminate\Support\Facades\Route;
 // })->middleware(['auth'])->name('dashboard');
 
 
-// Regroupement des méthods du controller des recettes crées
-Route::controller(MyRecipesController::class)->group(function () {
-});
-// Regroupement des méthods du controller des recettes enregistrées par l'utilisateur
-Route::controller(MyNotebookController::class)->group(function () {
-    Route::get('/my-notebook', 'list')->name('my-notebook.list');
-});
 // Regroupement des méthods du controller des informations utilisateur
 Route::controller(UserController::class)->group(function () {
     Route::get('/my-account', 'edit')->name('my-account.edit');
@@ -66,6 +59,7 @@ Route::controller(RecipeController::class)->group(function () {
     Route::post('/recipe/comment/{recipe}', 'comment')->name('recipe.comment');
     Route::patch('/recipe/opinion/empty/{recipe}', 'emptyOpinion')->name('recipe-opinion.empty');
     Route::get('/my-recipes', 'userIndex')->name('my-recipes.list');
+    Route::get('/my-notebook', 'noteBookIndex')->name('my-notebook.list');
 
 
 });

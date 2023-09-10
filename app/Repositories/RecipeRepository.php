@@ -7,6 +7,7 @@ use App\Http\Requests\Recipe\RecipeAdminIndexRequest;
 use App\Http\Requests\Recipe\RecipeAllowRequest;
 use App\Http\Requests\Recipe\RecipeCommentRequest;
 use App\Http\Requests\Recipe\RecipeExplorationRequest;
+use App\Http\Requests\Recipe\RecipeNoteBookIndexRequest;
 use App\Http\Requests\Recipe\RecipeStatusRequest;
 use App\Http\Requests\Recipe\RecipeStoreRequest;
 use App\Http\Requests\Recipe\RecipeUpdateRequest;
@@ -684,7 +685,7 @@ class RecipeRepository
         $user = Auth::user();
 
         // Début de la requête
-        $recipes = Recipe::select('id', 'name', 'score', 'making_time', 'cooking_time', 'image')
+        $recipesQuery = Recipe::select('id', 'name', 'score', 'making_time', 'cooking_time', 'image')
                          ->where('name', 'like', "%{$request->name}%")
                          ->where('user_id', '=', $user->id)
                          ->withCount('ingredients')
@@ -692,34 +693,76 @@ class RecipeRepository
 
         // Si on a un type de plat (entrée, plat, dessert,...)
         if ($request->typeId && (int) $request->typeId > 0) {
-            $recipes = $recipes->where('recipe_type_id', $request->typeId);
+            $recipesQuery = $recipesQuery->where('recipe_type_id', $request->typeId);
         }
 
         // Si on a un filtre sur le type de diet
         if ($request->diet && $request->diet > 0) {
             switch ((int) $request->diet) {
                 case 1: // Végétarien
-                    $recipes = $recipes->where('vegetarian_compatible', 1);
+                    $recipesQuery = $recipesQuery->where('vegetarian_compatible', 1);
                     break;
                 case 2: // Vegan
-                    $recipes = $recipes->where('vegan_compatible', 1);
+                    $recipesQuery = $recipesQuery->where('vegan_compatible', 1);
                     break;
                 case 3: // Sans gluten
-                    $recipes = $recipes->where('gluten_free_compatible', 1);
+                    $recipesQuery = $recipesQuery->where('gluten_free_compatible', 1);
                     break;
                 case 4: // Halal
-                    $recipes = $recipes->where('halal_compatible', 1);
+                    $recipesQuery = $recipesQuery->where('halal_compatible', 1);
                     break;
                 case 5: // casher
-                    $recipes = $recipes->where('kosher_compatible', 1);
+                    $recipesQuery = $recipesQuery->where('kosher_compatible', 1);
                     break;
                 default:
                     break;
             }
         }
 
-        return $recipes;
+        return $recipesQuery;
 
+    }
+
+    public function noteBookIndex(RecipeNoteBookIndexRequest $request): Builder
+    {
+        // Récupération des infos de l'utilisateur connecté
+        $user = Auth::user();
+        // Début de la requête
+        $recipesQuery = Recipe::select('*')->join('recipe_opinions', 'recipe_opinions.recipe_id', '=', 'recipes.id')
+                         ->where('recipes.name', 'like', "%{$request->name}%")
+                         ->where('recipe_opinions.user_id', '=', $user->id)
+                         ->where('recipe_opinions.is_favorite', true)
+                         ->withCount('ingredients')
+                         ->withCount('steps');
+
+        // Si on a un type de plat (entrée, plat, dessert,...)
+        if ($request->typeId && (int) $request->typeId > 0) {
+            $recipesQuery = $recipesQuery->where('recipes.recipe_type_id', $request->typeId);
+        }
+
+        // Si on a un filtre sur le type de régime
+        if ($request->diet && $request->diet > 0) {
+            switch ((int) $request->diet) {
+                case 1: // Végétarien
+                    $recipesQuery = $recipesQuery->where('recipes.vegetarian_compatible', 1);
+                    break;
+                case 2: // Vegan
+                    $recipesQuery = $recipesQuery->where('recipes.vegan_compatible', 1);
+                    break;
+                case 3: // Sans gluten
+                    $recipesQuery = $recipesQuery->where('recipes.gluten_free_compatible', 1);
+                    break;
+                case 4: // Halal
+                    $recipesQuery = $recipesQuery->where('recipes.halal_compatible', 1);
+                    break;
+                case 5: // casher
+                    $recipesQuery = $recipesQuery->where('recipes.kosher_compatible', 1);
+                    break;
+                default:
+                    break;
+            }
+        }
+        return $recipesQuery;
     }
 
 }
