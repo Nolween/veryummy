@@ -24,11 +24,7 @@ return new class extends Migration
             $table->smallInteger('making_time')->nullable();
             $table->smallInteger('servings')->default('4');
             $table->boolean('is_accepted')->nullable();
-            $table->boolean('vegan_compatible')->nullable();
-            $table->boolean('vegetarian_compatible')->nullable();
-            $table->boolean('gluten_free_compatible')->nullable();
-            $table->boolean('halal_compatible')->nullable();
-            $table->boolean('kosher_compatible')->nullable();
+            $table->jsonb('diets');
             $table->timestamps();
         });
     }

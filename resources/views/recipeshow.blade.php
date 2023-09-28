@@ -107,23 +107,23 @@
     {{-- REGIMES --}}
 
     <div class="flex flex-wrap justify-center px-8 md:px-4 w-3/4 mx-auto mb-6">
-        @if ($recipe->vegan_compatible)
+        @if ($recipe->diets->contains('vegan'))
             <img src="{{ asset('svg/diet/vegan.svg') }}"
                  class="w-16 h-16 sm:w-20 md:h-20 lg:w-28 lg:h-28 mx-auto"/>
         @endif
-        @if ($recipe->vegetarian_compatible)
+        @if ($recipe->ingredients->contains('vegetarian'))
             <img src="{{ asset('svg/diet/végétarien.svg') }}"
                  class="w-16 h-16 sm:w-20 md:h-20 lg:w-28 lg:h-28 mx-auto"/>
         @endif
-        @if ($recipe->gluten_free_compatible)
+        @if ($recipe->diets->contains('gluten_free'))
             <img src="{{ asset('svg/diet/sans-gluten.svg') }}"
                  class="w-16 h-16 sm:w-20 md:h-20 lg:w-28 lg:h-28 mx-auto"/>
         @endif
-        @if ($recipe->halal_compatible)
+        @if ($recipe->diets->contains('halal'))
             <img src="{{ asset('svg/diet/halal.svg') }}"
                  class="w-16 h-16 sm:w-20 md:h-20 lg:w-28 lg:h-28 mx-auto"/>
         @endif
-        @if ($recipe->kosher_compatible)
+        @if ($recipe->diets->contains('kosher'))
             <img src="{{ asset('svg/diet/casher.svg') }}"
                  class="w-16 h-16 sm:w-20 md:h-20 lg:w-28 lg:h-28 mx-auto"/>
         @endif

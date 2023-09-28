@@ -19,11 +19,7 @@ use Illuminate\Support\Facades\Auth;
  * @property int $score
  * @property string $image
  * @property bool $is_accepted
- * @property bool $vegan_compatible
- * @property bool $vegetarian_compatible
- * @property bool $gluten_free_compatible
- * @property bool $halal_compatible
- * @property bool $kosher_compatible
+ * @property array $diets
  * @property-read RecipeType $recipeType
  * @property-read User $user
  * @property-read RecipeStep[] $steps
@@ -48,12 +44,13 @@ class Recipe extends Model
         'score',
         'image',
         'is_accepted',
-        'vegan_compatible',
-        'vegetarian_compatible',
-        'gluten_free_compatible',
-        'halal_compatible',
-        'kosher_compatible',
+        'diets'
     ];
+
+    protected $casts = [
+        'diets' => 'array',
+    ];
+
 
     /**
      * Indique à quel type de recette elle appartient

@@ -90,11 +90,12 @@ class IngredientRepository
             // Si l'ingrédient est accepté, il passe sur le compte principal, en cas de suppression de compte du demandeur
             $ingredient->user_id = 1;
             // Définition du régime de l'aliment
-            $ingredient->vegetarian_compatible = $request->vegetarian ?? false;
-            $ingredient->vegan_compatible = $request->vegan ?? false;
-            $ingredient->gluten_free_compatible = $request->glutenfree ?? false;
-            $ingredient->halal_compatible = $request->halal ?? false;
-            $ingredient->kosher_compatible = $request->kosher ?? false;
+            $diets = [];
+            $diets[] = $request->vegetarian ? 'vegetarian' : null;
+            $diets[] = $request->vegan ? 'vegan' : null;
+            $diets[] = $request->glutenfree ? 'gluten_free' : null;
+            $diets[] = $request->halal ? 'halal' : null;
+            $diets[] = $request->kosher ? 'kosher' : null;
             $ingredient->save();
 
             // Envoi de mail à la personne ayant proposé l'ingrédient

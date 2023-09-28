@@ -19,11 +19,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('icon')->nullable();
             $table->boolean('is_accepted')->nullable();
-            $table->boolean('vegan_compatible')->nullable();
-            $table->boolean('vegetarian_compatible')->nullable();
-            $table->boolean('gluten_free_compatible')->nullable();
-            $table->boolean('halal_compatible')->nullable();
-            $table->boolean('kosher_compatible')->nullable();
+            $table->jsonb('diets');
             $table->timestamps();
             $table->index(['user_id']);
         });

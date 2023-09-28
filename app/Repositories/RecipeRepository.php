@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\Diets;
 use App\Helpers\ImageTransformation;
 use App\Http\Requests\Recipe\RecipeAdminIndexRequest;
 use App\Http\Requests\Recipe\RecipeAllowRequest;
@@ -105,19 +106,19 @@ class RecipeRepository
         if ($request->diet && $request->diet > 0) {
             switch ((int)$request->diet) {
                 case 1: // Végétarien
-                    $recipesCount = $recipes = $recipes->where('vegetarian_compatible', 1);
+                    $recipesCount = $recipes = $recipes->whereJsonContains('diets', Diets::VEGETARIAN->value);
                     break;
                 case 2: // Vegan
-                    $recipesCount = $recipes = $recipes->where('vegan_compatible', 1);
+                    $recipesCount = $recipes = $recipes->whereJsonContains('diets', Diets::VEGAN->value);
                     break;
                 case 3: // Sans gluten
-                    $recipesCount = $recipes = $recipes->where('gluten_free_compatible', 1);
+                    $recipesCount = $recipes = $recipes->whereJsonContains('diets', Diets::GLUTEN_FREE->value);
                     break;
                 case 4: // Halal
-                    $recipesCount = $recipes = $recipes->where('halal_compatible', 1);
+                    $recipesCount = $recipes = $recipes->whereJsonContains('diets', Diets::HALAL->value);
                     break;
                 case 5: // casher
-                    $recipesCount = $recipes = $recipes->where('kosher_compatible', 1);
+                    $recipesCount = $recipes = $recipes->whereJsonContains('diets', Diets::KOSHER->value);
                     break;
                 default:
                     $recipesCount = $recipes;
@@ -318,33 +319,24 @@ class RecipeRepository
             }
             //? Définition des différentes catégories de la recette
             // Tableau des compatibilités de la recette
-            $compatible = [
-                'vegan_compatible'       => 0,
-                'vegetarian_compatible'  => 0,
-                'gluten_free_compatible' => 0,
-                'halal_compatible'       => 0,
-                'kosher_compatible'      => 0,
-            ];
+            $diets = Diets::allValues();
             // Parcours des ingrédients ajoutés
             foreach ($request->ingredients as $ingredient) {
                 if (!empty($ingredient['ingredientId'])) {
                     // Récupération de l'ingrédient
-                    $ingredientCompatible = Ingredient::where('id', $ingredient['ingredientId'])->firstOrFail();
-                    // Si l'ingrédient est compatible avec le régime
-                    $compatible['vegan_compatible'] = $ingredientCompatible->vegan_compatible == true ? $compatible['vegan_compatible'] : $compatible['vegan_compatible'] + 1;
-                    $compatible['vegetarian_compatible'] = $ingredientCompatible->vegetarian_compatible == true ? $compatible['vegetarian_compatible'] : $compatible['vegetarian_compatible'] + 1;
-                    $compatible['gluten_free_compatible'] = $ingredientCompatible->gluten_free_compatible == true ? $compatible['gluten_free_compatible'] : $compatible['gluten_free_compatible'] + 1;
-                    $compatible['halal_compatible'] = $ingredientCompatible->halal_compatible == true ? $compatible['halal_compatible'] : $compatible['halal_compatible'] + 1;
-                    $compatible['kosher_compatible'] = $ingredientCompatible->kosher_compatible == true ? $compatible['kosher_compatible'] : $compatible['kosher_compatible'] + 1;
+                    $ingredientCompatible = Ingredient::findOrFail($ingredient['ingredientId']);
+                    foreach (json_decode($ingredientCompatible->diets) as $diet) {
+                        //    Si la diet n'est pas présent dans l'ingrédient, on la retire
+                        if (!in_array($diet, $diets)) {
+                            unset($diets[array_search($diet, $diets)]);
+                        }
+                    }
+                    if (empty($diets)) {
+                        break;
+                    }
                 }
             }
-            // Parcours des résultats de compatibilité
-            $newRecipe->vegan_compatible = $compatible['vegan_compatible'] == 0 ? true : false;
-            $newRecipe->vegetarian_compatible = $compatible['vegetarian_compatible'] == 0 ? true : false;
-            $newRecipe->gluten_free_compatible = $compatible['gluten_free_compatible'] == 0 ? true : false;
-            $newRecipe->halal_compatible = $compatible['halal_compatible'] == 0 ? true : false;
-            $newRecipe->kosher_compatible = $compatible['kosher_compatible'] == 0 ? true : false;
-
+            $newRecipe->diets = array_values($diets);
             //? Création d'un nom pour l'image
             $newRecipe->image = $newRecipe->id . '-' . Str::slug($request->nom, '-') . '.avif';
             //? Si on a une image valide
@@ -484,32 +476,25 @@ class RecipeRepository
 
             //? Définition des différentes catégories de la recette
             // Tableau des compatibilités de la recette
-            $compatible = [
-                'vegan_compatible'       => 0,
-                'vegetarian_compatible'  => 0,
-                'gluten_free_compatible' => 0,
-                'halal_compatible'       => 0,
-                'kosher_compatible'      => 0,
-            ];
+
+            $diets = Diets::allValues();
             // Parcours des ingrédients ajoutés
             foreach ($request->ingredients as $ingredient) {
                 if (!empty($ingredient['ingredientId'])) {
                     // Récupération de l'ingrédient
-                    $ingredientCompatible = Ingredient::where('id', $ingredient['ingredientId'])->firstOrFail();
-                    // Si l'ingrédient est compatible avec le régime
-                    $compatible['vegan_compatible'] = $ingredientCompatible->vegan_compatible == true ? $compatible['vegan_compatible'] : $compatible['vegan_compatible'] + 1;
-                    $compatible['vegetarian_compatible'] = $ingredientCompatible->vegetarian_compatible == true ? $compatible['vegetarian_compatible'] : $compatible['vegetarian_compatible'] + 1;
-                    $compatible['gluten_free_compatible'] = $ingredientCompatible->gluten_free_compatible == true ? $compatible['gluten_free_compatible'] : $compatible['gluten_free_compatible'] + 1;
-                    $compatible['halal_compatible'] = $ingredientCompatible->halal_compatible == true ? $compatible['halal_compatible'] : $compatible['halal_compatible'] + 1;
-                    $compatible['kosher_compatible'] = $ingredientCompatible->kosher_compatible == true ? $compatible['kosher_compatible'] : $compatible['kosher_compatible'] + 1;
+                    $ingredientCompatible = Ingredient::findOrFail($ingredient['ingredientId']);
+                    foreach (json_decode($ingredientCompatible->diets) as $diet) {
+                        //    Si la diet n'est pas présent dans l'ingrédient, on la retire
+                        if (!in_array($diet, $diets)) {
+                            unset($diets[array_search($diet, $diets)]);
+                        }
+                    }
+                    if (empty($diets)) {
+                        break;
+                    }
                 }
             }
-            // Parcours des résultats de compatibilité
-            $recipe->vegan_compatible = $compatible['vegan_compatible'] == 0 ? true : false;
-            $recipe->vegetarian_compatible = $compatible['vegetarian_compatible'] == 0 ? true : false;
-            $recipe->gluten_free_compatible = $compatible['gluten_free_compatible'] == 0 ? true : false;
-            $recipe->halal_compatible = $compatible['halal_compatible'] == 0 ? true : false;
-            $recipe->kosher_compatible = $compatible['kosher_compatible'] == 0 ? true : false;
+            $recipe->diets = $diets;
 
             //? Création d'un nom pour l'image
             $recipe->image = $recipe->id . '-' . Str::slug($request->nom, '-') . '.avif';
@@ -615,18 +600,14 @@ class RecipeRepository
             'image',
             'score',
             'recipe_type_id',
-            'vegan_compatible',
-            'vegetarian_compatible',
-            'gluten_free_compatible',
-            'halal_compatible',
-            'kosher_compatible'
+            'diets'
         )
                      ->withCount('steps') // Nombre d'étapes possède la recette
                      ->withCount('ingredients') // Nombre d'ingrédients dans la recette
                      ->findOrFail($id);
     }
 
-    public function commentRecipe(RecipeCommentRequest $request, Recipe $recipe) :bool
+    public function commentRecipe(RecipeCommentRequest $request, Recipe $recipe): bool
     {
         // Transaction pour rollback si erreur
         DB::beginTransaction();
@@ -650,12 +631,10 @@ class RecipeRepository
             DB::rollback();
             return false;
         }
-
     }
 
-    public function emptyOpinionRecipe(Recipe $recipe) :bool
+    public function emptyOpinionRecipe(Recipe $recipe): bool
     {
-
         DB::beginTransaction();
         try {
             $user = Auth::user();
@@ -671,8 +650,7 @@ class RecipeRepository
             $recipe->save();
             DB::commit();
             return true;
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
             return false;
         }
@@ -680,39 +658,38 @@ class RecipeRepository
 
     public function userIndex(RecipeUserIndexRequest $request): Builder
     {
-
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
 
         // Début de la requête
         $recipesQuery = Recipe::select('id', 'name', 'score', 'making_time', 'cooking_time', 'image')
-                         ->where('name', 'like', "%{$request->name}%")
-                         ->where('user_id', '=', $user->id)
-                         ->withCount('ingredients')
-                         ->withCount('steps');
+                              ->where('name', 'like', "%{$request->name}%")
+                              ->where('user_id', '=', $user->id)
+                              ->withCount('ingredients')
+                              ->withCount('steps');
 
         // Si on a un type de plat (entrée, plat, dessert,...)
-        if ($request->typeId && (int) $request->typeId > 0) {
+        if ($request->typeId && (int)$request->typeId > 0) {
             $recipesQuery = $recipesQuery->where('recipe_type_id', $request->typeId);
         }
 
         // Si on a un filtre sur le type de diet
         if ($request->diet && $request->diet > 0) {
-            switch ((int) $request->diet) {
+            switch ((int)$request->diet) {
                 case 1: // Végétarien
-                    $recipesQuery = $recipesQuery->where('vegetarian_compatible', 1);
+                    $recipesQuery = $recipesQuery->whereJsonContains('diets', Diets::VEGETARIAN->value);
                     break;
                 case 2: // Vegan
-                    $recipesQuery = $recipesQuery->where('vegan_compatible', 1);
+                    $recipesQuery = $recipesQuery->whereJsonContains('diets', Diets::VEGAN->value);
                     break;
                 case 3: // Sans gluten
-                    $recipesQuery = $recipesQuery->where('gluten_free_compatible', 1);
+                    $recipesQuery = $recipesQuery->whereJsonContains('diets', Diets::GLUTEN_FREE->value);
                     break;
                 case 4: // Halal
-                    $recipesQuery = $recipesQuery->where('halal_compatible', 1);
+                    $recipesQuery = $recipesQuery->whereJsonContains('diets', Diets::HALAL->value);
                     break;
                 case 5: // casher
-                    $recipesQuery = $recipesQuery->where('kosher_compatible', 1);
+                    $recipesQuery = $recipesQuery->whereJsonContains('diets', Diets::KOSHER->value);
                     break;
                 default:
                     break;
@@ -720,7 +697,6 @@ class RecipeRepository
         }
 
         return $recipesQuery;
-
     }
 
     public function noteBookIndex(RecipeNoteBookIndexRequest $request): Builder
@@ -729,34 +705,34 @@ class RecipeRepository
         $user = Auth::user();
         // Début de la requête
         $recipesQuery = Recipe::select('*')->join('recipe_opinions', 'recipe_opinions.recipe_id', '=', 'recipes.id')
-                         ->where('recipes.name', 'like', "%{$request->name}%")
-                         ->where('recipe_opinions.user_id', '=', $user->id)
-                         ->where('recipe_opinions.is_favorite', true)
-                         ->withCount('ingredients')
-                         ->withCount('steps');
+                              ->where('recipes.name', 'like', "%{$request->name}%")
+                              ->where('recipe_opinions.user_id', '=', $user->id)
+                              ->where('recipe_opinions.is_favorite', true)
+                              ->withCount('ingredients')
+                              ->withCount('steps');
 
         // Si on a un type de plat (entrée, plat, dessert,...)
-        if ($request->typeId && (int) $request->typeId > 0) {
+        if ($request->typeId && (int)$request->typeId > 0) {
             $recipesQuery = $recipesQuery->where('recipes.recipe_type_id', $request->typeId);
         }
 
         // Si on a un filtre sur le type de régime
         if ($request->diet && $request->diet > 0) {
-            switch ((int) $request->diet) {
+            switch ((int)$request->diet) {
                 case 1: // Végétarien
-                    $recipesQuery = $recipesQuery->where('recipes.vegetarian_compatible', 1);
+                    $recipesQuery = $recipesQuery->whereJsonContains('diets', Diets::VEGETARIAN->value);
                     break;
                 case 2: // Vegan
-                    $recipesQuery = $recipesQuery->where('recipes.vegan_compatible', 1);
+                    $recipesQuery = $recipesQuery->whereJsonContains('diets', Diets::VEGAN->value);
                     break;
                 case 3: // Sans gluten
-                    $recipesQuery = $recipesQuery->where('recipes.gluten_free_compatible', 1);
+                    $recipesQuery = $recipesQuery->whereJsonContains('diets', Diets::GLUTEN_FREE->value);
                     break;
                 case 4: // Halal
-                    $recipesQuery = $recipesQuery->where('recipes.halal_compatible', 1);
+                    $recipesQuery = $recipesQuery->whereJsonContains('diets', Diets::HALAL->value);
                     break;
                 case 5: // casher
-                    $recipesQuery = $recipesQuery->where('recipes.kosher_compatible', 1);
+                    $recipesQuery = $recipesQuery->whereJsonContains('diets', Diets::KOSHER->value);
                     break;
                 default:
                     break;

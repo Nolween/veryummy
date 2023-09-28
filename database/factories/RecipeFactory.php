@@ -2,7 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Enums\Diets;
 use App\Helpers\ImageTransformation;
+use App\Models\Recipe;
+use App\Models\RecipeIngredients;
 use App\Models\RecipeType;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -48,22 +51,49 @@ class RecipeFactory extends Factory
         unlink(storage_path('app/public/img/full/' . $filename . '.png'));
 
         return [
-            'user_id'                => User::inRandomOrder()->first()->id,
-            'recipe_type_id'         => RecipeType::inRandomOrder()->first()->id,
-            'name'                   => fake()->sentence(),
-            'image'                  => $filename . '.avif',
-            'making_time'            => rand(1, 100),
-            'cooking_time'           => rand(1, 180),
-            'servings'               => rand(1, 20),
-            'score'                  => fake()->randomFloat(2, 1, 5),
-            'is_accepted'            => fake()->boolean(90),
-            'vegan_compatible'       => fake()->boolean(60),
-            'vegetarian_compatible'  => fake()->boolean(80),
-            'gluten_free_compatible' => fake()->boolean(90),
-            'halal_compatible'       => fake()->boolean(80),
-            'kosher_compatible'      => fake()->boolean(60),
-            'created_at'             => now(),
-            'updated_at'             => now(),
+            'user_id'        => User::inRandomOrder()->first()->id,
+            'recipe_type_id' => RecipeType::inRandomOrder()->first()->id,
+            'name'           => fake()->sentence(),
+            'image'          => $filename . '.avif',
+            'making_time'    => rand(1, 100),
+            'cooking_time'   => rand(1, 180),
+            'servings'       => rand(1, 20),
+            'score'          => fake()->randomFloat(2, 1, 5),
+            'diets'          => [],
+            'created_at'     => now(),
+            'updated_at'     => now(),
         ];
+    }
+
+    public function configure()
+    {
+        return $this->afterCreating(function (Recipe $recipe) {
+            for ($i = 0; $i < rand(3, 10); $i++) {
+                RecipeIngredients::factory()->create([
+                    'recipe_id' => $recipe->id,
+                ]);
+            }
+
+            // Defining diets of recipe
+            $diets = Diets::allValues();
+            // Définition des diets selon les ingrédients créés
+            $recipeIngredients = $recipe->ingredients;
+            foreach ($recipeIngredients as $recipeIngredient) {
+                $ingredient = $recipeIngredient->ingredient;
+                $ingredientDiets = json_decode($ingredient->diets);
+                foreach ($diets as $diet) {
+                    //    Si la diet n'est pas présent dans l'ingrédient, on la retire
+                    if (!in_array($diet, $ingredientDiets)) {
+                        unset($diets[array_search($diet, $diets)]);
+                    }
+                }
+                if (empty($diets)) {
+                    break;
+                }
+            }
+            $recipe->update([
+                'diets' => array_values($diets),
+            ]);
+        });
     }
 }

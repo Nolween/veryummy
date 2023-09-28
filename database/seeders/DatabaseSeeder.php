@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RecipeSeeder::class);
         $this->call(RecipeOpinionSeeder::class);
         $this->call(RecipeStepSeeder::class);
-        $this->call(RecipeIngredientsSeeder::class);
+        // $this->call(RecipeIngredientsSeeder::class);
         $this->call(OpinionReportSeeder::class);
     }
 }

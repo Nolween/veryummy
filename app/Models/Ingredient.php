@@ -20,12 +20,13 @@ class Ingredient extends Model
         'name',
         'icon',
         'is_accepted',
-        'vegan_compatible',
-        'vegetarian_compatible',
-        'gluten_free_compatible',
-        'halal_compatible',
-        'kosher_compatible',
+        'diets'
     ];
+
+    protected $casts = [
+        'diets' => 'array',
+    ];
+
 
     /**
      * Get the user that owns the ingredient.
