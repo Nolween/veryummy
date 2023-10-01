@@ -1,9 +1,6 @@
 <?php
 
-use App\Models\User;
 use App\Providers\RouteServiceProvider;
-use Faker\Factory as Faker;
-
 
 test('login screen can be rendered', function () {
     $response = $this->get('/');

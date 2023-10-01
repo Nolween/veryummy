@@ -7,34 +7,20 @@ use App\Http\Requests\User\UserDestroyRequest;
 use App\Http\Requests\User\UserIndexRequest;
 use App\Http\Requests\User\UserModerateRequest;
 use App\Http\Requests\User\UserUpdateRequest;
-use App\Models\OpinionReport;
-use App\Models\Recipe;
-use App\Models\RecipeOpinion;
 use App\Models\User;
 use App\Repositories\UserRepository;
-use App\Rules\CheckCurrentPassword;
-use App\Rules\PasswordRepetition;
-use App\Rules\UserMailExists;
-use App\Rules\UserNameExists;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class UserController extends Controller
 {
-
     private UserRepository $userRepository;
 
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
     }
-
 
     /**
      * @details Affichage des informations de compte
@@ -43,7 +29,7 @@ class UserController extends Controller
     {
         $response = [];
 
-        if(Auth::user() === null) {
+        if (Auth::user() === null) {
             abort(403);
         }
 
@@ -72,6 +58,7 @@ class UserController extends Controller
         if ($this->userRepository->destroyUser($request)) {
             // Déconnexion de l'utilisateur
             Auth::logout();
+
             return redirect('/')->with(['userDeletionSuccess', 'Votre compte a bien été supprimé!']);
         } else {
             return redirect('/')->withErrors(['transactionError' => 'Erreur dans la suppression du compte']);
@@ -113,11 +100,11 @@ class UserController extends Controller
         $moderateUSer = $this->userRepository->moderateUser($request);
         if ($moderateUSer === 1) {
             return redirect("/admin/users/index/$request->typelist")
-                ->with('deletionSuccess', "Le commentaire a été supprimé");
+                ->with('deletionSuccess', 'Le commentaire a été supprimé');
         }
         if ($moderateUSer === 2) {
             return redirect("/admin/users/index/$request->typelist")
-                ->with('deletionSuccess', "Le commentaire a été supprimé");
+                ->with('deletionSuccess', 'Le commentaire a été supprimé');
         } else {
             return back()->withErrors(['deletionError' => 'Erreur dans la modération du commentaire']);
         }

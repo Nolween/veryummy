@@ -19,7 +19,7 @@ class OpinionReportFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => User::inRandomOrder()->first()->id,
+            'user_id'    => User::inRandomOrder()->first()->id,
             'opinion_id' => RecipeOpinion::inRandomOrder()->first()->id,
             'created_at' => now(),
             'updated_at' => now(),

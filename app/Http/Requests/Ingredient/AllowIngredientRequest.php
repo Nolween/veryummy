@@ -26,7 +26,7 @@ class AllowIngredientRequest extends FormRequest
         return [
             'ingredientid' => ['integer', 'required', 'exists:ingredients,id'],
             'allow'        => ['accepted', 'required'],
-            'finalname'    => ['string', 'required', 'min:2', 'max:255', 'unique:ingredients,name,' . $this->ingredientid],
+            'finalname'    => ['string', 'required', 'min:2', 'max:255', 'unique:ingredients,name,'.$this->ingredientid],
             'typeList'     => ['integer', 'required'],
             'vegetarian'   => ['boolean', 'nullable'],
             'vegan'        => ['boolean', 'nullable'],

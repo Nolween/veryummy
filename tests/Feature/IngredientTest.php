@@ -2,8 +2,6 @@
 
 use App\Models\Ingredient;
 use App\Models\User;
-use Faker\Factory as Faker;
-
 
 /**
  * Prendre un ingrédient au hasard pour réinitialiser sa modération
@@ -12,7 +10,7 @@ use Faker\Factory as Faker;
  */
 function setIngredientToModerate()
 {
-    $randomIngredientToModerate = Ingredient::inRandomOrder()->first();
+    $randomIngredientToModerate              = Ingredient::inRandomOrder()->first();
     $randomIngredientToModerate->is_accepted = null;
     $randomIngredientToModerate->save();
 
@@ -21,14 +19,13 @@ function setIngredientToModerate()
 
 test('access handling ingredients list', function () {
 
-
     $simpleUser = User::factory()->create([
-        'role' => User::ROLE_ADMIN,
+        'role'      => User::ROLE_ADMIN,
         'is_banned' => false,
     ]);
 
     // Sélection d'un type d'ingrédient au hasard (en cours de modération / refusés / acceptés)
-    $typeList = rand(0, 2);
+    $typeList        = rand(0, 2);
     $typeInformation = match ($typeList) {
         0 => 'Liste ingrédients en cours de modération',
         1 => 'Liste ingrédients acceptés',
@@ -44,7 +41,7 @@ test('access handling ingredients list as simple user', function () {
     $simpleUser = User::where('is_banned', false)->where('role', User::ROLE_USER)->inRandomOrder()->first();
 
     // Sélection d'un type d'ingrédient au hasard (en cours de modération / refusés / acceptés)
-    $typeList = rand(0, 2);
+    $typeList        = rand(0, 2);
     $typeInformation = match ($typeList) {
         0 => 'Liste ingrédients en cours de modération',
         1 => 'Liste ingrédients acceptés',
@@ -63,7 +60,7 @@ test('allowing ingredient', function () {
     $randomHandlingIngredient = Ingredient::where('is_accepted', null)->inRandomOrder()->first();
 
     // Si on a pas d'ingrédient en cours de modération
-    if (!$randomHandlingIngredient) {
+    if (! $randomHandlingIngredient) {
         $randomHandlingIngredient = setIngredientToModerate();
     }
 
@@ -110,10 +107,10 @@ test('allowing ingredient with wrong datas', function () {
     $randomHandlingIngredient = Ingredient::where('is_accepted', null)->inRandomOrder()->first();
 
     // Si on a pas d'ingrédient en cours de modération
-    if (!$randomHandlingIngredient) {
+    if (! $randomHandlingIngredient) {
         $randomHandlingIngredient = setIngredientToModerate();
     }
-    $dataToSend['allow'] = 0;
+    $dataToSend['allow']        = 0;
     $dataToSend['ingredientid'] = $randomHandlingIngredient->id;
 
     $response = $this->actingAs($adminUser)->post('/admin/ingredients/allow', $dataToSend);
@@ -124,7 +121,7 @@ test('allowing ingredient with wrong datas', function () {
     $randomHandlingIngredient = Ingredient::where('is_accepted', null)->inRandomOrder()->first();
 
     // Si on a pas d'ingrédient en cours de modération
-    if (!$randomHandlingIngredient) {
+    if (! $randomHandlingIngredient) {
         $randomHandlingIngredient = setIngredientToModerate();
     }
     $dataToSend['finalname'] = 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Beatae, minus. Minima eos beatae nulla nesciunt quidem? Perspiciatis possimus eaque dolorem, aliquid porro omnis est praesentium. Nobis magni nam incidunt odio.Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet velit commodi eum? Nisi quo sit cumque pariatur, eveniet vero dolor temporibus voluptas, veritatis, culpa a fuga odit. Blanditiis, eveniet possimus.';
@@ -137,11 +134,11 @@ test('allowing ingredient with wrong datas', function () {
     $randomHandlingIngredient = Ingredient::where('is_accepted', null)->inRandomOrder()->first();
 
     // Si on a pas d'ingrédient en cours de modération
-    if (!$randomHandlingIngredient) {
+    if (! $randomHandlingIngredient) {
         $randomHandlingIngredient = setIngredientToModerate();
     }
     $dataToSend['finalname'] = $randomHandlingIngredient->name;
-    $dataToSend['vegan'] = 'qsdspkkl,qsdk,nqds';
+    $dataToSend['vegan']     = 'qsdspkkl,qsdk,nqds';
 
     $response = $this->actingAs($adminUser)->post('/admin/ingredients/allow', $dataToSend);
     $response->assertSessionHasErrors()->assertSessionMissing('ingredientAllowSuccess');
@@ -155,7 +152,7 @@ test('denying ingredient', function () {
     $randomHandlingIngredient = Ingredient::where('is_accepted', null)->inRandomOrder()->first();
 
     // Si on a pas d'ingrédient en cours de modération
-    if (!$randomHandlingIngredient) {
+    if (! $randomHandlingIngredient) {
         $randomHandlingIngredient = setIngredientToModerate();
     }
 
@@ -192,10 +189,10 @@ test('denying ingredient with wrong datas', function () {
     $randomHandlingIngredient = Ingredient::where('is_accepted', null)->inRandomOrder()->first();
 
     // Si on a pas d'ingrédient en cours de modération
-    if (!$randomHandlingIngredient) {
+    if (! $randomHandlingIngredient) {
         $randomHandlingIngredient = setIngredientToModerate();
     }
-    $dataToSend['deny'] = 0;
+    $dataToSend['deny']         = 0;
     $dataToSend['ingredientid'] = $randomHandlingIngredient->id;
 
     $response = $this->actingAs($adminUser)->post('/admin/ingredients/deny', $dataToSend);
@@ -206,7 +203,7 @@ test('denying ingredient with wrong datas', function () {
     $randomHandlingIngredient = Ingredient::where('is_accepted', null)->inRandomOrder()->first();
 
     // Si on a pas d'ingrédient en cours de modération
-    if (!$randomHandlingIngredient) {
+    if (! $randomHandlingIngredient) {
         $randomHandlingIngredient = setIngredientToModerate();
     }
     $dataToSend['denymessage'] = null;
@@ -227,7 +224,7 @@ test('access ingredient proposition', function () {
 test('access ingredient proposition with banned user', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $simpleUser = User::where('is_banned', true)->inRandomOrder()->first();
-    if (!$simpleUser) {
+    if (! $simpleUser) {
         $simpleUser = initialize_user(true, false);
     }
 

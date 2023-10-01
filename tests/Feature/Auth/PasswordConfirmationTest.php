@@ -1,9 +1,5 @@
 <?php
 
-use App\Models\User;
-use Faker\Factory as Faker;
-
-
 test('confirm password screen can be rendered', function () {
     $user = initialize_user();
 

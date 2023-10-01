@@ -4,7 +4,6 @@ namespace App\Http\Requests\Recipe;
 
 use App\Models\Recipe;
 use App\Models\User;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,13 +15,13 @@ class RecipeUpdateRequest extends FormRequest
     public function authorize(): bool
     {
         $recipe = Recipe::findOrFail($this->get('recipeid'));
-        $user = Auth::user();
+        $user   = Auth::user();
 
-        if($user === null || $user->is_banned) {
+        if ($user === null || $user->is_banned) {
             return false;
         }
 
-        return (($user->id === $recipe->user_id) || ($user->role === User::ROLE_ADMIN));
+        return ($user->id === $recipe->user_id) || ($user->role === User::ROLE_ADMIN);
 
     }
 
@@ -36,7 +35,7 @@ class RecipeUpdateRequest extends FormRequest
         return [
             'recipeid'             => ['integer', 'required', 'exists:recipes,id'],
             'nom'                  => ['string', 'required', 'min:2'],
-            'photoInput'           => ['nullable','mimes:jpg,png,jpeg,gif,svg,avif,webp'],
+            'photoInput'           => ['nullable', 'mimes:jpg,png,jpeg,gif,svg,avif,webp'],
             'preparation'          => ['integer', 'required', 'min:0', 'max:1000'],
             'cuisson'              => ['integer', 'nullable', 'min:0', 'max:1000'],
             'parts'                => ['integer', 'required', 'min:0', 'max:1000'],

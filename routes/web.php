@@ -1,13 +1,8 @@
 <?php
 
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\ExplorationController;
 use App\Http\Controllers\IngredientController;
-use App\Http\Controllers\MyNotebookController;
-use App\Http\Controllers\MyRecipesController;
-use App\Http\Controllers\RecipeCardController;
 use App\Http\Controllers\RecipeController;
-use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,7 +19,6 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth'])->name('dashboard');
-
 
 // Regroupement des méthods du controller des informations utilisateur
 Route::controller(UserController::class)->group(function () {
@@ -61,7 +55,6 @@ Route::controller(RecipeController::class)->group(function () {
     Route::get('/my-recipes', 'userIndex')->name('my-recipes.list');
     Route::get('/my-notebook', 'noteBookIndex')->name('my-notebook.list');
 
-
 });
 
 // Regroupement des methods du controller de gestion des utilisateurs
@@ -70,4 +63,4 @@ Route::get('/registration', function () {
     return view('registration');
 })->name('registration');
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

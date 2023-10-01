@@ -12,7 +12,7 @@ test('opinion recipe', function () {
     $randRecipe = Recipe::where('user_id', '!=', $randUser->id)->where('is_accepted', true)->inRandomOrder()->first();
 
     // Envoi d'une modification de statut (favori ou signalement) au controller
-    $favorite = rand(0, 1);
+    $favorite        = rand(0, 1);
     $typeInformation = match ($favorite) {
         0 => 'Ingrédient signalé',
         1 => 'Ingrédient mis en favori'
@@ -28,7 +28,7 @@ test('opinion non existing recipe', function () {
     $randUser = User::where('is_banned', false)->inRandomOrder()->first();
 
     // Envoi d'une modification de statut (favori ou signalement) au controller
-    $favorite = rand(0, 1);
+    $favorite        = rand(0, 1);
     $typeInformation = match ($favorite) {
         0 => 'Ingrédient signalé',
         1 => 'Ingrédient mis en favori'
@@ -50,8 +50,8 @@ test('comment recipe', function () {
     $score = rand(1, 5);
 
     // Création d'une phrase au hasard
-    $faker = Faker::create();
-    $comment = $faker->sentence(6);
+    $faker    = Faker::create();
+    $comment  = $faker->sentence(6);
     $response = $this->actingAs($randUser)->post('/recipe/comment/'.$randRecipe->id, ['score' => $score, 'comment' => $comment]);
 
     // Vérification de la redirection et qu'il n'y a pas d'erreur
@@ -66,8 +66,8 @@ test('comment non existing recipe', function () {
     $score = rand(1, 5);
 
     // Création d'une phrase au hasard
-    $faker = Faker::create();
-    $comment = $faker->sentence(6);
+    $faker    = Faker::create();
+    $comment  = $faker->sentence(6);
     $recipeId = Recipe::orderBy('id', 'DESC')->first()->id + 1;
     $response = $this->actingAs($randUser)->post("/recipe/comment/$recipeId", ['score' => $score, 'comment' => $comment]);
 
@@ -86,7 +86,7 @@ test('score overscored recipe', function () {
     $score = rand(6, 100);
 
     // Création d'une phrase au hasard
-    $faker = Faker::create();
+    $faker   = Faker::create();
     $comment = $faker->sentence(6);
 
     // Envoi d'une modification de statut (favori ou signalement) au controller

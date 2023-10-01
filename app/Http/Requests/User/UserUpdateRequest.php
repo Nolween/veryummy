@@ -6,7 +6,6 @@ use App\Rules\CheckCurrentPassword;
 use App\Rules\PasswordRepetition;
 use App\Rules\UserMailExists;
 use App\Rules\UserNameExists;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
@@ -28,11 +27,11 @@ class UserUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['email', new UserMailExists],
-            'name' => ['string', new UserNameExists],
+            'email'            => ['email', new UserMailExists],
+            'name'             => ['string', new UserNameExists],
             'current-password' => ['string', 'required', new CheckCurrentPassword],
-            'password' => ['string', 'nullable', new PasswordRepetition],
-            'confirmation' => ['string', 'nullable'],
+            'password'         => ['string', 'nullable', new PasswordRepetition],
+            'confirmation'     => ['string', 'nullable'],
         ];
     }
 }

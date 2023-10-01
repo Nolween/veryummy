@@ -28,7 +28,7 @@ class RecipeTypeSeeder extends Seeder
         ];
 
         foreach ($source as $item) {
-            $role = new RecipeType(['name' => $item['name']]);
+            $role             = new RecipeType(['name' => $item['name']]);
             $role->timestamps = false;
             $role->save();
         }

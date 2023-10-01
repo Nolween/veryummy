@@ -21,8 +21,6 @@ use Illuminate\Support\Facades\Hash;
 
 class UserRepository
 {
-
-
     public function updateUser(UserUpdateRequest $request): bool
     {
         $user = Auth::user();
@@ -43,7 +41,7 @@ class UserRepository
                 $userUpdate->name = $request->name;
             }
             // Modification du mot de passe
-            if (!empty($request->password)) {
+            if (! empty($request->password)) {
                 $userUpdate->password = Hash::make($request->password);
             }
             $userUpdate->save();
@@ -55,6 +53,7 @@ class UserRepository
         } // Si erreur dans la transaction
         catch (Exception $e) {
             DB::rollback();
+
             return false;
         }
     }
@@ -72,12 +71,12 @@ class UserRepository
             $userDelete = User::findOrFail($user->id);
             // Récupération des recettes de l'utilisateur, avec pour chacune son compte d'opinion en favori
             $recipesWithFavoriteCount = Recipe::whereBelongsTo($userDelete)
-                                              ->withCount([
-                                                  'opinions' => function (Builder $query) {
-                                                      $query->where('is_favorite', '=', true);
-                                                  },
-                                              ])
-                                              ->get();
+                ->withCount([
+                    'opinions' => function (Builder $query) {
+                        $query->where('is_favorite', '=', true);
+                    },
+                ])
+                ->get();
             // Filtre des recettes qui ne sont pas en favori
             $recipesWithoutFavorite = $recipesWithFavoriteCount->filter(function ($value) {
                 return $value->opinions_count === 0;
@@ -104,13 +103,11 @@ class UserRepository
 
             return false;
         }
+
         return true;
     }
 
-
     /**
-     * @param int $type
-     * @param UserIndexRequest $request
      * @return LengthAwarePaginator<User>
      */
     public function getUsers(int $type, UserIndexRequest $request): LengthAwarePaginator
@@ -123,37 +120,37 @@ class UserRepository
             case 0:
                 // Tableau des id de commentaires ayant des signalements
                 $reportedOpinions = RecipeOpinion::having('reports_count', '>', 0)
-                                                 ->with('reports')
-                                                 ->withCount('reports')->pluck('id');
+                    ->with('reports')
+                    ->withCount('reports')->pluck('id');
 
                 $users = $users->having('reported_opinions_by_other_count', '>', 0)
-                               ->with([
-                                   'opinions' => function ($query) use ($reportedOpinions) {
-                                       $query->whereIn('id', $reportedOpinions);
-                                   },
-                               ])
-                               ->withCount('reportedOpinionsByOther');
+                    ->with([
+                        'opinions' => function ($query) use ($reportedOpinions) {
+                            $query->whereIn('id', $reportedOpinions);
+                        },
+                    ])
+                    ->withCount('reportedOpinionsByOther');
                 // Si recherche
-                if (!empty($request->search)) {
+                if (! empty($request->search)) {
                     $users->where('name', 'like', "%{$request->search}%");
                 }
                 break;
-            // Tous les utilisateurs
+                // Tous les utilisateurs
             case 1:
                 // Tableau des id de commentaires ayant des signalements
                 $reportedOpinions = RecipeOpinion::having('reports_count', '>', 0)
-                                                 ->with('reports')
-                                                 ->withCount('reports')->pluck('id');
+                    ->with('reports')
+                    ->withCount('reports')->pluck('id');
 
                 $users = $users->where('is_banned', 0)
-                               ->with([
-                                   'opinions' => function ($query) use ($reportedOpinions) {
-                                       $query->whereIn('id', $reportedOpinions);
-                                   },
-                               ])
-                               ->withCount('reportedOpinionsByOther');
+                    ->with([
+                        'opinions' => function ($query) use ($reportedOpinions) {
+                            $query->whereIn('id', $reportedOpinions);
+                        },
+                    ])
+                    ->withCount('reportedOpinionsByOther');
                 // Si recherche
-                if (!empty($request->search)) {
+                if (! empty($request->search)) {
                     $users->where('name', 'like', "%{$request->search}%");
                 }
                 break;
@@ -181,12 +178,12 @@ class UserRepository
 
             // Récupération des recettes de l'utilisateur, avec pour chacune son compte d'opinion en favori
             $recipesWithFavoriteCount = Recipe::whereBelongsTo($userDelete)
-                                              ->withCount([
-                                                  'opinions' => function (Builder $query) {
-                                                      $query->where('is_favorite', '=', true);
-                                                  },
-                                              ])
-                                              ->get();
+                ->withCount([
+                    'opinions' => function (Builder $query) {
+                        $query->where('is_favorite', '=', true);
+                    },
+                ])
+                ->get();
             // Filtre des recettes qui ne sont pas en favori
             $recipesWithoutFavorite = $recipesWithFavoriteCount->filter(function ($value) {
                 return $value->opinions_count === 0;
@@ -234,7 +231,7 @@ class UserRepository
                 $returnType = 1;
             } // Si suppression des signalements liés à ce commentaire
             else {
-                $test = OpinionReport::where('opinion_id', $request->opinionid)->delete();
+                $test       = OpinionReport::where('opinion_id', $request->opinionid)->delete();
                 $returnType = 2;
             }
 
@@ -249,5 +246,4 @@ class UserRepository
             return 0;
         }
     }
-
 }

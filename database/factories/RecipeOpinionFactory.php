@@ -21,14 +21,14 @@ class RecipeOpinionFactory extends Factory
         $isFavorite = fake()->boolean(30);
 
         return [
-            'user_id' => User::inRandomOrder()->first()->id,
-            'recipe_id' => Recipe::inRandomOrder()->first()->id,
-            'comment' => $this->faker->paragraph(),
-            'score' => rand(1, 5),
+            'user_id'     => User::inRandomOrder()->first()->id,
+            'recipe_id'   => Recipe::inRandomOrder()->first()->id,
+            'comment'     => $this->faker->paragraph(),
+            'score'       => rand(1, 5),
             'is_favorite' => $isFavorite,
             'is_reported' => $isFavorite == true ? false : fake()->boolean(30),
-            'created_at' => now(),
-            'updated_at' => now(),
+            'created_at'  => now(),
+            'updated_at'  => now(),
         ];
     }
 }

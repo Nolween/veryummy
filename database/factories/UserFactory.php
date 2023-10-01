@@ -19,13 +19,13 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'name'              => fake()->name(),
+            'email'             => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => bcrypt(fake()->password()),
-            'remember_token' => Str::random(10),
-            'is_banned' => false,
-            'role' => fake()->randomElement([User::ROLE_ADMIN, User::ROLE_USER]),
+            'password'          => bcrypt(fake()->password()),
+            'remember_token'    => Str::random(10),
+            'is_banned'         => false,
+            'role'              => fake()->randomElement([User::ROLE_ADMIN, User::ROLE_USER]),
         ];
     }
 

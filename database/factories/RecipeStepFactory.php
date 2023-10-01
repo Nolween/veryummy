@@ -20,8 +20,8 @@ class RecipeStepFactory extends Factory
         $recipeId = Recipe::inRandomOrder()->first()->id;
 
         return [
-            'recipe_id' => $recipeId,
-            'order' => Recipe::where('id', $recipeId)->get()->count() + 1,
+            'recipe_id'   => $recipeId,
+            'order'       => Recipe::where('id', $recipeId)->get()->count() + 1,
             'description' => fake()->text(),
         ];
     }

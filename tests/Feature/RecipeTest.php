@@ -18,10 +18,10 @@ test('access recipe card', function () {
     $randomRecipe = Recipe::where('is_accepted', true)->inRandomOrder()->first();
 
     // Si pas de recette trouvée
-    if (!$randomRecipe) {
+    if (! $randomRecipe) {
         $randomRecipe = Recipe::factory()->create(['is_accepted' => true]);
     }
-    $response = $this->get("/recipe/show/" . $randomRecipe->id);
+    $response = $this->get('/recipe/show/'.$randomRecipe->id);
     $response->assertStatus(200);
 
     //? Connexion avec utilisateur
@@ -47,17 +47,17 @@ test('change status recipe', function () {
     $randomRecipe = Recipe::where('is_accepted', true)->inRandomOrder()->first();
 
     // Si pas de recette trouvée
-    if (!$randomRecipe) {
+    if (! $randomRecipe) {
         $randomRecipe = Recipe::factory()->create(['is_accepted' => true]);
     }
-    $isFavorite = rand(0, 1);
+    $isFavorite      = rand(0, 1);
     $typeInformation = match ($isFavorite) {
         0 => 'Ingrédient signalé',
         1 => 'Ingrédient mis en favori'
     };
     $dataToSend = [
         'is_favorite' => $isFavorite,
-        'is_reported' => !$isFavorite,
+        'is_reported' => ! $isFavorite,
     ];
 
     $response = $this->actingAs($user)->post("/recipe/status/$randomRecipe->id", $dataToSend);
@@ -70,7 +70,7 @@ test('change status non existing recipe', function () {
 
     //? Modification d'une recette qui n'existe pas
 
-    $isFavorite = rand(0, 1);
+    $isFavorite      = rand(0, 1);
     $typeInformation = match ($isFavorite) {
         0 => 'Ingrédient signalé',
         1 => 'Ingrédient mis en favori'
@@ -80,7 +80,7 @@ test('change status non existing recipe', function () {
 
     $dataToSend = [
         'is_favorite' => $isFavorite,
-        'is_reported' => !$isFavorite,
+        'is_reported' => ! $isFavorite,
         'recipeid'    => $recipeid,
     ];
 
@@ -98,7 +98,7 @@ test('change status recipe with bad request', function () {
     $randomRecipe = Recipe::where('is_accepted', true)->inRandomOrder()->first();
 
     // Si pas de recette trouvée
-    if (!$randomRecipe) {
+    if (! $randomRecipe) {
         expect(false)->toBeTrue();
 
         return false;
@@ -117,7 +117,7 @@ test('change status recipe with guest', function () {
 
     // Déconnexion de l'utilisateur connecté
     Auth::logout();
-    $isFavorite = rand(0, 1);
+    $isFavorite      = rand(0, 1);
     $typeInformation = match ($isFavorite) {
         0 => 'Ingrédient signalé',
         1 => 'Ingrédient mis en favori'
@@ -125,14 +125,14 @@ test('change status recipe with guest', function () {
 
     $dataToSend = [
         'is_favorite' => $isFavorite,
-        'is_reported' => !$isFavorite,
+        'is_reported' => ! $isFavorite,
     ];
 
     // On prend une recette au hasard
     $randomRecipe = Recipe::where('is_accepted', true)->inRandomOrder()->first();
 
     // Si pas de recette trouvée
-    if (!$randomRecipe) {
+    if (! $randomRecipe) {
         expect(false)->toBeTrue();
 
         return false;
@@ -149,7 +149,7 @@ test('comment recipe', function () {
     $randomRecipe = Recipe::where('is_accepted', true)->inRandomOrder()->first();
 
     // Si pas de recette trouvée
-    if (!$randomRecipe) {
+    if (! $randomRecipe) {
         $randomRecipe = Recipe::factory()->create(['is_accepted' => true]);
     }
 
@@ -172,15 +172,15 @@ test('comment recipe with guest', function () {
     $randomRecipe = Recipe::where('is_accepted', true)->inRandomOrder()->first();
 
     // Si pas de recette trouvée
-    if (!$randomRecipe) {
+    if (! $randomRecipe) {
         expect(false)->toBeTrue();
 
         return false;
     }
 
     // Création d'une phrase au hasard
-    $faker = Faker::create();
-    $comment = $faker->sentence(6);
+    $faker      = Faker::create();
+    $comment    = $faker->sentence(6);
     $dataToSend = [
         'score'   => rand(1, 5),
         'comment' => $comment,
@@ -194,8 +194,8 @@ test('comment non existing recipe', function () {
     //? Recette inexistante
 
     // Création d'une phrase au hasard
-    $faker = Faker::create();
-    $comment = $faker->sentence(6);
+    $faker      = Faker::create();
+    $comment    = $faker->sentence(6);
     $dataToSend = [
         'score'   => rand(1, 5),
         'comment' => $comment,
@@ -219,15 +219,15 @@ test('comment recipe with bad scores', function () {
     $randomRecipe = Recipe::where('is_accepted', true)->inRandomOrder()->first();
 
     // Si pas de recette trouvée
-    if (!$randomRecipe) {
+    if (! $randomRecipe) {
         expect(false)->toBeTrue();
 
         return false;
     }
 
     // Création d'une phrase au hasard
-    $faker = Faker::create();
-    $comment = $faker->sentence(6);
+    $faker      = Faker::create();
+    $comment    = $faker->sentence(6);
     $dataToSend = [
         'score'   => 0,
         'comment' => $comment,
@@ -257,7 +257,7 @@ test('empty comment recipe', function () {
     $randomRecipe = Recipe::where('is_accepted', true)->inRandomOrder()->first();
 
     // Si pas de recette trouvée
-    if (!$randomRecipe) {
+    if (! $randomRecipe) {
         expect(false)->toBeTrue();
 
         return false;
@@ -275,7 +275,7 @@ test('empty opinion', function () {
     $randomRecipeOpinion = RecipeOpinion::where('user_id', $user->id)->with('recipe')->inRandomOrder()->first();
 
     // Si pas de recette trouvée
-    if (!$randomRecipeOpinion) {
+    if (! $randomRecipeOpinion) {
         $randomRecipeOpinion = RecipeOpinion::factory()->create(['user_id' => $user->id]);
     }
 
@@ -291,7 +291,7 @@ test('empty opinion with guest', function () {
     $randomRecipeOpinion = RecipeOpinion::with('recipe')->inRandomOrder()->first();
 
     // Si pas de recette trouvée
-    if (!$randomRecipeOpinion) {
+    if (! $randomRecipeOpinion) {
         $randomRecipeOpinion = RecipeOpinion::factory()->create();
     }
 
@@ -316,7 +316,7 @@ test('empty non existing opinion', function () {
     //? Pas d'opinion pour cette recette et cet utilisateur
 
     // Il suffit de prendre une recette de l'utilisateur car il ne peut pas avoir d'opinion dessus
-    $recipe = Recipe::factory()->create(['user_id' => $user->id]);
+    $recipe   = Recipe::factory()->create(['user_id' => $user->id]);
     $response = $this->actingAs($user)->patch("/recipe/opinion/empty/$recipe->id");
     $response->assertStatus(404);
 });
@@ -326,9 +326,9 @@ test('access my recipes', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
-    $name = '';
+    $name   = '';
     $typeId = RecipeType::inRandomOrder()->first()->id;
-    $diet = rand(1, 5);
+    $diet   = rand(1, 5);
 
     $response = $this->actingAs($user)->get("/my-recipes?name=$name&typeId=$typeId&diet=$diet");
 
@@ -340,8 +340,8 @@ test('access my recipes with false type', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
-    $typeId = rand(RecipeType::orderBy('id', 'DESC')->first()->id + 1, 999);
-    $diet = rand(1, 5);
+    $typeId   = rand(RecipeType::orderBy('id', 'DESC')->first()->id + 1, 999);
+    $diet     = rand(1, 5);
     $response = $this->actingAs($user)->get("/my-recipes?diet=$diet&typeId=$typeId");
 
     $response->assertSessionHasErrors('typeId');
@@ -352,8 +352,8 @@ test('access my recipes with false diet', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
-    $typeId = RecipeType::inRandomOrder()->first()->id;
-    $diet = rand(7, 99);
+    $typeId   = RecipeType::inRandomOrder()->first()->id;
+    $diet     = rand(7, 99);
     $response = $this->actingAs($user)->get("/my-recipes?diet=$diet&typeId=$typeId");
     $response->assertSessionHasErrors('diet');
 });
@@ -363,9 +363,9 @@ test('access my notebook', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
-    $name = '';
+    $name   = '';
     $typeId = RecipeType::inRandomOrder()->first()->id;
-    $diet = rand(1, 5);
+    $diet   = rand(1, 5);
 
     $response = $this->actingAs($user)->get("/my-notebook?name=$name&typeId=$typeId&diet=$diet");
 
@@ -377,8 +377,8 @@ test('access my notebook with false type', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
-    $typeId = rand(RecipeType::orderBy('id', 'DESC')->first()->id + 1, 999);
-    $diet = rand(1, 5);
+    $typeId   = rand(RecipeType::orderBy('id', 'DESC')->first()->id + 1, 999);
+    $diet     = rand(1, 5);
     $response = $this->actingAs($user)->get("/my-notebook?diet=$diet&typeId=$typeId");
 
     // $response->dumpSession();
@@ -390,8 +390,8 @@ test('access my notebook with false diet', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
-    $typeId = RecipeType::inRandomOrder()->first()->id;
-    $diet = rand(7, 99);
+    $typeId   = RecipeType::inRandomOrder()->first()->id;
+    $diet     = rand(7, 99);
     $response = $this->actingAs($user)->get("/my-notebook?diet=$diet&typeId=$typeId");
     $response->assertSessionHasErrors('diet');
 });
@@ -418,12 +418,12 @@ test('create recipe', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
-    $faker = Faker::create();
+    $faker   = Faker::create();
     $newName = $faker->sentence(6);
 
     $ingredientCount = rand(1, 10);
-    $stepCount = rand(1, 10);
-    $dataToSend = [
+    $stepCount       = rand(1, 10);
+    $dataToSend      = [
         'nom'             => $newName,
         'preparation'     => rand(5, 60),
         'cuisson'         => rand(5, 60),
@@ -435,7 +435,7 @@ test('create recipe', function () {
 
     // Ajout des ingrédients
     for ($i = 0; $i < $ingredientCount; $i++) {
-        $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+        $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
@@ -446,8 +446,8 @@ test('create recipe', function () {
 
     // Ajout des étapes
     for ($i = 0; $i < $stepCount; $i++) {
-        $faker = Faker::create();
-        $step = $faker->sentence(6);
+        $faker                 = Faker::create();
+        $step                  = $faker->sentence(6);
         $dataToSend['steps'][] = [
             'stepDescription' => $step,
         ];
@@ -464,8 +464,8 @@ test('create recipe with non existing type', function () {
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
     $ingredientCount = rand(1, 10);
-    $stepCount = rand(1, 10);
-    $dataToSend = [
+    $stepCount       = rand(1, 10);
+    $dataToSend      = [
         'nom'             => 'Test Recette 1',
         'preparation'     => rand(5, 60),
         'cuisson'         => rand(5, 60),
@@ -477,7 +477,7 @@ test('create recipe with non existing type', function () {
 
     // Ajout des ingrédients
     for ($i = 0; $i < $ingredientCount; $i++) {
-        $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+        $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
@@ -488,8 +488,8 @@ test('create recipe with non existing type', function () {
 
     // Ajout des étapes
     for ($i = 0; $i < $stepCount; $i++) {
-        $faker = Faker::create();
-        $step = $faker->sentence(6);
+        $faker                 = Faker::create();
+        $step                  = $faker->sentence(6);
         $dataToSend['steps'][] = [
             'stepDescription' => $step,
         ];
@@ -506,8 +506,8 @@ test('create recipe with non existing ingredient', function () {
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
     $ingredientCount = rand(1, 10);
-    $stepCount = rand(1, 10);
-    $dataToSend = [
+    $stepCount       = rand(1, 10);
+    $dataToSend      = [
         'nom'             => 'Test Recette 1',
         'preparation'     => rand(5, 60),
         'cuisson'         => rand(5, 60),
@@ -519,7 +519,7 @@ test('create recipe with non existing ingredient', function () {
 
     // Ajout des ingrédients
     for ($i = 0; $i < $ingredientCount; $i++) {
-        $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+        $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
@@ -529,7 +529,7 @@ test('create recipe with non existing ingredient', function () {
     }
 
     // Ajout d'un ingrédient faussé
-    $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+    $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
     $dataToSend['ingredients'][] = [
         'ingredientId'       => Ingredient::orderBy('id', 'DESC')->first()->id + 1,
         'ingredientName'     => $randomIngredient->name,
@@ -539,8 +539,8 @@ test('create recipe with non existing ingredient', function () {
 
     // Ajout des étapes
     for ($i = 0; $i < $stepCount; $i++) {
-        $faker = Faker::create();
-        $step = $faker->sentence(6);
+        $faker                 = Faker::create();
+        $step                  = $faker->sentence(6);
         $dataToSend['steps'][] = [
             'stepDescription' => $step,
         ];
@@ -557,8 +557,8 @@ test('create recipe with non existing unit', function () {
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
     $ingredientCount = rand(1, 10);
-    $stepCount = rand(1, 10);
-    $dataToSend = [
+    $stepCount       = rand(1, 10);
+    $dataToSend      = [
         'nom'             => 'Test Recette 1',
         'preparation'     => rand(5, 60),
         'cuisson'         => rand(5, 60),
@@ -570,7 +570,7 @@ test('create recipe with non existing unit', function () {
 
     // Ajout des ingrédients
     for ($i = 0; $i < $ingredientCount; $i++) {
-        $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+        $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
@@ -580,7 +580,7 @@ test('create recipe with non existing unit', function () {
     }
 
     // Ajout d'un ingrédient avec une fausse unité
-    $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+    $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
     $dataToSend['ingredients'][] = [
         'ingredientId'       => Ingredient::inRandomOrder()->first()->id,
         'ingredientName'     => $randomIngredient->name,
@@ -590,8 +590,8 @@ test('create recipe with non existing unit', function () {
 
     // Ajout des étapes
     for ($i = 0; $i < $stepCount; $i++) {
-        $faker = Faker::create();
-        $step = $faker->sentence(6);
+        $faker                 = Faker::create();
+        $step                  = $faker->sentence(6);
         $dataToSend['steps'][] = [
             'stepDescription' => $step,
         ];
@@ -608,7 +608,7 @@ test('create recipe with bad times', function () {
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
     $ingredientCount = rand(1, 10);
-    $stepCount = rand(1, 10);
+    $stepCount       = rand(1, 10);
 
     //? Temps de préapation négatif
     $dataToSend = [
@@ -623,7 +623,7 @@ test('create recipe with bad times', function () {
 
     // Ajout des ingrédients
     for ($i = 0; $i < $ingredientCount; $i++) {
-        $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+        $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
@@ -634,8 +634,8 @@ test('create recipe with bad times', function () {
 
     // Ajout des étapes
     for ($i = 0; $i < $stepCount; $i++) {
-        $faker = Faker::create();
-        $step = $faker->sentence(6);
+        $faker                 = Faker::create();
+        $step                  = $faker->sentence(6);
         $dataToSend['steps'][] = [
             'stepDescription' => $step,
         ];
@@ -653,7 +653,7 @@ test('create recipe with bad times', function () {
 
     //? Temps de cuisson négatif
     $dataToSend['preparation'] = rand(1, 60);
-    $dataToSend['cuisson'] = -10;
+    $dataToSend['cuisson']     = -10;
 
     // Envoi vers la route
     $response = $this->actingAs($user)->put('/recipe/create', $dataToSend);
@@ -673,7 +673,7 @@ test('create recipe with bad servings', function () {
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
     $ingredientCount = rand(1, 10);
-    $stepCount = rand(1, 10);
+    $stepCount       = rand(1, 10);
 
     //? Temps de préapation négatif
     $dataToSend = [
@@ -688,7 +688,7 @@ test('create recipe with bad servings', function () {
 
     // Ajout des ingrédients
     for ($i = 0; $i < $ingredientCount; $i++) {
-        $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+        $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
@@ -699,8 +699,8 @@ test('create recipe with bad servings', function () {
 
     // Ajout des étapes
     for ($i = 0; $i < $stepCount; $i++) {
-        $faker = Faker::create();
-        $step = $faker->sentence(6);
+        $faker                 = Faker::create();
+        $step                  = $faker->sentence(6);
         $dataToSend['steps'][] = [
             'stepDescription' => $step,
         ];
@@ -724,7 +724,7 @@ test('create recipe with short name', function () {
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
     $ingredientCount = rand(1, 10);
-    $stepCount = rand(1, 10);
+    $stepCount       = rand(1, 10);
 
     //? Temps de préapation négatif
     $dataToSend = [
@@ -739,7 +739,7 @@ test('create recipe with short name', function () {
 
     // Ajout des ingrédients
     for ($i = 0; $i < $ingredientCount; $i++) {
-        $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+        $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
@@ -750,8 +750,8 @@ test('create recipe with short name', function () {
 
     // Ajout des étapes
     for ($i = 0; $i < $stepCount; $i++) {
-        $faker = Faker::create();
-        $step = $faker->sentence(6);
+        $faker                 = Faker::create();
+        $step                  = $faker->sentence(6);
         $dataToSend['steps'][] = [
             'stepDescription' => $step,
         ];
@@ -776,7 +776,7 @@ test('create recipe with bad file', function () {
     );
 
     $ingredientCount = rand(1, 10);
-    $stepCount = rand(1, 10);
+    $stepCount       = rand(1, 10);
 
     //? Temps de préapation négatif
     $dataToSend = [
@@ -792,7 +792,7 @@ test('create recipe with bad file', function () {
 
     // Ajout des ingrédients
     for ($i = 0; $i < $ingredientCount; $i++) {
-        $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+        $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
@@ -803,8 +803,8 @@ test('create recipe with bad file', function () {
 
     // Ajout des étapes
     for ($i = 0; $i < $stepCount; $i++) {
-        $faker = Faker::create();
-        $step = $faker->sentence(6);
+        $faker                 = Faker::create();
+        $step                  = $faker->sentence(6);
         $dataToSend['steps'][] = [
             'stepDescription' => $step,
         ];
@@ -822,15 +822,15 @@ test('update recipe', function () {
 
     // On prend une recette de l'utilisateur
     $recipe = Recipe::whereBelongsTo($user)->inRandomOrder()->first();
-    if (!$recipe) {
+    if (! $recipe) {
         $recipe = Recipe::factory()->create(['user_id' => $user->id]);
     }
 
-    $faker = Faker::create();
-    $newName = $faker->sentence(6);
+    $faker           = Faker::create();
+    $newName         = $faker->sentence(6);
     $ingredientCount = rand(1, 10);
-    $stepCount = rand(1, 10);
-    $dataToSend = [
+    $stepCount       = rand(1, 10);
+    $dataToSend      = [
         'recipeid'        => $recipe->id,
         'nom'             => $newName,
         'preparation'     => rand(5, 60),
@@ -843,7 +843,7 @@ test('update recipe', function () {
 
     // Ajout des ingrédients
     for ($i = 0; $i < $ingredientCount; $i++) {
-        $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+        $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
@@ -854,8 +854,8 @@ test('update recipe', function () {
 
     // Ajout des étapes
     for ($i = 0; $i < $stepCount; $i++) {
-        $faker = Faker::create();
-        $step = $faker->sentence(6);
+        $faker                 = Faker::create();
+        $step                  = $faker->sentence(6);
         $dataToSend['steps'][] = [
             'stepDescription' => $step,
         ];
@@ -875,11 +875,11 @@ test('update recipe with bad owner', function () {
     // On prend une recette de l'utilisateur
     $recipe = Recipe::where('user_id', '!=', $user)->inRandomOrder()->first();
 
-    $faker = Faker::create();
-    $newName = $faker->sentence(6);
+    $faker           = Faker::create();
+    $newName         = $faker->sentence(6);
     $ingredientCount = rand(1, 10);
-    $stepCount = rand(1, 10);
-    $dataToSend = [
+    $stepCount       = rand(1, 10);
+    $dataToSend      = [
         'recipeid'        => $recipe->id,
         'nom'             => $newName,
         'preparation'     => rand(5, 60),
@@ -892,7 +892,7 @@ test('update recipe with bad owner', function () {
 
     // Ajout des ingrédients
     for ($i = 0; $i < $ingredientCount; $i++) {
-        $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+        $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
@@ -903,8 +903,8 @@ test('update recipe with bad owner', function () {
 
     // Ajout des étapes
     for ($i = 0; $i < $stepCount; $i++) {
-        $faker = Faker::create();
-        $step = $faker->sentence(6);
+        $faker                 = Faker::create();
+        $step                  = $faker->sentence(6);
         $dataToSend['steps'][] = [
             'stepDescription' => $step,
         ];
@@ -923,14 +923,14 @@ test('update recipe with bad times', function () {
 
     // On prend une recette de l'utilisateur
     $recipe = Recipe::whereBelongsTo($user)->inRandomOrder()->first();
-    if (!$recipe) {
+    if (! $recipe) {
         $recipe = Recipe::factory()->create(['user_id' => $user->id]);
     }
 
-    $faker = Faker::create();
-    $newName = $faker->sentence(6);
+    $faker           = Faker::create();
+    $newName         = $faker->sentence(6);
     $ingredientCount = rand(1, 10);
-    $stepCount = rand(1, 10);
+    $stepCount       = rand(1, 10);
 
     //? Temps de préparation négatif
     $dataToSend = [
@@ -946,7 +946,7 @@ test('update recipe with bad times', function () {
 
     // Ajout des ingrédients
     for ($i = 0; $i < $ingredientCount; $i++) {
-        $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+        $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
@@ -957,8 +957,8 @@ test('update recipe with bad times', function () {
 
     // Ajout des étapes
     for ($i = 0; $i < $stepCount; $i++) {
-        $faker = Faker::create();
-        $step = $faker->sentence(6);
+        $faker                 = Faker::create();
+        $step                  = $faker->sentence(6);
         $dataToSend['steps'][] = [
             'stepDescription' => $step,
         ];
@@ -970,18 +970,18 @@ test('update recipe with bad times', function () {
 
     //? Temps de préparation exessif
     $dataToSend['preparation'] = 2000;
-    $response = $this->actingAs($user)->post('/recipe/update', $dataToSend);
+    $response                  = $this->actingAs($user)->post('/recipe/update', $dataToSend);
     $response->assertStatus(302)->assertSessionHasErrors('preparation')->assertSessionMissing('updateSuccess');
 
     //? Temps de cuisson négatif
     $dataToSend['preparation'] = rand(1, 60);
-    $dataToSend['cuisson'] = -5;
-    $response = $this->actingAs($user)->post('/recipe/update', $dataToSend);
+    $dataToSend['cuisson']     = -5;
+    $response                  = $this->actingAs($user)->post('/recipe/update', $dataToSend);
     $response->assertStatus(302)->assertSessionHasErrors('cuisson')->assertSessionMissing('updateSuccess');
 
     //? Temps de cuisson exessif
     $dataToSend['cuisson'] = 2000;
-    $response = $this->actingAs($user)->post('/recipe/update', $dataToSend);
+    $response              = $this->actingAs($user)->post('/recipe/update', $dataToSend);
     $response->assertStatus(302)->assertSessionHasErrors('cuisson')->assertSessionMissing('updateSuccess');
 });
 
@@ -992,14 +992,14 @@ test('update recipe with bad servings', function () {
 
     // On prend une recette de l'utilisateur
     $recipe = Recipe::whereBelongsTo($user)->inRandomOrder()->first();
-    if (!$recipe) {
+    if (! $recipe) {
         $recipe = Recipe::factory()->create(['user_id' => $user->id]);
     }
 
-    $faker = Faker::create();
-    $newName = $faker->sentence(6);
+    $faker           = Faker::create();
+    $newName         = $faker->sentence(6);
     $ingredientCount = rand(1, 10);
-    $stepCount = rand(1, 10);
+    $stepCount       = rand(1, 10);
 
     //? Temps de préparation négatif
     $dataToSend = [
@@ -1015,7 +1015,7 @@ test('update recipe with bad servings', function () {
 
     // Ajout des ingrédients
     for ($i = 0; $i < $ingredientCount; $i++) {
-        $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+        $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
@@ -1026,8 +1026,8 @@ test('update recipe with bad servings', function () {
 
     // Ajout des étapes
     for ($i = 0; $i < $stepCount; $i++) {
-        $faker = Faker::create();
-        $step = $faker->sentence(6);
+        $faker                 = Faker::create();
+        $step                  = $faker->sentence(6);
         $dataToSend['steps'][] = [
             'stepDescription' => $step,
         ];
@@ -1039,7 +1039,7 @@ test('update recipe with bad servings', function () {
 
     //? Personnes exessif
     $dataToSend['parts'] = 2000;
-    $response = $this->actingAs($user)->post('/recipe/update', $dataToSend);
+    $response            = $this->actingAs($user)->post('/recipe/update', $dataToSend);
     $response->assertStatus(302)->assertSessionHasErrors('parts')->assertSessionMissing('updateSuccess');
 });
 
@@ -1048,10 +1048,10 @@ test('update recipe with non existing recipe', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
-    $faker = Faker::create();
-    $newName = $faker->sentence(6);
+    $faker           = Faker::create();
+    $newName         = $faker->sentence(6);
     $ingredientCount = rand(1, 10);
-    $stepCount = rand(1, 10);
+    $stepCount       = rand(1, 10);
 
     //? Temps de préparation négatif
     $dataToSend = [
@@ -1067,7 +1067,7 @@ test('update recipe with non existing recipe', function () {
 
     // Ajout des ingrédients
     for ($i = 0; $i < $ingredientCount; $i++) {
-        $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+        $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
@@ -1078,8 +1078,8 @@ test('update recipe with non existing recipe', function () {
 
     // Ajout des étapes
     for ($i = 0; $i < $stepCount; $i++) {
-        $faker = Faker::create();
-        $step = $faker->sentence(6);
+        $faker                 = Faker::create();
+        $step                  = $faker->sentence(6);
         $dataToSend['steps'][] = [
             'stepDescription' => $step,
         ];
@@ -1097,11 +1097,11 @@ test('update recipe with short name', function () {
 
     // On prend une recette de l'utilisateur
     $recipe = Recipe::whereBelongsTo($user)->inRandomOrder()->first();
-    if (!$recipe) {
+    if (! $recipe) {
         $recipe = Recipe::factory()->create(['user_id' => $user->id]);
     }
     $ingredientCount = rand(1, 10);
-    $stepCount = rand(1, 10);
+    $stepCount       = rand(1, 10);
 
     //? Temps de préparation négatif
     $dataToSend = [
@@ -1117,7 +1117,7 @@ test('update recipe with short name', function () {
 
     // Ajout des ingrédients
     for ($i = 0; $i < $ingredientCount; $i++) {
-        $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+        $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
@@ -1128,8 +1128,8 @@ test('update recipe with short name', function () {
 
     // Ajout des étapes
     for ($i = 0; $i < $stepCount; $i++) {
-        $faker = Faker::create();
-        $step = $faker->sentence(6);
+        $faker                 = Faker::create();
+        $step                  = $faker->sentence(6);
         $dataToSend['steps'][] = [
             'stepDescription' => $step,
         ];
@@ -1145,16 +1145,16 @@ test('update recipe with bad file', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
-    $faker = Faker::create();
+    $faker   = Faker::create();
     $newName = $faker->sentence(6);
 
     // On prend une recette de l'utilisateur
     $recipe = Recipe::whereBelongsTo($user)->inRandomOrder()->first();
-    if (!$recipe) {
+    if (! $recipe) {
         $recipe = Recipe::factory()->create(['user_id' => $user->id]);
     }
     $ingredientCount = rand(1, 10);
-    $stepCount = rand(1, 10);
+    $stepCount       = rand(1, 10);
 
     // Insertion d'un mauvais fichier
     Storage::fake('avatars');
@@ -1180,7 +1180,7 @@ test('update recipe with bad file', function () {
 
     // Ajout des ingrédients
     for ($i = 0; $i < $ingredientCount; $i++) {
-        $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+        $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
@@ -1191,8 +1191,8 @@ test('update recipe with bad file', function () {
 
     // Ajout des étapes
     for ($i = 0; $i < $stepCount; $i++) {
-        $faker = Faker::create();
-        $step = $faker->sentence(6);
+        $faker                 = Faker::create();
+        $step                  = $faker->sentence(6);
         $dataToSend['steps'][] = [
             'stepDescription' => $step,
         ];
@@ -1208,16 +1208,16 @@ test('update recipe with bad unit', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
-    $faker = Faker::create();
+    $faker   = Faker::create();
     $newName = $faker->sentence(6);
 
     // On prend une recette de l'utilisateur
     $recipe = Recipe::whereBelongsTo($user)->inRandomOrder()->first();
-    if (!$recipe) {
+    if (! $recipe) {
         $recipe = Recipe::factory()->create(['user_id' => $user->id]);
     }
     $ingredientCount = rand(1, 10);
-    $stepCount = rand(1, 10);
+    $stepCount       = rand(1, 10);
 
     //? Temps de préparation négatif
     $dataToSend = [
@@ -1233,7 +1233,7 @@ test('update recipe with bad unit', function () {
 
     // Ajout des ingrédients
     for ($i = 0; $i < $ingredientCount; $i++) {
-        $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+        $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
@@ -1244,8 +1244,8 @@ test('update recipe with bad unit', function () {
 
     // Ajout des étapes
     for ($i = 0; $i < $stepCount; $i++) {
-        $faker = Faker::create();
-        $step = $faker->sentence(6);
+        $faker                 = Faker::create();
+        $step                  = $faker->sentence(6);
         $dataToSend['steps'][] = [
             'stepDescription' => $step,
         ];
@@ -1261,16 +1261,16 @@ test('update recipe with non existing ingredient', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
-    $faker = Faker::create();
+    $faker   = Faker::create();
     $newName = $faker->sentence(6);
 
     // On prend une recette de l'utilisateur
     $recipe = Recipe::whereBelongsTo($user)->inRandomOrder()->first();
-    if (!$recipe) {
+    if (! $recipe) {
         $recipe = Recipe::factory()->create(['user_id' => $user->id]);
     }
     $ingredientCount = rand(1, 10);
-    $stepCount = rand(1, 10);
+    $stepCount       = rand(1, 10);
 
     //? Temps de préparation négatif
     $dataToSend = [
@@ -1286,7 +1286,7 @@ test('update recipe with non existing ingredient', function () {
 
     // Ajout des ingrédients
     for ($i = 0; $i < $ingredientCount; $i++) {
-        $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+        $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
@@ -1305,8 +1305,8 @@ test('update recipe with non existing ingredient', function () {
 
     // Ajout des étapes
     for ($i = 0; $i < $stepCount; $i++) {
-        $faker = Faker::create();
-        $step = $faker->sentence(6);
+        $faker                 = Faker::create();
+        $step                  = $faker->sentence(6);
         $dataToSend['steps'][] = [
             'stepDescription' => $step,
         ];
@@ -1322,17 +1322,17 @@ test('update recipe with non existing unit', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
-    $faker = Faker::create();
+    $faker   = Faker::create();
     $newName = $faker->sentence(6);
 
     // On prend une recette de l'utilisateur
     $recipe = Recipe::whereBelongsTo($user)->inRandomOrder()->first();
-    if (!$recipe) {
+    if (! $recipe) {
         $recipe = Recipe::factory()->create(['user_id' => $user->id]);
     }
 
     $ingredientCount = rand(1, 10);
-    $stepCount = rand(1, 10);
+    $stepCount       = rand(1, 10);
 
     //? Temps de préparation négatif
     $dataToSend = [
@@ -1348,7 +1348,7 @@ test('update recipe with non existing unit', function () {
 
     // Ajout des ingrédients
     for ($i = 0; $i < $ingredientCount; $i++) {
-        $randomIngredient = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
+        $randomIngredient            = Ingredient::where('is_accepted', true)->inRandomOrder()->first();
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
@@ -1367,8 +1367,8 @@ test('update recipe with non existing unit', function () {
 
     // Ajout des étapes
     for ($i = 0; $i < $stepCount; $i++) {
-        $faker = Faker::create();
-        $step = $faker->sentence(6);
+        $faker                 = Faker::create();
+        $step                  = $faker->sentence(6);
         $dataToSend['steps'][] = [
             'stepDescription' => $step,
         ];

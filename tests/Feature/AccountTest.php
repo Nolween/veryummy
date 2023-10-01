@@ -4,23 +4,21 @@ use App\Models\RecipeOpinion;
 use App\Models\User;
 use Faker\Factory as Faker;
 
-
-
 test('access account page', function () {
     //? Accès avec un compte valide
     // On sélectionne un utilisateur au hasard qui n'est pas banni
-    $user = User::where('is_banned', false)->inRandomOrder()->first();
+    $user     = User::where('is_banned', false)->inRandomOrder()->first();
     $response = $this->actingAs($user)->get('/my-account');
     $response->assertStatus(200);
 
     // Ya t-il un utilisateur banni dans la DB?
     $userToDelete = false;
-    $user = User::where('is_banned', true)->inRandomOrder()->first();
+    $user         = User::where('is_banned', true)->inRandomOrder()->first();
 
     // Si pas d'utilisateur banni
-    if (!$user) {
+    if (! $user) {
         // Initialisation d'un compte banni
-        $user = initialize_user(true, false);
+        $user         = initialize_user(true, false);
         $userToDelete = true;
     }
 
@@ -190,19 +188,19 @@ test('access admin users list', function () {
     $user = User::where('is_banned', false)->where('role', User::ROLE_ADMIN)->inRandomOrder()->first();
 
     // Si pas d'utilisateur
-    if (!$user) {
+    if (! $user) {
         // Création d'un admin
-        $faker = Faker::create();
-        $newName = $faker->firstName() . ' ' . $faker->lastName();
-        $mail = $faker->email();
-        $user = User::factory()->create(
+        $faker   = Faker::create();
+        $newName = $faker->firstName().' '.$faker->lastName();
+        $mail    = $faker->email();
+        $user    = User::factory()->create(
             [
                 'name'              => $newName,
                 'email'             => $mail,
                 'password'          => bcrypt('123456'),
                 'role'              => User::ROLE_ADMIN,
                 'is_banned'         => false,
-                'email_verified_at' => now()
+                'email_verified_at' => now(),
             ]
         );
     }
@@ -213,12 +211,12 @@ test('access admin users list', function () {
 
     //? Utilisateur non admin
     $nonAdminUser = initialize_user(false, false);
-    $typeList = rand(0, 1);
-    $response = $this->actingAs($nonAdminUser)->get("/admin/users/index/$typeList");
+    $typeList     = rand(0, 1);
+    $response     = $this->actingAs($nonAdminUser)->get("/admin/users/index/$typeList");
     $response->assertStatus(302)->assertSessionHasErrors('badUser');
 
     //? Utilisateur banni
-    $nonAdminUser->role = User::ROLE_ADMIN;
+    $nonAdminUser->role      = User::ROLE_ADMIN;
     $nonAdminUser->is_banned = true;
     $nonAdminUser->save();
     $response = $this->actingAs($nonAdminUser)->get("/admin/users/index/$typeList");
@@ -226,7 +224,7 @@ test('access admin users list', function () {
 });
 
 test('access admin users list with bad type', function () {
-    $user = initialize_user(false, true);
+    $user     = initialize_user(false, true);
     $typeList = 500;
     $response = $this->actingAs($user)->get("/admin/users/index/$typeList");
     $response->assertStatus(302)->assertSessionHasErrors('badType');
@@ -259,7 +257,7 @@ test('ban inexisting user in list', function () {
 
 test('ban admin in list', function () {
     //? Ban Valide
-    $adminUser = initialize_user(false, true);
+    $adminUser  = initialize_user(false, true);
     $adminToBan = initialize_user(false, true);
 
     $dataToSend = [
@@ -273,9 +271,9 @@ test('ban admin in list', function () {
 test('moderate opinion', function () {
     //? Ban Valide
     $adminUser = initialize_user(false, true);
-    $faker = Faker::create();
-    $newName = $faker->firstName() . ' ' . $faker->lastName();
-    $mail = $faker->email();
+    $faker     = Faker::create();
+    $newName   = $faker->firstName().' '.$faker->lastName();
+    $mail      = $faker->email();
 
     // Création d'un utilisateur avec des opinions sur des recettes
     $userOpinionToModerate = User::factory()->hasOpinions(3)->create(
@@ -285,7 +283,7 @@ test('moderate opinion', function () {
             'password'          => bcrypt('123456'),
             'role'              => User::ROLE_USER,
             'is_banned'         => false,
-            'email_verified_at' => now()
+            'email_verified_at' => now(),
         ]
     );
 
@@ -301,9 +299,9 @@ test('moderate opinion', function () {
 test('moderate opinion with bad data', function () {
     //? Ban Valide
     $adminUser = initialize_user(false, true);
-    $faker = Faker::create();
-    $newName = $faker->firstName() . ' ' . $faker->lastName();
-    $mail = $faker->email();
+    $faker     = Faker::create();
+    $newName   = $faker->firstName().' '.$faker->lastName();
+    $mail      = $faker->email();
 
     // Création d'un utilisateur avec des opinions sur des recettes
     $userOpinionToModerate = User::factory()->hasOpinions(3)->create(
@@ -313,7 +311,7 @@ test('moderate opinion with bad data', function () {
             'password'          => bcrypt('123456'),
             'role'              => User::ROLE_USER,
             'is_banned'         => false,
-            'email_verified_at' => now()
+            'email_verified_at' => now(),
         ]
     );
 

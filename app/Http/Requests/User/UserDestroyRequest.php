@@ -3,7 +3,6 @@
 namespace App\Http\Requests\User;
 
 use App\Rules\CheckCurrentPassword;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 

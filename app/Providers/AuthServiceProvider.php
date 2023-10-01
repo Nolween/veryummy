@@ -31,7 +31,7 @@ class AuthServiceProvider extends ServiceProvider
             return $user->role === User::ROLE_ADMIN;
         });
         Gate::define('authorized-user', function (User $user) {
-            return !$user->is_banned;
+            return ! $user->is_banned;
         });
     }
 }

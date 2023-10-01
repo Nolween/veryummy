@@ -2,13 +2,12 @@
 
 namespace App\Http\Requests\Recipe;
 
-use App\Models\Recipe;
 use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class RecipeEmptyOpiniontRequest extends FormRequest
+class RecipeEmptyOpinionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

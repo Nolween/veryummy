@@ -4,7 +4,6 @@ namespace App\Http\Requests\Recipe;
 
 use App\Rules\DietExists;
 use App\Rules\ValidateRecipeTypeId;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
@@ -26,9 +25,9 @@ class RecipeNoteBookIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['string', 'nullable'],
+            'name'   => ['string', 'nullable'],
             'typeId' => ['integer', 'nullable', new ValidateRecipeTypeId()],
-            'diet' => ['integer', 'nullable', new DietExists],
+            'diet'   => ['integer', 'nullable', new DietExists],
         ];
     }
 }

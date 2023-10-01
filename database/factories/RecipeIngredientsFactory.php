@@ -21,12 +21,13 @@ class RecipeIngredientsFactory extends Factory
     {
 
         $recipeId = Recipe::inRandomOrder()->first()->id;
+
         return [
-            'recipe_id' => $recipeId,
-            'unit_id' => Unit::inRandomOrder()->first()->id,
+            'recipe_id'     => $recipeId,
+            'unit_id'       => Unit::inRandomOrder()->first()->id,
             'ingredient_id' => Ingredient::inRandomOrder()->first()->id,
-            'quantity' => rand(1, 5),
-            'order' => Recipe::where('id', $recipeId)->get()->count() + 1,
+            'quantity'      => rand(1, 5),
+            'order'         => Recipe::where('id', $recipeId)->get()->count() + 1,
         ];
     }
 }

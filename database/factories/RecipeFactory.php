@@ -17,8 +17,6 @@ use Illuminate\Support\Str;
  */
 class RecipeFactory extends Factory
 {
-
-
     /**
      * Define the model's default state.
      *
@@ -26,35 +24,35 @@ class RecipeFactory extends Factory
      */
     public function definition()
     {
-        $filename = fake()->randomNumber(6) . '-' . Str::slug(fake()->words(4, true), '-');
+        $filename = fake()->randomNumber(6).'-'.Str::slug(fake()->words(4, true), '-');
 
         // Dernier id de question
         // Génération d'une image PNG (AVIF Pas disponible) dans le dossier big
         $randomHex = substr(fake()->hexColor(), 1);
         Storage::disk('public')->put(
-            'img/full/' . $filename . '.png',
-            file_get_contents('https://dummyimage.com/640x480/' . $randomHex . '.png?text=' . $filename)
+            'img/full/'.$filename.'.png',
+            file_get_contents('https://dummyimage.com/640x480/'.$randomHex.'.png?text='.$filename)
         );
         // Transformation en avif
-        $gdImage = imagecreatefrompng(storage_path('app/public/img/full/' . $filename . '.png'));
-        if (!imagepalettetotruecolor($gdImage)) {
+        $gdImage = imagecreatefrompng(storage_path('app/public/img/full/'.$filename.'.png'));
+        if (! imagepalettetotruecolor($gdImage)) {
             // Handle failure
-            die('Failed to convert image to true color.');
+            exit('Failed to convert image to true color.');
         }
-        imageavif($gdImage, storage_path('app/public/img/full/' . $filename . '.avif'));
+        imageavif($gdImage, storage_path('app/public/img/full/'.$filename.'.avif'));
         $resizeSmallImg = ImageTransformation::image_resize($gdImage, 240, 180);
-        imageavif($resizeSmallImg, storage_path('app/public/img/thumbnail/' . $filename . '.avif'));
+        imageavif($resizeSmallImg, storage_path('app/public/img/thumbnail/'.$filename.'.avif'));
 
         imagedestroy($gdImage);
         imagedestroy($resizeSmallImg);
         // On efface le png original
-        unlink(storage_path('app/public/img/full/' . $filename . '.png'));
+        unlink(storage_path('app/public/img/full/'.$filename.'.png'));
 
         return [
             'user_id'        => User::inRandomOrder()->first()->id,
             'recipe_type_id' => RecipeType::inRandomOrder()->first()->id,
             'name'           => fake()->sentence(),
-            'image'          => $filename . '.avif',
+            'image'          => $filename.'.avif',
             'making_time'    => rand(1, 100),
             'cooking_time'   => rand(1, 180),
             'servings'       => rand(1, 20),
@@ -79,11 +77,11 @@ class RecipeFactory extends Factory
             // Définition des diets selon les ingrédients créés
             $recipeIngredients = $recipe->ingredients;
             foreach ($recipeIngredients as $recipeIngredient) {
-                $ingredient = $recipeIngredient->ingredient;
+                $ingredient      = $recipeIngredient->ingredient;
                 $ingredientDiets = json_decode($ingredient->diets);
                 foreach ($diets as $diet) {
                     //    Si la diet n'est pas présent dans l'ingrédient, on la retire
-                    if (!in_array($diet, $ingredientDiets)) {
+                    if (! in_array($diet, $ingredientDiets)) {
                         unset($diets[array_search($diet, $diets)]);
                     }
                 }

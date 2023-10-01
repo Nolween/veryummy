@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ImageTransformation;
 use App\Http\Requests\Recipe\RecipeAdminIndexRequest;
 use App\Http\Requests\Recipe\RecipeAllowRequest;
 use App\Http\Requests\Recipe\RecipeCommentRequest;
 use App\Http\Requests\Recipe\RecipeEditRequest;
-use App\Http\Requests\Recipe\RecipeEmptyOpiniontRequest;
+use App\Http\Requests\Recipe\RecipeEmptyOpinionRequest;
 use App\Http\Requests\Recipe\RecipeExplorationRequest;
 use App\Http\Requests\Recipe\RecipeNoteBookIndexRequest;
 use App\Http\Requests\Recipe\RecipeShowRequest;
@@ -15,38 +14,19 @@ use App\Http\Requests\Recipe\RecipeStatusRequest;
 use App\Http\Requests\Recipe\RecipeStoreRequest;
 use App\Http\Requests\Recipe\RecipeUpdateRequest;
 use App\Http\Requests\Recipe\RecipeUserIndexRequest;
-use App\Mail\RefusedRecipe;
 use App\Models\Ingredient;
 use App\Models\Recipe;
-use App\Models\RecipeIngredients;
 use App\Models\RecipeOpinion;
-use App\Models\RecipeStep;
 use App\Models\RecipeType;
 use App\Models\Unit;
 use App\Models\User;
 use App\Repositories\RecipeRepository;
-use App\Rules\DietExists;
-use App\Rules\Score;
-use Exception;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\ItemNotFoundException;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
-
-use function imageavif;
 
 class RecipeController extends Controller
 {
-
     private RecipeRepository $recipeRepository;
 
     public function __construct(RecipeRepository $recipeRepository)
@@ -64,7 +44,6 @@ class RecipeController extends Controller
         return view('welcome', $response);
     }
 
-
     /**
      * @details Listes des recettes d'exploration
      */
@@ -72,10 +51,8 @@ class RecipeController extends Controller
     {
         $response = $this->recipeRepository->getExplorationIndex($request);
 
-
         return view('exploration', $response);
     }
-
 
     /**
      * @details Recettes dans l'administation
@@ -116,12 +93,12 @@ class RecipeController extends Controller
             } else {
                 $message = 'Erreur inconnue';
             }
+
             return back()->with('statusSuccess', $message);
         } else {
             return back()->withErrors(['statusError' => 'Erreur dans la mise à jour du statut']);
         }
     }
-
 
     /**
      * @details Page de nouvelle recette
@@ -177,7 +154,7 @@ class RecipeController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             abort(403, 'Unauthorized action.');
         }
         // La recette existe t-elle et appartient-elle à l'utilisateur?
@@ -194,14 +171,12 @@ class RecipeController extends Controller
         }
     }
 
-
     /**
      * @details Page d'accueil
-     *
      */
     public function show(RecipeShowRequest $request, int $id): View
     {
-        $user = Auth::user();
+        $user   = Auth::user();
         $userId = $user->id ?? null;
         $recipe = $this->recipeRepository->showRecipe($id);
 
@@ -211,14 +186,13 @@ class RecipeController extends Controller
             'steps'       => Recipe::findOrFail($id)->steps()->get(),
             'comments'    => Recipe::findOrFail($id)->comments()->where('user_id', '!=', $userId)->get(),
             'userId'      => $userId,
-            'opinion'     => !empty($user) ? RecipeOpinion::whereBelongsTo($user)->where('recipe_id', $id)->first(
+            'opinion'     => ! empty($user) ? RecipeOpinion::whereBelongsTo($user)->where('recipe_id', $id)->first(
             ) : [],
-            'type'        => RecipeType::where('id', $recipe->recipe_type_id)->firstOrFail()->name,
+            'type' => RecipeType::where('id', $recipe->recipe_type_id)->firstOrFail()->name,
         ];
 
         return view('recipeshow', $response);
     }
-
 
     /**
      * @details Poster / Créer un commentaire sur la recette
@@ -232,11 +206,10 @@ class RecipeController extends Controller
         }
     }
 
-
     /**
      * @details Supprimer l'opinion et la note de l'utilisateur
      */
-    public function emptyOpinion(RecipeEmptyOpiniontRequest $request, Recipe $recipe): RedirectResponse
+    public function emptyOpinion(RecipeEmptyOpinionRequest $request, Recipe $recipe): RedirectResponse
     {
         if ($this->recipeRepository->emptyOpinionRecipe($recipe)) {
             return back()->with('success', 'Commentaire supprimé');
@@ -261,21 +234,20 @@ class RecipeController extends Controller
             'recipes' => $recipesQuery->paginate(20),
             'total'   => $recipesQuery->count(),
             'types'   => RecipeType::all()->prepend($allTypes),
-            'diet'    => $request->diet ?? null,
-            'search'  => $request->name ?? null,
+            'diet'    => $request->diet   ?? null,
+            'search'  => $request->name   ?? null,
             'typeId'  => $request->typeId ?? null,
         ];
 
         return view('myrecipes', $response);
     }
 
-
     /**
      * @details Listes des recettes favories de l'utilisateur
      */
     public function noteBookIndex(RecipeNoteBookIndexRequest $request): View|RedirectResponse
     {
-        if(Auth::user() === null) {
+        if (Auth::user() === null) {
             abort(403);
         }
 
@@ -288,13 +260,11 @@ class RecipeController extends Controller
             'recipes' => $recipesQuery->paginate(20),
             'total'   => $recipesQuery->count(),
             'types'   => RecipeType::all()->prepend($allTypes),
-            'search'  => $request->name ?? null,
-            'diet'    => $request->diet ?? null,
+            'search'  => $request->name   ?? null,
+            'diet'    => $request->diet   ?? null,
             'typeId'  => $request->typeId ?? null,
         ];
 
         return view('mynotebook', $response);
     }
-
-
 }

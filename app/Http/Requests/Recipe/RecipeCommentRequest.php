@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Recipe;
 
 use App\Rules\Score;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
@@ -26,7 +25,7 @@ class RecipeCommentRequest extends FormRequest
     {
         return [
             // Le socre doit passer la règle Score de App/Rules/Score
-            'score' => [new Score, 'required', 'max:5', 'min:1'],
+            'score'   => [new Score, 'required', 'max:5', 'min:1'],
             'comment' => ['string', 'required', 'min:2', 'max:65535'],
         ];
     }

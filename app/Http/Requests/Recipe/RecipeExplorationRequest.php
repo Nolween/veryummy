@@ -3,9 +3,7 @@
 namespace App\Http\Requests\Recipe;
 
 use App\Rules\DietExists;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Gate;
 
 class RecipeExplorationRequest extends FormRequest
 {
@@ -25,9 +23,9 @@ class RecipeExplorationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['string', 'nullable'],
+            'name'   => ['string', 'nullable'],
             'typeId' => ['integer', 'nullable', 'exists:recipe_types,id'],
-            'diet' => ['integer', 'nullable', new DietExists],
+            'diet'   => ['integer', 'nullable', new DietExists],
         ];
     }
 }

@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 
 class RecipeShowRequest extends FormRequest
 {
@@ -17,7 +16,7 @@ class RecipeShowRequest extends FormRequest
     public function authorize(): bool
     {
         $recipeId = $this->route('id');
-        $recipe = Recipe::findOrFail($recipeId);
+        $recipe   = Recipe::findOrFail($recipeId);
 
         $user = Auth::user();
 

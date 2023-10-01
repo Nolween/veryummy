@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property ?array $diets
  * @property-read User $user
  */
-
 class Ingredient extends Model
 {
     use HasFactory;
@@ -30,13 +29,12 @@ class Ingredient extends Model
         'name',
         'icon',
         'is_accepted',
-        'diets'
+        'diets',
     ];
 
     protected $casts = [
         'diets' => 'array',
     ];
-
 
     /**
      * Get the user that owns the ingredient.

@@ -35,7 +35,7 @@ class UnitSeeder extends Seeder
             ['name' => 'Epi(s)'],
         ];
         foreach ($source as $item) {
-            $unit = new Unit(['name' => $item['name']]);
+            $unit             = new Unit(['name' => $item['name']]);
             $unit->timestamps = false;
             $unit->save();
         }

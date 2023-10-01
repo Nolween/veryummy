@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Recipe;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
@@ -25,7 +24,7 @@ class RecipeStoreRequest extends FormRequest
     {
         return [
             'nom'                  => ['string', 'required', 'min:2'],
-            'photoInput'           => ['nullable','mimes:jpg,png,jpeg,gif,svg,avif,webp'],
+            'photoInput'           => ['nullable', 'mimes:jpg,png,jpeg,gif,svg,avif,webp'],
             'preparation'          => ['integer', 'required', 'min:0', 'max:1000'],
             'cuisson'              => ['integer', 'nullable', 'min:0', 'max:1000'],
             'parts'                => ['integer', 'required', 'min:0', 'max:1000'],

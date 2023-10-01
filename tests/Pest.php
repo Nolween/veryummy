@@ -55,8 +55,8 @@ function something()
 function initialize_user(bool $banned = false, bool $admin = false): User
 {
 
-    $newName = fake()->firstName() . ' ' . fake()->lastName();
-    $mail = fake()->email();
+    $newName = fake()->firstName().' '.fake()->lastName();
+    $mail    = fake()->email();
 
     // Création d'un utilisateur
     $user = User::factory()->create(
@@ -66,10 +66,9 @@ function initialize_user(bool $banned = false, bool $admin = false): User
             'password'          => bcrypt('123456'),
             'role'              => $admin ? User::ROLE_ADMIN : User::ROLE_USER,
             'is_banned'         => $banned,
-            'email_verified_at' => now()
+            'email_verified_at' => now(),
         ]
     );
 
     return $user;
 }
-

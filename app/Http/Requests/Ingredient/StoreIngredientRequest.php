@@ -43,5 +43,4 @@ class StoreIngredientRequest extends FormRequest
             'rulescheck.required' => 'Veuillez accepter les règles pour valider la proposition',
         ];
     }
-
 }

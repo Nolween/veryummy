@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -17,7 +16,6 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $password
  * @property bool $is_banned
  * @property string $role
- *
  */
 class User extends Authenticatable
 {
@@ -28,8 +26,9 @@ class User extends Authenticatable
      *
      * @var string
      */
-    const ROLE_ADMIN = "admin";
-    const ROLE_USER = "user";
+    const ROLE_ADMIN = 'admin';
+
+    const ROLE_USER = 'user';
 
     /**
      * The attributes that are mass assignable.

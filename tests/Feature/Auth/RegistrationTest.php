@@ -11,23 +11,23 @@ test('registration screen can be rendered', function () {
 });
 
 test('new users can register', function () {
-    $faker = Faker::create();
-    $mail = $faker->email();
+    $faker   = Faker::create();
+    $mail    = $faker->email();
     $newName = $faker->firstName().' '.$faker->lastName();
     $newMail = User::where('email', $mail)->first();
 
     // Tant qu'on créé des mail qui existent déjà dans la BDD
     while ($newMail) {
-        $mail = $faker->email();
+        $mail    = $faker->email();
         $newMail = User::where('email', $mail)->first();
     }
 
     $response = $this->post('/register', [
-        'name' => $newName,
-        'email' => $mail,
-        'password' => 'AlsqdDpefdzkl82:',
+        'name'                  => $newName,
+        'email'                 => $mail,
+        'password'              => 'AlsqdDpefdzkl82:',
         'password_confirmation' => 'AlsqdDpefdzkl82:',
-        'test' => true,
+        'test'                  => true,
     ]);
 
     $this->assertAuthenticated();
