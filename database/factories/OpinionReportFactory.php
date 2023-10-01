@@ -18,11 +18,19 @@ class OpinionReportFactory extends Factory
      */
     public function definition()
     {
+
+        $user = User::inRandomOrder()->first() ?? User::factory()->create();
+
+        $opinion = RecipeOpinion::inRandomOrder()->first() ?? RecipeOpinion::factory()->create();
+
+        $created_at = fake()->dateTimeBetween('-1 year', 'now');
+
+
         return [
-            'user_id'    => User::inRandomOrder()->first()->id,
-            'opinion_id' => RecipeOpinion::inRandomOrder()->first()->id,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'user_id'    => $user->id,
+            'opinion_id' => $opinion->id,
+            'created_at' => $created_at,
+            'updated_at' => fake()->dateTimeBetween($created_at, 'now'),
         ];
     }
 }

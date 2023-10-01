@@ -3,11 +3,12 @@
 namespace Database\Factories;
 
 use App\Models\Recipe;
+use App\Models\RecipeOpinion;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\RecipeOpinion>
+ * @extends Factory<RecipeOpinion>
  */
 class RecipeOpinionFactory extends Factory
 {
@@ -20,9 +21,13 @@ class RecipeOpinionFactory extends Factory
     {
         $isFavorite = fake()->boolean(30);
 
+        $user = User::inRandomOrder()->first() ?? User::factory()->create();
+
+        $recipe = Recipe::inRandomOrder()->first() ?? Recipe::factory()->create();
+
         return [
-            'user_id'     => User::inRandomOrder()->first()->id,
-            'recipe_id'   => Recipe::inRandomOrder()->first()->id,
+            'user_id'     => $user->id,
+            'recipe_id'   => $recipe->id,
             'comment'     => $this->faker->paragraph(),
             'score'       => rand(1, 5),
             'is_favorite' => $isFavorite,

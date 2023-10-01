@@ -48,8 +48,12 @@ class RecipeFactory extends Factory
         // On efface le png original
         unlink(storage_path('app/public/img/full/' . $filename . '.png'));
 
+        $user = User::inRandomOrder()->first() ?? User::factory()->create();
+
+
+
         return [
-            'user_id'        => User::inRandomOrder()->first()->id,
+            'user_id'        => $user->id,
             'recipe_type_id' => RecipeType::inRandomOrder()->first()->id,
             'name'           => fake()->sentence(),
             'image'          => $filename . '.avif',

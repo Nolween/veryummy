@@ -20,14 +20,16 @@ class RecipeIngredientsFactory extends Factory
      */
     public function definition()
     {
-        $recipeId = Recipe::inRandomOrder()->first()->id;
+        $recipe = Recipe::inRandomOrder()->first() ?? Recipe::factory()->create();
+
+        $ingredient = Ingredient::inRandomOrder()->first() ?? Ingredient::factory()->create();
 
         return [
-            'recipe_id'     => $recipeId,
+            'recipe_id'     => $recipe->id,
             'unit'          => fake()->randomElement(Units::allValues()),
-            'ingredient_id' => Ingredient::inRandomOrder()->first()->id,
+            'ingredient_id' => $ingredient->id,
             'quantity'      => rand(1, 5),
-            'order'         => Recipe::where('id', $recipeId)->get()->count() + 1,
+            'order'         => Recipe::where('id', $recipe->id)->count() + 1,
         ];
     }
 }
