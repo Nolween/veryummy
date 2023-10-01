@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Units;
 use App\Http\Requests\Recipe\RecipeAdminIndexRequest;
 use App\Http\Requests\Recipe\RecipeAllowRequest;
 use App\Http\Requests\Recipe\RecipeCommentRequest;
@@ -18,7 +19,6 @@ use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Models\RecipeOpinion;
 use App\Models\RecipeType;
-use App\Models\Unit;
 use App\Models\User;
 use App\Repositories\RecipeRepository;
 use Illuminate\Http\RedirectResponse;
@@ -107,7 +107,7 @@ class RecipeController extends Controller
     {
         $response = [
             'ingredients' => Ingredient::pluck('name', 'id'),
-            'units'       => Unit::all(),
+            'units'       => Units::allValues(),
             'types'       => RecipeType::all(),
         ];
 
@@ -138,7 +138,7 @@ class RecipeController extends Controller
 
         $response = [
             'ingredientsList' => Ingredient::pluck('name', 'id'),
-            'units'           => Unit::all(),
+            'units'           => Units::allValues(),
             'types'           => RecipeType::all(),
             'recipe'          => $recipe,
         ];

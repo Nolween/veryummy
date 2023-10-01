@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Recipe;
 
+use App\Rules\UnitExists;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
@@ -18,7 +19,7 @@ class RecipeStoreRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, array<string>>
+     * @return array<string, array<string, string | UnitExists>>
      */
     public function rules(): array
     {
@@ -33,7 +34,7 @@ class RecipeStoreRequest extends FormRequest
             'ingredientCount'      => ['integer', 'nullable'],
             '*.ingredientId'       => ['integer', 'exists:ingredients,id', 'nullable'],
             '*.ingredientName'     => ['string', 'nullable'],
-            '*.ingredientUnit'     => ['numeric', 'exists:units,id', 'nullable'],
+            '*.ingredientUnit'     => ['string', new UnitExists(), 'nullable'],
             '*.ingredientQuantity' => ['numeric', 'nullable'],
             '*.stepDescription'    => ['string', 'nullable'],
         ];

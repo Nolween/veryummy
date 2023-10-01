@@ -98,7 +98,7 @@ class Recipe extends Model
      */
     public function ingredients(): HasMany
     {
-        return $this->hasMany(RecipeIngredients::class)->with('ingredient')->with('unit')->orderBy('order');
+        return $this->hasMany(RecipeIngredients::class)->with('ingredient')->orderBy('order');
     }
 
     /**

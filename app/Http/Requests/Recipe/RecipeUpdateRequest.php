@@ -4,6 +4,7 @@ namespace App\Http\Requests\Recipe;
 
 use App\Models\Recipe;
 use App\Models\User;
+use App\Rules\UnitExists;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,20 +16,19 @@ class RecipeUpdateRequest extends FormRequest
     public function authorize(): bool
     {
         $recipe = Recipe::findOrFail($this->get('recipeid'));
-        $user   = Auth::user();
+        $user = Auth::user();
 
         if ($user === null || $user->is_banned) {
             return false;
         }
 
         return ($user->id === $recipe->user_id) || ($user->role === User::ROLE_ADMIN);
-
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, array<int, string>>
+     * @return array<string, array<int, string | UnitExists>>
      */
     public function rules(): array
     {
@@ -44,7 +44,7 @@ class RecipeUpdateRequest extends FormRequest
             'ingredientCount'      => ['integer', 'nullable'],
             '*.ingredientId'       => ['integer', 'exists:ingredients,id', 'nullable'],
             '*.ingredientName'     => ['string', 'nullable'],
-            '*.ingredientUnit'     => ['numeric', 'exists:units,id', 'nullable'],
+            '*.ingredientUnit'     => ['string', new UnitExists(), 'nullable'],
             '*.ingredientQuantity' => ['numeric', 'nullable'],
             '*.stepDescription'    => ['string', 'nullable'],
         ];

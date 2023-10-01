@@ -78,7 +78,7 @@
                 // dd($recipe['ingredients']);
                 $unitsOptions = '';
                 foreach ($units as $unit) {
-                    $unitsOptions .= '<option value="' . $unit->id . '" >' . $unit->name . '</option>';
+                    $unitsOptions .= '<option value="' . $unit . '" >' . $unit . '</option>';
                 }
             @endphp
 
@@ -284,9 +284,9 @@
                                 <select name="ingredients[{{ $ingredientK }}][ingredientUnit]"
                                     class="text-gray-400 border-gray-100 border-2 text-4xl w-38 pl-4 rounded-sm focus:border-gray-400 focus:outline-none ml-2 mb-3">
                                     @foreach ($units as $unit)
-                                        <option value="{{ $unit->id }}"
-                                            {{ $ingredientV['ingredientUnit'] == $unit->id ? 'selected' : '' }}>
-                                            {{ $unit->name }}
+                                        <option value="{{ $unit }}"
+                                            {{ $ingredientV['ingredientUnit'] == $unit ? 'selected' : '' }}>
+                                            {{ $unit }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -319,9 +319,9 @@
                                 <select name="ingredients[{{ $ingredientK }}][ingredientUnit]"
                                     class="text-gray-400 border-gray-100 border-2 text-4xl w-38 pl-4 rounded-sm focus:border-gray-400 focus:outline-none ml-2 mb-3">
                                     @foreach ($units as $unit)
-                                        <option value="{{ $unit->id }}"
-                                            {{ $ingredientV->unit_id == $unit->id ? 'selected' : '' }}>
-                                            {{ $unit->name }}
+                                        <option value="{{ $unit }}"
+                                            {{ $ingredientV->unit == $unit ? 'selected' : '' }}>
+                                            {{ $unit }}
                                         </option>
                                     @endforeach
                                 </select>

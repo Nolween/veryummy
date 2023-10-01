@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('recipe_ingredients', function (Blueprint $table) {
             $table->id();
             $table->foreignId('recipe_id')->references('id')->on('recipes')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('unit_id')->references('id')->on('units')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('unit')->nullable();
             $table->foreignId('ingredient_id')->references('id')->on('ingredients')->onUpdate('cascade')->onDelete('cascade');
             $table->float('quantity')->nullable();
             $table->tinyInteger('order');

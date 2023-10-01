@@ -1,10 +1,10 @@
 <?php
 
+use App\Enums\Units;
 use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Models\RecipeOpinion;
 use App\Models\RecipeType;
-use App\Models\Unit;
 use App\Models\User;
 use Faker\Factory as Faker;
 use Illuminate\Http\UploadedFile;
@@ -439,7 +439,7 @@ test('create recipe', function () {
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
-            'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+            'ingredientUnit'     => fake()->randomElement(Units::allValues()),
             'ingredientQuantity' => rand(1, 20),
         ];
     }
@@ -481,7 +481,7 @@ test('create recipe with non existing type', function () {
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
-            'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+            'ingredientUnit'     => fake()->randomElement(Units::allValues()),
             'ingredientQuantity' => rand(1, 20),
         ];
     }
@@ -523,7 +523,7 @@ test('create recipe with non existing ingredient', function () {
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
-            'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+            'ingredientUnit'     => fake()->randomElement(Units::allValues()),
             'ingredientQuantity' => rand(1, 20),
         ];
     }
@@ -533,7 +533,7 @@ test('create recipe with non existing ingredient', function () {
     $dataToSend['ingredients'][] = [
         'ingredientId'       => Ingredient::orderBy('id', 'DESC')->first()->id + 1,
         'ingredientName'     => $randomIngredient->name,
-        'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+        'ingredientUnit'     => fake()->randomElement(Units::allValues()),
         'ingredientQuantity' => rand(1, 20),
     ];
 
@@ -574,7 +574,7 @@ test('create recipe with non existing unit', function () {
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
-            'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+            'ingredientUnit'     => fake()->randomElement(Units::allValues()),
             'ingredientQuantity' => rand(1, 20),
         ];
     }
@@ -584,7 +584,7 @@ test('create recipe with non existing unit', function () {
     $dataToSend['ingredients'][] = [
         'ingredientId'       => Ingredient::inRandomOrder()->first()->id,
         'ingredientName'     => $randomIngredient->name,
-        'ingredientUnit'     => Unit::orderBy('id', 'DESC')->first()->id + 1,
+        'ingredientUnit'     => fake()->word,
         'ingredientQuantity' => rand(1, 20),
     ];
 
@@ -627,7 +627,7 @@ test('create recipe with bad times', function () {
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
-            'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+            'ingredientUnit'     => fake()->randomElement(Units::allValues()),
             'ingredientQuantity' => rand(1, 20),
         ];
     }
@@ -692,7 +692,7 @@ test('create recipe with bad servings', function () {
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
-            'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+            'ingredientUnit'     => fake()->randomElement(Units::allValues()),
             'ingredientQuantity' => rand(1, 20),
         ];
     }
@@ -743,7 +743,7 @@ test('create recipe with short name', function () {
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
-            'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+            'ingredientUnit'     => fake()->randomElement(Units::allValues()),
             'ingredientQuantity' => rand(1, 20),
         ];
     }
@@ -796,7 +796,7 @@ test('create recipe with bad file', function () {
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
-            'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+            'ingredientUnit'     => fake()->randomElement(Units::allValues()),
             'ingredientQuantity' => rand(1, 20),
         ];
     }
@@ -847,7 +847,7 @@ test('update recipe', function () {
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
-            'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+            'ingredientUnit'     => fake()->randomElement(Units::allValues()),
             'ingredientQuantity' => rand(1, 20),
         ];
     }
@@ -896,7 +896,7 @@ test('update recipe with bad owner', function () {
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
-            'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+            'ingredientUnit'     => fake()->randomElement(Units::allValues()),
             'ingredientQuantity' => rand(1, 20),
         ];
     }
@@ -950,7 +950,7 @@ test('update recipe with bad times', function () {
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
-            'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+            'ingredientUnit'     => fake()->randomElement(Units::allValues()),
             'ingredientQuantity' => rand(1, 20),
         ];
     }
@@ -1019,7 +1019,7 @@ test('update recipe with bad servings', function () {
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
-            'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+            'ingredientUnit'     => fake()->randomElement(Units::allValues()),
             'ingredientQuantity' => rand(1, 20),
         ];
     }
@@ -1071,7 +1071,7 @@ test('update recipe with non existing recipe', function () {
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
-            'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+            'ingredientUnit'     => fake()->randomElement(Units::allValues()),
             'ingredientQuantity' => rand(1, 20),
         ];
     }
@@ -1121,7 +1121,7 @@ test('update recipe with short name', function () {
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
-            'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+            'ingredientUnit'     => fake()->randomElement(Units::allValues()),
             'ingredientQuantity' => rand(1, 20),
         ];
     }
@@ -1184,7 +1184,7 @@ test('update recipe with bad file', function () {
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
-            'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+            'ingredientUnit'     => fake()->randomElement(Units::allValues()),
             'ingredientQuantity' => rand(1, 20),
         ];
     }
@@ -1237,7 +1237,7 @@ test('update recipe with bad unit', function () {
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
-            'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+            'ingredientUnit'     => fake()->randomElement(Units::allValues()),
             'ingredientQuantity' => rand(1, 20),
         ];
     }
@@ -1290,7 +1290,7 @@ test('update recipe with non existing ingredient', function () {
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
-            'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+            'ingredientUnit'     => fake()->randomElement(Units::allValues()),
             'ingredientQuantity' => rand(1, 20),
         ];
     }
@@ -1299,7 +1299,7 @@ test('update recipe with non existing ingredient', function () {
     $dataToSend['ingredients'][] = [
         'ingredientId'       => Ingredient::orderBy('id', 'DESC')->first()->id + 1,
         'ingredientName'     => 'Mauvais ingrédient',
-        'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+        'ingredientUnit'     => fake()->randomElement(Units::allValues()),
         'ingredientQuantity' => rand(1, 20),
     ];
 
@@ -1352,7 +1352,7 @@ test('update recipe with non existing unit', function () {
         $dataToSend['ingredients'][] = [
             'ingredientId'       => $randomIngredient->id,
             'ingredientName'     => $randomIngredient->name,
-            'ingredientUnit'     => Unit::inRandomOrder()->first()->id,
+            'ingredientUnit'     => fake()->randomElement(Units::allValues()),
             'ingredientQuantity' => rand(1, 20),
         ];
     }
@@ -1361,7 +1361,7 @@ test('update recipe with non existing unit', function () {
     $dataToSend['ingredients'][] = [
         'ingredientId'       => Ingredient::inRandomOrder()->first()->id,
         'ingredientName'     => 'Mauvaise unité',
-        'ingredientUnit'     => Unit::orderBy('id', 'DESC')->first()->id + 1,
+        'ingredientUnit'     => fake()->word,
         'ingredientQuantity' => rand(1, 20),
     ];
 

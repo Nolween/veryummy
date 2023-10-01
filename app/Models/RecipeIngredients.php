@@ -15,7 +15,7 @@ class RecipeIngredients extends Model
 
     protected $fillable = [
         'recipe_id',
-        'unit_id',
+        'unit',
         'ingredient_id',
         'quantity',
         'order',
@@ -41,13 +41,4 @@ class RecipeIngredients extends Model
         return $this->belongsTo(Ingredient::class);
     }
 
-    /**
-     * A quelle unité appartient cette ligne
-     *
-     * @return BelongsTo<Unit, RecipeIngredients>
-     */
-    public function unit(): BelongsTo
-    {
-        return $this->belongsTo(Unit::class);
-    }
 }

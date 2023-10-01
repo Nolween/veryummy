@@ -107,23 +107,23 @@
     {{-- REGIMES --}}
 
     <div class="flex flex-wrap justify-center px-8 md:px-4 w-3/4 mx-auto mb-6">
-        @if ($recipe->diets->contains('vegan'))
+        @if (in_array('vegan', $recipe->diets))
             <img src="{{ asset('svg/diet/vegan.svg') }}"
                  class="w-16 h-16 sm:w-20 md:h-20 lg:w-28 lg:h-28 mx-auto"/>
         @endif
-        @if ($recipe->ingredients->contains('vegetarian'))
+        @if (in_array('vegetarian', $recipe->diets))
             <img src="{{ asset('svg/diet/végétarien.svg') }}"
                  class="w-16 h-16 sm:w-20 md:h-20 lg:w-28 lg:h-28 mx-auto"/>
         @endif
-        @if ($recipe->diets->contains('gluten_free'))
+        @if (in_array('gluten_free', $recipe->diets))
             <img src="{{ asset('svg/diet/sans-gluten.svg') }}"
                  class="w-16 h-16 sm:w-20 md:h-20 lg:w-28 lg:h-28 mx-auto"/>
         @endif
-        @if ($recipe->diets->contains('halal'))
+        @if (in_array('halal', $recipe->diets))
             <img src="{{ asset('svg/diet/halal.svg') }}"
                  class="w-16 h-16 sm:w-20 md:h-20 lg:w-28 lg:h-28 mx-auto"/>
         @endif
-        @if ($recipe->diets->contains('kosher'))
+        @if (in_array('kosher', $recipe->diets))
             <img src="{{ asset('svg/diet/casher.svg') }}"
                  class="w-16 h-16 sm:w-20 md:h-20 lg:w-28 lg:h-28 mx-auto"/>
         @endif
@@ -234,7 +234,7 @@
                      class="w-40 h-40 sm:w-48 md:h-48 lg:w-60 lg:h-60 mx-auto"/>
                 <div class="text-center text-3xl md:text-4xl text-veryummy-primary">
                     <span id="quantity-{{ $ingredientK }}">{{ $ingredientV->quantity }}</span>
-                    {{ $ingredientV->unit->name }}{{ $ingredientV->quantity > 1 ? 's' : '' }}
+                    {{ $ingredientV->unit }}{{ $ingredientV->quantity > 1 ? 's' : '' }}
                     de {{ $ingredientV->ingredient->name }}
                 </div>
             </div>

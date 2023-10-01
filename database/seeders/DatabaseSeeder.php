@@ -28,7 +28,6 @@ class DatabaseSeeder extends Seeder
         }
 
         // Création des paramètres
-        $this->call(UnitSeeder::class);
         $this->call(RecipeTypeSeeder::class);
         // Création des jeux de test
         $this->call(UserSeeder::class);
