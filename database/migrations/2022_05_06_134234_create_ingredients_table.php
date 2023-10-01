@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('icon')->nullable();
             $table->boolean('is_accepted')->nullable();
-            $table->jsonb('diets');
+            $table->jsonb('diets')->nullable();
             $table->timestamps();
             $table->index(['user_id']);
         });

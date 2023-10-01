@@ -23,7 +23,7 @@ class UserUpdateRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, ValidationRule|array|string>
+     * @return array<string, array<UserMailExists|UserNameExists|CheckCurrentPassword|PasswordRepetition|string>>
      */
     public function rules(): array
     {

@@ -19,13 +19,13 @@ class RecipeStoreRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, ValidationRule|array|string>
+     * @return array<string, array<string>>
      */
     public function rules(): array
     {
         return [
             'nom'                  => ['string', 'required', 'min:2'],
-            'photoInput'           => 'nullable|mimes:jpg,png,jpeg,gif,svg,avif,webp',
+            'photoInput'           => ['nullable','mimes:jpg,png,jpeg,gif,svg,avif,webp'],
             'preparation'          => ['integer', 'required', 'min:0', 'max:1000'],
             'cuisson'              => ['integer', 'nullable', 'min:0', 'max:1000'],
             'parts'                => ['integer', 'required', 'min:0', 'max:1000'],

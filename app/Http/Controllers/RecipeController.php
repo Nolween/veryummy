@@ -145,7 +145,7 @@ class RecipeController extends Controller
         if ($this->recipeRepository->storeRecipe($request)) {
             return redirect('/my-recipes')->with('newSuccess', 'Recette crée avec succès!');
         } else {
-            return back()->withErrors(['newError' => 'Erreur dans la création de la recette']);
+            return back()->withErrors(['newError' => 'Erreur dans la création de la recette'])->withInput();
         }
     }
 
@@ -177,8 +177,12 @@ class RecipeController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
 
+        if (!$user) {
+            abort(403, 'Unauthorized action.');
+        }
         // La recette existe t-elle et appartient-elle à l'utilisateur?
         $recipe = Recipe::findOrFail($request->recipeid);
+
         if ($recipe->user_id !== $user->id && $user->role !== User::ROLE_ADMIN) {
             abort(403, 'Unauthorized action.');
         }
@@ -271,6 +275,10 @@ class RecipeController extends Controller
      */
     public function noteBookIndex(RecipeNoteBookIndexRequest $request): View|RedirectResponse
     {
+        if(Auth::user() === null) {
+            abort(403);
+        }
+
         $recipesQuery = $this->recipeRepository->noteBookIndex($request);
 
         // Création d'un type temporaire tous

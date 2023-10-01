@@ -12,7 +12,9 @@ enum Diets: string {
     case KOSHER = 'kosher';
 
 
-
+    /**
+     * @return array<string>
+     */
     public static function allValues(): array {
         return [
             self::VEGETARIAN->value,

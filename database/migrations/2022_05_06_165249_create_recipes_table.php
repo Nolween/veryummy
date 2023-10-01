@@ -24,7 +24,7 @@ return new class extends Migration
             $table->smallInteger('making_time')->nullable();
             $table->smallInteger('servings')->default('4');
             $table->boolean('is_accepted')->nullable();
-            $table->jsonb('diets');
+            $table->jsonb('diets')->nullable();
             $table->timestamps();
         });
     }

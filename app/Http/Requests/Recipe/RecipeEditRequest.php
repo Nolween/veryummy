@@ -18,13 +18,17 @@ class RecipeEditRequest extends FormRequest
         $recipe = Recipe::findOrFail($this->route('id'));
         $user = Auth::user();
 
-        return $recipe && (($user->id === $recipe->user_id) || ($user->role === User::ROLE_ADMIN));
+        if($user === null) {
+            return false;
+        }
+
+        return (($user->id === $recipe->user_id) || ($user->role === User::ROLE_ADMIN));
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, ValidationRule|array|string>
+     * @return array<string, array<ValidationRule|string>>
      */
     public function rules(): array
     {

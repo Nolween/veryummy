@@ -21,8 +21,9 @@ class IngredientRepository
 
     /**
      * @details Récupération des ingrédients
+     * @return LengthAwarePaginator<Ingredient>
      */
-    public function getIngredients(?int $type, ?string $search): LengthAwarePaginator
+    public function getIngredients(?bool $type, ?string $search): LengthAwarePaginator
     {
         // Récupération des ingrédients
         $ingredients = Ingredient::select('*');
@@ -81,9 +82,7 @@ class IngredientRepository
             // Récupération de l'ingrédient par son Id
             $ingredient = Ingredient::where('id', $request->ingredientid)->with('user')->firstOrFail();
             $authorMail = null;
-            if ($ingredient->user) {
-                $authorMail = $ingredient->user->email;
-            }
+            $authorMail = $ingredient->user->email;
             $ingredient->name = $request->finalname;
             $ingredient->icon = Str::slug($request->finalname, '_');
             $ingredient->is_accepted = $request->allow;
@@ -113,11 +112,11 @@ class IngredientRepository
         }
     }
 
-    public function storeIngredient(StoreIngredientRequest $request)
+    public function storeIngredient(StoreIngredientRequest $request): bool
     {
         // Création d'un nouvel ingredient
         $newIngredient = new Ingredient;
-        $newIngredient->user_id = Auth::user()->id;
+        $newIngredient->user_id = Auth::user()->id ?? 1;
         $newIngredient->name = $request->ingredient;
         $newIngredient->icon = null;
         $newIngredient->is_accepted = null;

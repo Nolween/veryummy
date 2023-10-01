@@ -20,7 +20,7 @@ class UserDestroyRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, ValidationRule|array|string>
+     * @return array<string, array<CheckCurrentPassword|string>>
      */
     public function rules(): array
     {

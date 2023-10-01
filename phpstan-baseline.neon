@@ -1,6 +1,21 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Cannot call method hasVerifiedEmail\\(\\) on App\\\\Models\\\\User\\|null\\.$#"
+			message: "#^Access to an undefined property App\\\\Models\\\\Recipe\\|Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, App\\\\Models\\\\Recipe\\>\\:\\:\\$user_id\\.$#"
 			count: 1
-			path: app/Http/Controllers/Auth/EmailVerificationPromptController.php
+			path: app/Http/Controllers/RecipeController.php
+
+		-
+			message: "#^Parameter \\#2 \\$recipe of method App\\\\Repositories\\\\RecipeRepository\\:\\:updateRecipe\\(\\) expects App\\\\Models\\\\Recipe, App\\\\Models\\\\Recipe\\|Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, App\\\\Models\\\\Recipe\\> given\\.$#"
+			count: 1
+			path: app/Http/Controllers/RecipeController.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Models\\\\Recipe\\|Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, App\\\\Models\\\\Recipe\\>\\:\\:\\$user_id\\.$#"
+			count: 1
+			path: app/Http/Requests/Recipe/RecipeUpdateRequest.php
+
+		-
+			message: "#^Cannot access property \\$id on App\\\\Models\\\\User\\|null\\.$#"
+			count: 3
+			path: app/Repositories/RecipeRepository.php

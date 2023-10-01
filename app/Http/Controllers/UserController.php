@@ -43,6 +43,10 @@ class UserController extends Controller
     {
         $response = [];
 
+        if(Auth::user() === null) {
+            abort(403);
+        }
+
         $response['informations'] = User::select('name', 'email')->where('id', Auth::user()->id)->firstOrFail();
 
         return view('myaccount', $response);

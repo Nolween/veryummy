@@ -26,6 +26,9 @@ class UserRepository
     public function updateUser(UserUpdateRequest $request): bool
     {
         $user = Auth::user();
+        if ($user === null) {
+            return false;
+        }
         // Transaction pour rollback si erreur
         DB::beginTransaction();
         try {
@@ -62,6 +65,9 @@ class UserRepository
         DB::beginTransaction();
         try {
             $user = Auth::user();
+            if ($user === null) {
+                return false;
+            }
             // Récupération de l'utilisateur
             $userDelete = User::findOrFail($user->id);
             // Récupération des recettes de l'utilisateur, avec pour chacune son compte d'opinion en favori
@@ -102,6 +108,11 @@ class UserRepository
     }
 
 
+    /**
+     * @param int $type
+     * @param UserIndexRequest $request
+     * @return LengthAwarePaginator<User>
+     */
     public function getUsers(int $type, UserIndexRequest $request): LengthAwarePaginator
     {
         // On ne liste que les utilisateurs non admin

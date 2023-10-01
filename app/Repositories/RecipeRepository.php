@@ -37,6 +37,10 @@ use Illuminate\Support\Str;
 class RecipeRepository
 {
 
+    /**
+     * @details Récupération des recettes de la page d'accueil
+     * @return array<string, mixed>
+     */
     public function getWelcomeIndex()
     {
         $response = [];
@@ -81,9 +85,13 @@ class RecipeRepository
     }
 
 
+    /**
+     * @param RecipeExplorationRequest $request
+     * @return array<string, mixed>
+     */
     public function getExplorationIndex(RecipeExplorationRequest $request): array
     {
-        $userId = Auth::user()->id;
+        $userId = Auth::user()->id ?? null;
 
         $response = [];
 
@@ -148,6 +156,10 @@ class RecipeRepository
     }
 
 
+    /**
+     * @details Affichage de la page de la recette
+     * @return array<string, mixed>
+     */
     public function getAdminIndex(RecipeAdminIndexRequest $request, int $type): array
     {
         $response = [];
@@ -207,6 +219,9 @@ class RecipeRepository
     public function moderateRecipe(RecipeAllowRequest $request): bool
     {
         $user = Auth::user();
+        if ($user === null) {
+            return false;
+        }
 
         // Transaction pour rollback si erreur
         DB::beginTransaction();
@@ -244,6 +259,9 @@ class RecipeRepository
     {
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
+        if ($user === null) {
+            return false;
+        }
 
         // Transaction pour rollback si erreur
         DB::beginTransaction();
@@ -325,6 +343,7 @@ class RecipeRepository
                 if (!empty($ingredient['ingredientId'])) {
                     // Récupération de l'ingrédient
                     $ingredientCompatible = Ingredient::findOrFail($ingredient['ingredientId']);
+                    // @phpstan-ignore-next-line
                     foreach (json_decode($ingredientCompatible->diets) as $diet) {
                         //    Si la diet n'est pas présent dans l'ingrédient, on la retire
                         if (!in_array($diet, $diets)) {
@@ -411,7 +430,6 @@ class RecipeRepository
         } // Si erreur dans la transaction
         catch (Exception $e) {
             DB::rollback();
-
             return false;
         }
     }
@@ -420,6 +438,9 @@ class RecipeRepository
     {
         $user = Auth::user();
 
+        if ($user === null) {
+            return false;
+        }
         // Transaction pour rollback si erreur
         DB::beginTransaction();
         try {
@@ -483,6 +504,7 @@ class RecipeRepository
                 if (!empty($ingredient['ingredientId'])) {
                     // Récupération de l'ingrédient
                     $ingredientCompatible = Ingredient::findOrFail($ingredient['ingredientId']);
+                    // @phpstan-ignore-next-line
                     foreach (json_decode($ingredientCompatible->diets) as $diet) {
                         //    Si la diet n'est pas présent dans l'ingrédient, on la retire
                         if (!in_array($diet, $diets)) {
@@ -583,7 +605,6 @@ class RecipeRepository
         } // Si erreur dans la transaction
         catch (Exception $e) {
             DB::rollback();
-
             return false;
         }
     }
@@ -609,10 +630,14 @@ class RecipeRepository
 
     public function commentRecipe(RecipeCommentRequest $request, Recipe $recipe): bool
     {
+        $user = Auth::user();
+        if ($user === null) {
+            return false;
+        }
+
         // Transaction pour rollback si erreur
         DB::beginTransaction();
         try {
-            $user = Auth::user();
 
             RecipeOpinion::updateOrCreate(
                 ['user_id' => $user->id, 'recipe_id' => $recipe->id],
@@ -635,9 +660,14 @@ class RecipeRepository
 
     public function emptyOpinionRecipe(Recipe $recipe): bool
     {
+
+        $user = Auth::user();
+        if ($user === null) {
+            return false;
+        }
+
         DB::beginTransaction();
         try {
-            $user = Auth::user();
             // Trouver l'opinion de la recette par l'utilisateur
             $recipeOpinion = $recipe->opinions()->where('user_id', $user->id)->firstOrFail();
             // Réinitialisation du commentaire et de la note de l'avis sur la recette
@@ -656,6 +686,10 @@ class RecipeRepository
         }
     }
 
+    /**
+     * @param RecipeUserIndexRequest $request
+     * @return Builder<Recipe>
+     */
     public function userIndex(RecipeUserIndexRequest $request): Builder
     {
         // Récupération des infos de l'utilisateur connecté
@@ -699,10 +733,15 @@ class RecipeRepository
         return $recipesQuery;
     }
 
+    /**
+     * @param RecipeNoteBookIndexRequest $request
+     * @return Builder<Recipe>
+     */
     public function noteBookIndex(RecipeNoteBookIndexRequest $request): Builder
     {
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
+
         // Début de la requête
         $recipesQuery = Recipe::select('*')->join('recipe_opinions', 'recipe_opinions.recipe_id', '=', 'recipes.id')
                               ->where('recipes.name', 'like', "%{$request->name}%")
