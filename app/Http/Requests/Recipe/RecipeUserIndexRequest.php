@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Recipe;
 
 use App\Rules\DietExists;
-use App\Rules\ValidateRecipeTypeId;
+use App\Rules\ValidateRecipeType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
@@ -20,13 +20,13 @@ class RecipeUserIndexRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, array<ValidateRecipeTypeId|DietExists|string>>
+     * @return array<string, array<ValidateRecipeType|DietExists|string>>
      */
     public function rules(): array
     {
         return [
             'name'   => ['string', 'nullable'],
-            'typeId' => ['integer', 'nullable', new ValidateRecipeTypeId],
+            'type' => ['integer', 'nullable', new ValidateRecipeType],
             'diet'   => ['integer', 'nullable', new DietExists],
         ];
     }

@@ -2,10 +2,11 @@
 
 namespace App\Rules;
 
+use App\Enums\RecipeTypes;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 
-class ValidateRecipeTypeId implements Rule
+class ValidateRecipeType implements Rule
 {
     /**
      * Determine if the validation rule passes.
@@ -16,11 +17,11 @@ class ValidateRecipeTypeId implements Rule
      */
     public function passes($attribute, $value)
     {
-        if ($value == '0') {
+        if ($value == 'all') {
             return true;
         }
 
-        return DB::table('recipe_types')->where('id', $value)->exists();
+        return in_array($value, RecipeTypes::allValues());
     }
 
     /**

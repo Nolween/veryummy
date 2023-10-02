@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Enums\Diets;
+use App\Enums\RecipeTypes;
 use App\Helpers\ImageTransformation;
 use App\Http\Requests\Recipe\RecipeAdminIndexRequest;
 use App\Http\Requests\Recipe\RecipeAllowRequest;
@@ -101,8 +102,8 @@ class RecipeRepository
         }
 
         // Si on a un type de plat (entrée, plat, dessert,...)
-        if ($request->typeId && (int)$request->typeId > 0) {
-            $recipes = $recipes->where('recipe_type_id', $request->typeId);
+        if ($request->type && in_array( $request->type, RecipeTypes::allValues())) {
+            $recipes = $recipes->where('recipe_type', $request->type);
         }
 
         // Si on a un filtre sur le type de régime
@@ -136,16 +137,15 @@ class RecipeRepository
         // Pagination des recettes
         $response['recipes'] = $recipes->paginate(20);
         // Création d'un type temporaire tous
-        $allTypes = new RecipeType();
-        $allTypes->id = 0;
-        $allTypes->name = 'Tous';
+        $allTypes = RecipeTypes::allValues();
+        $allTypes = array_merge(['all'], $allTypes);
         // Récupération de tous les types de plat auquel on ajoute le type tous
-        $response['types'] = RecipeType::all()->prepend($allTypes);
+        $response['types'] = $allTypes;
         // dd($response['types']);
         // Renvoi des données de filtres de recherche
         $response['search'] = $request->name ?? null;
         $response['diet'] = $request->diet ?? null;
-        $response['typeId'] = $request->typeId ?? null;
+        $response['type'] = $request->type ?? null;
 
         return $response;
     }
@@ -290,7 +290,7 @@ class RecipeRepository
             $newRecipe->making_time = $request->preparation;
             $newRecipe->servings = $request->parts;
             $newRecipe->is_accepted = true;
-            $newRecipe->recipe_type_id = $request->type;
+            $newRecipe->recipe_type = $request->type;
             $newRecipe->user_id = Auth::user()->id;
             // Sauvegarde de la recette
             $newRecipe->save();
@@ -336,7 +336,7 @@ class RecipeRepository
                     // Récupération de l'ingrédient
                     $ingredientCompatible = Ingredient::findOrFail($ingredient['ingredientId']);
                     // @phpstan-ignore-next-line
-                    foreach (json_decode($ingredientCompatible->diets) as $diet) {
+                    foreach ($ingredientCompatible->diets as $diet) {
                         //    Si la diet n'est pas présent dans l'ingrédient, on la retire
                         if (!in_array($diet, $diets)) {
                             unset($diets[array_search($diet, $diets)]);
@@ -440,11 +440,10 @@ class RecipeRepository
             $newName = $recipe->name !== $request->nom;
             $oldImageName = $recipe->image;
             $recipe->name = $request->nom;
-            $recipe->recipe_type_id = $request->type;
+            $recipe->recipe_type = $request->type;
             $recipe->cooking_time = $request->cuisson;
             $recipe->making_time = $request->preparation;
             $recipe->servings = $request->parts;
-            $recipe->recipe_type_id = $request->type;
             $recipe->user_id = $user->id;
             // Sauvegarde de la recette
             $recipe->save();
@@ -614,7 +613,7 @@ class RecipeRepository
             'making_time as makingTime',
             'image',
             'score',
-            'recipe_type_id',
+            'recipe_type',
             'diets'
         )
                      ->withCount('steps') // Nombre d'étapes possède la recette
@@ -698,8 +697,8 @@ class RecipeRepository
                               ->withCount('steps');
 
         // Si on a un type de plat (entrée, plat, dessert,...)
-        if ($request->typeId && (int)$request->typeId > 0) {
-            $recipesQuery = $recipesQuery->where('recipe_type_id', $request->typeId);
+        if ($request->type && (int)$request->type > 0) {
+            $recipesQuery = $recipesQuery->where('recipe_type', $request->type);
         }
 
         // Si on a un filtre sur le type de diet
@@ -745,8 +744,8 @@ class RecipeRepository
                               ->withCount('steps');
 
         // Si on a un type de plat (entrée, plat, dessert,...)
-        if ($request->typeId && (int)$request->typeId > 0) {
-            $recipesQuery = $recipesQuery->where('recipes.recipe_type_id', $request->typeId);
+        if ($request->type && in_array($request->type, RecipeTypes::allValues())) {
+            $recipesQuery = $recipesQuery->where('recipes.recipe_type', $request->type);
         }
 
         // Si on a un filtre sur le type de régime

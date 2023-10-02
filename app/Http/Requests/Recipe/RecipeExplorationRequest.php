@@ -24,7 +24,7 @@ class RecipeExplorationRequest extends FormRequest
     {
         return [
             'name'   => ['string', 'nullable'],
-            'typeId' => ['integer', 'nullable', 'exists:recipe_types,id'],
+            'type' => ['integer', 'nullable', 'exists:recipe_types,id'],
             'diet'   => ['integer', 'nullable', new DietExists],
         ];
     }

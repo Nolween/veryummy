@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\Diets;
+use App\Enums\RecipeTypes;
 use App\Helpers\ImageTransformation;
 use App\Models\Recipe;
 use App\Models\RecipeIngredients;
@@ -51,20 +52,19 @@ class RecipeFactory extends Factory
         $user = User::inRandomOrder()->first() ?? User::factory()->create();
 
 
-
         return [
-            'user_id'        => $user->id,
-            'recipe_type_id' => RecipeType::inRandomOrder()->first()->id,
-            'name'           => fake()->sentence(),
-            'image'          => $filename . '.avif',
-            'making_time'    => rand(1, 100),
-            'cooking_time'   => rand(1, 180),
-            'servings'       => rand(1, 20),
-            'score'          => fake()->randomFloat(2, 1, 5),
-            'diets'          => [],
-            'created_at'     => now(),
-            'updated_at'     => now(),
-            'is_accepted'    => fake()->boolean(90)
+            'user_id'      => $user->id,
+            'recipe_type'  => fake()->randomElement(RecipeTypes::allValues()),
+            'name'         => fake()->sentence(),
+            'image'        => $filename . '.avif',
+            'making_time'  => rand(1, 100),
+            'cooking_time' => rand(1, 180),
+            'servings'     => rand(1, 20),
+            'score'        => fake()->randomFloat(2, 1, 5),
+            'diets'        => [],
+            'created_at'   => now(),
+            'updated_at'   => now(),
+            'is_accepted'  => fake()->boolean(90)
         ];
     }
 
@@ -83,7 +83,7 @@ class RecipeFactory extends Factory
             $recipeIngredients = $recipe->ingredients;
             foreach ($recipeIngredients as $recipeIngredient) {
                 $ingredient = $recipeIngredient->ingredient;
-                $ingredientDiets = json_decode($ingredient->diets);
+                $ingredientDiets = $ingredient->diets;
                 foreach ($diets as $diet) {
                     //    Si la diet n'est pas présent dans l'ingrédient, on la retire
                     if (!in_array($diet, $ingredientDiets)) {

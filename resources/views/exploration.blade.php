@@ -55,11 +55,11 @@
                 </div>
                 {{-- Sélection d'un type de recette --}}
                 <div class="w-full lg:w-3/12 lg:pl-2 mb-3">
-                    <select name="typeId" id="type-select"
+                    <select name="type" id="type-select"
                         class="text-gray-400 border-gray-100 border-2 text-4xl w-full pl-4 rounded-sm focus:border-gray-400 focus:outline-none">
                         @foreach ($types as $type)
-                            <option {{ $type->id == $typeId ? 'selected' : '' }} value="{{ $type->id }}">
-                                {{ $type->name }}</option>
+                            <option {{ $type == $type ? 'selected' : '' }} value="{{ $type }}">
+                                {{ $type }}</option>
                         @endforeach
                     </select>
                 </div>

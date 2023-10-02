@@ -203,8 +203,8 @@
                             <select name="type"
                                 class="text-gray-400 border-gray-100 border-2 text-4xl w-38 pl-4 rounded-sm focus:border-gray-400 focus:outline-none ml-2 mb-3">
                                 @foreach ($types as $type)
-                                    <option value="{{ $type->id }}"
-                                        {{ old('type') == $type->id ? 'selected' : '' }}>{{ $type->name }} </option>
+                                    <option value="{{ $type }}"
+                                        {{ old('type') == $type ? 'selected' : '' }}>{{ $type }} </option>
                                 @endforeach
                             </select>
                         </div>

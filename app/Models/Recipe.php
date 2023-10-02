@@ -12,15 +12,15 @@ use Illuminate\Support\Facades\Auth;
 /**
  * @property int $id
  * @property int $user_id
- * @property int $recipe_type_id
+ * @property string $recipe_type
  * @property string $name
  * @property int $cooking_time
  * @property int $making_time
- * @property int $score
+ * @property int servings
+ * @property double $score
  * @property string $image
  * @property bool $is_accepted
  * @property array $diets
- * @property-read RecipeType $recipeType
  * @property-read User $user
  * @property-read RecipeStep[] $steps
  * @property-read RecipeOpinion[] $comments
@@ -37,7 +37,7 @@ class Recipe extends Model
      */
     protected $fillable = [
         'user_id',
-        'recipe_type_id',
+        'recipe_type',
         'name',
         'cooking_time',
         'making_time',
@@ -50,16 +50,6 @@ class Recipe extends Model
     protected $casts = [
         'diets' => 'array',
     ];
-
-    /**
-     * Indique à quel type de recette elle appartient
-     *
-     * @return BelongsTo<RecipeType, Recipe>
-     */
-    public function recipeType(): BelongsTo
-    {
-        return $this->belongsTo(RecipeType::class);
-    }
 
     /**
      * Indique à quel utilisateur elle appartient
@@ -119,9 +109,9 @@ class Recipe extends Model
     public function opinion(): HasOne
     {
         return $this->hasOne(RecipeOpinion::class)->ofMany([
-            'updated_at' => 'max',
-            'id'         => 'max',
-        ], function ($query) {
+                                                               'updated_at' => 'max',
+                                                               'id'         => 'max',
+                                                           ], function ($query) {
             $query->where('user_id', '=', Auth::id());
         });
         // return $this->hasMany(RecipeOpinion::class)->with('user')->where('user_id', );

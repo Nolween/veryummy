@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RecipeTypes;
 use App\Enums\Units;
 use App\Models\Ingredient;
 use App\Models\Recipe;
@@ -327,10 +328,10 @@ test('access my recipes', function () {
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
     $name   = '';
-    $typeId = RecipeType::inRandomOrder()->first()->id;
+    $type = fake()->randomElement(RecipeTypes::allValues());
     $diet   = rand(1, 5);
 
-    $response = $this->actingAs($user)->get("/my-recipes?name=$name&typeId=$typeId&diet=$diet");
+    $response = $this->actingAs($user)->get("/my-recipes?name=$name&type=$type&diet=$diet");
 
     $response->assertStatus(200);
 });
@@ -340,11 +341,11 @@ test('access my recipes with false type', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
-    $typeId   = rand(RecipeType::orderBy('id', 'DESC')->first()->id + 1, 999);
+    $type   = fake()->word;
     $diet     = rand(1, 5);
-    $response = $this->actingAs($user)->get("/my-recipes?diet=$diet&typeId=$typeId");
+    $response = $this->actingAs($user)->get("/my-recipes?diet=$diet&type=$type");
 
-    $response->assertSessionHasErrors('typeId');
+    $response->assertSessionHasErrors('type');
 });
 
 test('access my recipes with false diet', function () {
@@ -352,9 +353,9 @@ test('access my recipes with false diet', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
-    $typeId   = RecipeType::inRandomOrder()->first()->id;
+    $type   = fake()->randomElement(RecipeTypes::allValues());
     $diet     = rand(7, 99);
-    $response = $this->actingAs($user)->get("/my-recipes?diet=$diet&typeId=$typeId");
+    $response = $this->actingAs($user)->get("/my-recipes?diet=$diet&type=$type");
     $response->assertSessionHasErrors('diet');
 });
 
@@ -364,10 +365,10 @@ test('access my notebook', function () {
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
     $name   = '';
-    $typeId = RecipeType::inRandomOrder()->first()->id;
+    $type = fake()->randomElement(RecipeTypes::allValues());
     $diet   = rand(1, 5);
 
-    $response = $this->actingAs($user)->get("/my-notebook?name=$name&typeId=$typeId&diet=$diet");
+    $response = $this->actingAs($user)->get("/my-notebook?name=$name&type=$type&diet=$diet");
 
     $response->assertStatus(200);
 });
@@ -377,12 +378,12 @@ test('access my notebook with false type', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
-    $typeId   = rand(RecipeType::orderBy('id', 'DESC')->first()->id + 1, 999);
+    $type   = fake()->word;
     $diet     = rand(1, 5);
-    $response = $this->actingAs($user)->get("/my-notebook?diet=$diet&typeId=$typeId");
+    $response = $this->actingAs($user)->get("/my-notebook?diet=$diet&type=$type");
 
     // $response->dumpSession();
-    $response->assertSessionHasErrors('typeId');
+    $response->assertSessionHasErrors('type');
 });
 
 test('access my notebook with false diet', function () {
@@ -390,9 +391,9 @@ test('access my notebook with false diet', function () {
     // On sélectionne un utilisateur au hasard qui n'est pas banni
     $user = User::where('is_banned', false)->inRandomOrder()->first();
 
-    $typeId   = RecipeType::inRandomOrder()->first()->id;
+    $type   = fake()->randomElement(RecipeTypes::allValues());
     $diet     = rand(7, 99);
-    $response = $this->actingAs($user)->get("/my-notebook?diet=$diet&typeId=$typeId");
+    $response = $this->actingAs($user)->get("/my-notebook?diet=$diet&type=$type");
     $response->assertSessionHasErrors('diet');
 });
 
@@ -429,7 +430,7 @@ test('create recipe', function () {
         'cuisson'         => rand(5, 60),
         'parts'           => rand(1, 20),
         'stepCount'       => $stepCount,
-        'type'            => RecipeType::inRandomOrder()->first()->id,
+        'type'            => fake()->randomElement(RecipeTypes::allValues()),
         'ingredientCount' => $ingredientCount,
     ];
 
@@ -471,7 +472,7 @@ test('create recipe with non existing type', function () {
         'cuisson'         => rand(5, 60),
         'parts'           => rand(1, 20),
         'stepCount'       => $stepCount,
-        'type'            => rand(RecipeType::orderBy('id', 'DESC')->first()->id + 1, 999),
+        'type'            => fake()->word,
         'ingredientCount' => $ingredientCount,
     ];
 
@@ -513,7 +514,7 @@ test('create recipe with non existing ingredient', function () {
         'cuisson'         => rand(5, 60),
         'parts'           => rand(1, 20),
         'stepCount'       => $stepCount,
-        'type'            => RecipeType::inRandomOrder()->first()->id,
+        'type'            => fake()->randomElement(RecipeTypes::allValues()),
         'ingredientCount' => $ingredientCount,
     ];
 
@@ -564,7 +565,7 @@ test('create recipe with non existing unit', function () {
         'cuisson'         => rand(5, 60),
         'parts'           => rand(1, 20),
         'stepCount'       => $stepCount,
-        'type'            => RecipeType::inRandomOrder()->first()->id,
+        'type'            => fake()->randomElement(RecipeTypes::allValues()),
         'ingredientCount' => $ingredientCount,
     ];
 
@@ -617,7 +618,7 @@ test('create recipe with bad times', function () {
         'cuisson'         => rand(5, 60),
         'parts'           => rand(1, 20),
         'stepCount'       => $stepCount,
-        'type'            => RecipeType::inRandomOrder()->first()->id,
+        'type'            => fake()->randomElement(RecipeTypes::allValues()),
         'ingredientCount' => $ingredientCount,
     ];
 
@@ -682,7 +683,7 @@ test('create recipe with bad servings', function () {
         'cuisson'         => rand(5, 60),
         'parts'           => -5,
         'stepCount'       => $stepCount,
-        'type'            => RecipeType::inRandomOrder()->first()->id,
+        'type'            => fake()->randomElement(RecipeTypes::allValues()),
         'ingredientCount' => $ingredientCount,
     ];
 
@@ -733,7 +734,7 @@ test('create recipe with short name', function () {
         'cuisson'         => rand(5, 60),
         'parts'           => rand(5, 20),
         'stepCount'       => $stepCount,
-        'type'            => RecipeType::inRandomOrder()->first()->id,
+        'type'            => fake()->randomElement(RecipeTypes::allValues()),
         'ingredientCount' => $ingredientCount,
     ];
 
@@ -786,7 +787,7 @@ test('create recipe with bad file', function () {
         'parts'           => rand(5, 20),
         'photoInput'      => $file,
         'stepCount'       => $stepCount,
-        'type'            => RecipeType::inRandomOrder()->first()->id,
+        'type'            => fake()->randomElement(RecipeTypes::allValues()),
         'ingredientCount' => $ingredientCount,
     ];
 
@@ -837,7 +838,7 @@ test('update recipe', function () {
         'cuisson'         => rand(5, 60),
         'parts'           => rand(1, 20),
         'stepCount'       => $stepCount,
-        'type'            => RecipeType::inRandomOrder()->first()->id,
+        'type'            => fake()->randomElement(RecipeTypes::allValues()),
         'ingredientCount' => $ingredientCount,
     ];
 
@@ -886,7 +887,7 @@ test('update recipe with bad owner', function () {
         'cuisson'         => rand(5, 60),
         'parts'           => rand(1, 20),
         'stepCount'       => $stepCount,
-        'type'            => RecipeType::inRandomOrder()->first()->id,
+        'type'            => fake()->randomElement(RecipeTypes::allValues()),
         'ingredientCount' => $ingredientCount,
     ];
 
@@ -940,7 +941,7 @@ test('update recipe with bad times', function () {
         'cuisson'         => rand(5, 60),
         'parts'           => rand(1, 20),
         'stepCount'       => $stepCount,
-        'type'            => RecipeType::inRandomOrder()->first()->id,
+        'type'            => fake()->randomElement(RecipeTypes::allValues()),
         'ingredientCount' => $ingredientCount,
     ];
 
@@ -1009,7 +1010,7 @@ test('update recipe with bad servings', function () {
         'cuisson'         => rand(5, 60),
         'parts'           => -5,
         'stepCount'       => $stepCount,
-        'type'            => RecipeType::inRandomOrder()->first()->id,
+        'type'            => fake()->randomElement(RecipeTypes::allValues()),
         'ingredientCount' => $ingredientCount,
     ];
 
@@ -1061,7 +1062,7 @@ test('update recipe with non existing recipe', function () {
         'cuisson'         => rand(5, 60),
         'parts'           => -5,
         'stepCount'       => $stepCount,
-        'type'            => RecipeType::inRandomOrder()->first()->id,
+        'type'            => fake()->randomElement(RecipeTypes::allValues()),
         'ingredientCount' => $ingredientCount,
     ];
 
@@ -1111,7 +1112,7 @@ test('update recipe with short name', function () {
         'cuisson'         => rand(5, 60),
         'parts'           => -5,
         'stepCount'       => $stepCount,
-        'type'            => RecipeType::inRandomOrder()->first()->id,
+        'type'            => fake()->randomElement(RecipeTypes::allValues()),
         'ingredientCount' => $ingredientCount,
     ];
 
@@ -1174,7 +1175,7 @@ test('update recipe with bad file', function () {
         'cuisson'         => rand(5, 60),
         'parts'           => -5,
         'stepCount'       => $stepCount,
-        'type'            => RecipeType::inRandomOrder()->first()->id,
+        'type'            => fake()->randomElement(RecipeTypes::allValues()),
         'ingredientCount' => $ingredientCount,
     ];
 
@@ -1227,7 +1228,7 @@ test('update recipe with bad unit', function () {
         'cuisson'         => rand(5, 60),
         'parts'           => -5,
         'stepCount'       => $stepCount,
-        'type'            => rand(RecipeType::orderBy('id', 'DESC')->first()->id + 1, 999),
+        'type'            => fake()->word,
         'ingredientCount' => $ingredientCount,
     ];
 
@@ -1280,7 +1281,7 @@ test('update recipe with non existing ingredient', function () {
         'cuisson'         => rand(5, 60),
         'parts'           => rand(5, 20),
         'stepCount'       => $stepCount,
-        'type'            => RecipeType::inRandomOrder()->first()->id,
+        'type'            => fake()->randomElement(RecipeTypes::allValues()),
         'ingredientCount' => $ingredientCount,
     ];
 
@@ -1342,7 +1343,7 @@ test('update recipe with non existing unit', function () {
         'cuisson'         => rand(5, 60),
         'parts'           => rand(5, 20),
         'stepCount'       => $stepCount,
-        'type'            => RecipeType::inRandomOrder()->first()->id,
+        'type'            => fake()->randomElement(RecipeTypes::allValues()),
         'ingredientCount' => $ingredientCount,
     ];
 

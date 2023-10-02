@@ -217,8 +217,8 @@
                                     @endforeach
                                 @else
                                     @foreach ($types as $type)
-                                        <option value="{{ $type->id }}" {{ $type->id == $recipe->recipe_type_id ? 'selected' : '' }}>
-                                            {{ $type->name }}
+                                        <option value="{{ $type }}" {{ $type == $recipe->recipe_type ? 'selected' : '' }}>
+                                            {{ $type }}
                                             </option>
                                     @endforeach
                                 @endif

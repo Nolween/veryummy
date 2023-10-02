@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RecipeTypes;
 use App\Enums\Units;
 use App\Http\Requests\Recipe\RecipeAdminIndexRequest;
 use App\Http\Requests\Recipe\RecipeAllowRequest;
@@ -18,7 +19,6 @@ use App\Http\Requests\Recipe\RecipeUserIndexRequest;
 use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Models\RecipeOpinion;
-use App\Models\RecipeType;
 use App\Models\User;
 use App\Repositories\RecipeRepository;
 use Illuminate\Http\RedirectResponse;
@@ -108,7 +108,7 @@ class RecipeController extends Controller
         $response = [
             'ingredients' => Ingredient::pluck('name', 'id'),
             'units'       => Units::allValues(),
-            'types'       => RecipeType::all(),
+            'types'       => RecipeTypes::allValues(),
         ];
 
         return view('recipenew', $response);
@@ -139,7 +139,7 @@ class RecipeController extends Controller
         $response = [
             'ingredientsList' => Ingredient::pluck('name', 'id'),
             'units'           => Units::allValues(),
-            'types'           => RecipeType::all(),
+            'types'           => RecipeTypes::allValues(),
             'recipe'          => $recipe,
         ];
 
@@ -154,7 +154,7 @@ class RecipeController extends Controller
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
 
-        if (! $user) {
+        if (!$user) {
             abort(403, 'Unauthorized action.');
         }
         // La recette existe t-elle et appartient-elle à l'utilisateur?
@@ -176,7 +176,7 @@ class RecipeController extends Controller
      */
     public function show(RecipeShowRequest $request, int $id): View
     {
-        $user   = Auth::user();
+        $user = Auth::user();
         $userId = $user->id ?? null;
         $recipe = $this->recipeRepository->showRecipe($id);
 
@@ -186,9 +186,9 @@ class RecipeController extends Controller
             'steps'       => Recipe::findOrFail($id)->steps()->get(),
             'comments'    => Recipe::findOrFail($id)->comments()->where('user_id', '!=', $userId)->get(),
             'userId'      => $userId,
-            'opinion'     => ! empty($user) ? RecipeOpinion::whereBelongsTo($user)->where('recipe_id', $id)->first(
+            'opinion'     => !empty($user) ? RecipeOpinion::whereBelongsTo($user)->where('recipe_id', $id)->first(
             ) : [],
-            'type' => RecipeType::where('id', $recipe->recipe_type_id)->firstOrFail()->name,
+            'type'        => $recipe->recipe_type,
         ];
 
         return view('recipeshow', $response);
@@ -228,15 +228,17 @@ class RecipeController extends Controller
         $recipesQuery = $this->recipeRepository->userIndex($request);
 
         // Création d'un type temporaire tous
-        $allTypes = new RecipeType(['name' => 'Tous', 'id' => 0]);
+        $allTypes = RecipeTypes::allValues();
+        // Ajout du type tous en première position du tableau
+        $allTypes = array_merge(['all'], $allTypes);
 
         $response = [
             'recipes' => $recipesQuery->paginate(20),
             'total'   => $recipesQuery->count(),
-            'types'   => RecipeType::all()->prepend($allTypes),
-            'diet'    => $request->diet   ?? null,
-            'search'  => $request->name   ?? null,
-            'typeId'  => $request->typeId ?? null,
+            'types'   => $allTypes,
+            'diet'    => $request->diet ?? null,
+            'search'  => $request->name ?? null,
+            'type'  => $request->type ?? null,
         ];
 
         return view('myrecipes', $response);
@@ -254,15 +256,17 @@ class RecipeController extends Controller
         $recipesQuery = $this->recipeRepository->noteBookIndex($request);
 
         // Création d'un type temporaire tous
-        $allTypes = new RecipeType(['name' => 'Tous', 'id' => 0]);
+        $allTypes = RecipeTypes::allValues();
+        // Ajout d'une valeur all en première position du tableau
+        $allTypes = array_merge(['all'], $allTypes);
 
         $response = [
             'recipes' => $recipesQuery->paginate(20),
             'total'   => $recipesQuery->count(),
-            'types'   => RecipeType::all()->prepend($allTypes),
-            'search'  => $request->name   ?? null,
-            'diet'    => $request->diet   ?? null,
-            'typeId'  => $request->typeId ?? null,
+            'types'   => $allTypes,
+            'search'  => $request->name ?? null,
+            'diet'    => $request->diet ?? null,
+            'type'  => $request->type ?? null,
         ];
 
         return view('mynotebook', $response);

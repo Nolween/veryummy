@@ -1,6 +1,7 @@
 <?php
 
-use App\Models\RecipeType;
+
+use App\Enums\RecipeTypes;
 
 test('access homepage', function () {
     $response = $this->get('/');
@@ -17,10 +18,10 @@ test('access exploration', function () {
 test('access exploration with name', function () {
     //? Nom valide
     $name   = 'aut';
-    $typeId = null;
+    $type = null;
     $diet   = null;
 
-    $response = $this->get("/exploration?name=$name&typeId=$typeId&diet=$diet");
+    $response = $this->get("/exploration?name=$name&type=$type&diet=$diet");
 
     $response->assertStatus(200);
 });
@@ -28,37 +29,37 @@ test('access exploration with name', function () {
 test('access exploration with type', function () {
     //? Type valide valide
     $name     = null;
-    $typeId   = RecipeType::inRandomOrder()->first()->id;
+    $type   = fake()->randomElement(RecipeTypes::allValues());
     $diet     = null;
-    $response = $this->get("/exploration?name=$name&typeId=$typeId&diet=$diet");
+    $response = $this->get("/exploration?name=$name&type=$type&diet=$diet");
     $response->assertStatus(200);
 
     //? Type inexistant
-    $typeId   = RecipeType::orderBy('id', 'DESC')->first()->id + 1;
-    $response = $this->get("/exploration?name=$name&typeId=$typeId&diet=$diet");
-    $response->assertSessionHasErrors('typeId')->assertStatus(302);
+    $type   = fake()->word;
+    $response = $this->get("/exploration?name=$name&type=$type&diet=$diet");
+    $response->assertSessionHasErrors('type')->assertStatus(302);
 
     //? Type invalide
-    $typeId   = 'dqsfsqdqsDDSQ';
-    $response = $this->get("/exploration?name=$name&typeId=$typeId&diet=$diet");
-    $response->assertSessionHasErrors('typeId')->assertStatus(302);
+    $type   = 'dqsfsqdqsDDSQ';
+    $response = $this->get("/exploration?name=$name&type=$type&diet=$diet");
+    $response->assertSessionHasErrors('type')->assertStatus(302);
 });
 
 test('access exploration with diet', function () {
     //? Régime valide valide
     $name     = null;
-    $typeId   = null;
+    $type   = null;
     $diet     = rand(0, 5);
-    $response = $this->get("/exploration?name=$name&typeId=$typeId&diet=$diet");
+    $response = $this->get("/exploration?name=$name&type=$type&diet=$diet");
     $response->assertStatus(200);
 
     //? Régime inexistant
     $diet     = 50;
-    $response = $this->get("/exploration?name=$name&typeId=$typeId&diet=$diet");
+    $response = $this->get("/exploration?name=$name&type=$type&diet=$diet");
     $response->assertSessionHasErrors('diet')->assertStatus(302);
 
     //? Régime invalide
     $diet     = 'dqsfsqdqsDDSQ';
-    $response = $this->get("/exploration?name=$name&typeId=$typeId&diet=$diet");
+    $response = $this->get("/exploration?name=$name&type=$type&diet=$diet");
     $response->assertSessionHasErrors('diet')->assertStatus(302);
 });

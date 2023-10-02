@@ -5,6 +5,7 @@ namespace App\Http\Requests\Recipe;
 use App\Models\Recipe;
 use App\Models\User;
 use App\Rules\UnitExists;
+use App\Rules\ValidateRecipeType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -40,7 +41,7 @@ class RecipeUpdateRequest extends FormRequest
             'cuisson'              => ['integer', 'nullable', 'min:0', 'max:1000'],
             'parts'                => ['integer', 'required', 'min:0', 'max:1000'],
             'stepCount'            => ['integer', 'nullable'],
-            'type'                 => ['integer', 'exists:recipe_types,id', 'required'],
+            'type'                 => ['string', new ValidateRecipeType(), 'required'],
             'ingredientCount'      => ['integer', 'nullable'],
             '*.ingredientId'       => ['integer', 'exists:ingredients,id', 'nullable'],
             '*.ingredientName'     => ['string', 'nullable'],

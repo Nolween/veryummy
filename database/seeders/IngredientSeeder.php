@@ -20557,7 +20557,7 @@ class IngredientSeeder extends Seeder
             if ($ingredient['kosher_compatible'] == true) {
                 $diets[] = 'kosher';
             }
-            $ingredient['diets'] = json_encode($diets);
+            $ingredient['diets'] = $diets;
             unset($ingredient['vegan_compatible']);
             unset($ingredient['vegetarian_compatible']);
             unset($ingredient['gluten_free_compatible']);

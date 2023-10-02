@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('recipes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('recipe_type_id')->references('id')->on('recipe_types')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('recipe_type');
             $table->string('name');
             $table->string('image')->nullable();
             $table->float('score')->nullable();
