@@ -29,5 +29,6 @@ class DenyIngredientRequest extends FormRequest
             'typeList'     => ['integer', 'required'],
             'denymessage'  => ['string', 'required', 'min:2'],
         ];
+
     }
 }
