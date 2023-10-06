@@ -101,27 +101,27 @@ class RecipeRepository
                     ->with('opinion');
         }
 
-        // Si on a un type de plat (entrée, plat, dessert,...)
+        // Si on a un type de plat (entrée, plat, dessert...)
         if ($request->type && in_array( $request->type, RecipeTypes::allValues())) {
             $recipes = $recipes->where('recipe_type', $request->type);
         }
 
         // Si on a un filtre sur le type de régime
-        if ($request->diet && $request->diet > 0) {
-            switch ((int)$request->diet) {
-                case 1: // Végétarien
+        if ($request->diet) {
+            switch ($request->diet) {
+                case Diets::VEGETARIAN->value: // Végétarien
                     $recipesCount = $recipes = $recipes->whereJsonContains('diets', Diets::VEGETARIAN->value);
                     break;
-                case 2: // Vegan
+                case Diets::VEGAN->value: // Vegan
                     $recipesCount = $recipes = $recipes->whereJsonContains('diets', Diets::VEGAN->value);
                     break;
-                case 3: // Sans gluten
+                case Diets::GLUTEN_FREE->value: // Sans gluten
                     $recipesCount = $recipes = $recipes->whereJsonContains('diets', Diets::GLUTEN_FREE->value);
                     break;
-                case 4: // Halal
+                case Diets::HALAL->value: // Halal
                     $recipesCount = $recipes = $recipes->whereJsonContains('diets', Diets::HALAL->value);
                     break;
-                case 5: // casher
+                case Diets::KOSHER->value: // casher
                     $recipesCount = $recipes = $recipes->whereJsonContains('diets', Diets::KOSHER->value);
                     break;
                 default:
@@ -141,7 +141,6 @@ class RecipeRepository
         $allTypes = array_merge(['all'], $allTypes);
         // Récupération de tous les types de plat auquel on ajoute le type tous
         $response['types'] = $allTypes;
-        // dd($response['types']);
         // Renvoi des données de filtres de recherche
         $response['search'] = $request->name ?? null;
         $response['diet'] = $request->diet ?? null;

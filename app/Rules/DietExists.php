@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use App\Enums\Diets;
 use Illuminate\Contracts\Validation\Rule;
 
 class DietExists implements Rule
@@ -26,7 +27,7 @@ class DietExists implements Rule
     public function passes($attribute, $value)
     {
 
-        return $value >= 0 && $value <= 5;
+        return in_array($value, Diets::allValues());
     }
 
     /**
