@@ -28,7 +28,7 @@ class AuthServiceProvider extends ServiceProvider
 
         // Définition des accès selon le role
         Gate::define('access-admin-role', function (User $user) {
-            return $user->role === User::ROLE_ADMIN;
+            return $user->role === User::ROLE_ADMIN && $user->is_banned === 0;
         });
         Gate::define('authorized-user', function (User $user) {
             return ! $user->is_banned;
