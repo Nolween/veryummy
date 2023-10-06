@@ -42,6 +42,10 @@ class RecipeFactory extends Factory
         }
         imageavif($gdImage, storage_path('app/public/img/full/' . $filename . '.avif'));
         $resizeSmallImg = ImageTransformation::image_resize($gdImage, 240, 180);
+        // If thumbnail folder does not exist, create it
+        if (!file_exists(storage_path('app/public/img/thumbnail'))) {
+            mkdir(storage_path('app/public/img/thumbnail'));
+        }
         imageavif($resizeSmallImg, storage_path('app/public/img/thumbnail/' . $filename . '.avif'));
 
         imagedestroy($gdImage);
