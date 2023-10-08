@@ -156,7 +156,6 @@ class RecipeRepository
      */
     public function getAdminIndex(RecipeAdminIndexRequest $request, int $type): array
     {
-        $response = [];
 
         switch ((int)$type) {
             case 0:
@@ -203,26 +202,25 @@ class RecipeRepository
         if (!empty($request->search)) {
             $recipes->where('name', 'like', "%{$request->search}%");
         }
-        $response['total'] = $recipes->count();
-        $response['recipes'] = $recipes->paginate(20);
-        $response['typeList'] = (int)$type;
-        $response['search'] = $request->search;
-
+        $response = [
+            'recipes' => $recipes->paginate(20),
+            'typeList' => (int)$type,
+            'search' => $request->search,
+            'total' => $recipes->count(),
+        ];
         return $response;
     }
 
     public function moderateRecipe(RecipeAllowRequest $request): bool
     {
-        $user = Auth::user();
-        if ($user === null) {
-            return false;
-        }
 
         // Transaction pour rollback si erreur
         DB::beginTransaction();
         try {
             // Récupération de la recette par son Id
             $recipe = Recipe::where('id', $request->recipeid)->with('user')->firstOrFail();
+
+            $userRecipe = $recipe->user;
 
             // Si on ignore les signalements
             if ($request->allow == true) {
@@ -234,17 +232,15 @@ class RecipeRepository
                 Recipe::destroy($recipe->id);
                 // Envoi de mail de désactivation à la personne ayant proposé la recette
                 $informations = ['recipe' => $recipe->name, 'url' => URL::to('/')];
-                Mail::to($user->email)->send(new RefusedRecipe($informations));
+                Mail::to($userRecipe->email)->send(new RefusedRecipe($informations));
             }
 
             // Validation de la transaction
             DB::commit();
-
             return true;
         } // Si erreur dans la transaction
         catch (Exception $e) {
             DB::rollback();
-
             return false;
         }
     }
