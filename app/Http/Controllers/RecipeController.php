@@ -7,6 +7,7 @@ use App\Enums\Units;
 use App\Http\Requests\Recipe\RecipeAdminIndexRequest;
 use App\Http\Requests\Recipe\RecipeAllowRequest;
 use App\Http\Requests\Recipe\RecipeCommentRequest;
+use App\Http\Requests\Recipe\RecipeCreateRequest;
 use App\Http\Requests\Recipe\RecipeEditRequest;
 use App\Http\Requests\Recipe\RecipeEmptyOpinionRequest;
 use App\Http\Requests\Recipe\RecipeExplorationRequest;
@@ -107,7 +108,7 @@ class RecipeController extends Controller
     /**
      * @details Page de nouvelle recette
      */
-    public function create(): View|RedirectResponse
+    public function create(RecipeCreateRequest $request): View|RedirectResponse
     {
         $response = [
             'ingredients' => Ingredient::pluck('name', 'id'),
