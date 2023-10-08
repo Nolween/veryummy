@@ -18,7 +18,7 @@ class RecipeEditRequest extends FormRequest
         $recipe = Recipe::findOrFail($this->route('id'));
         $user   = Auth::user();
 
-        if ($user === null) {
+        if ($user === null || $user->is_banned === 1) {
             return false;
         }
 
