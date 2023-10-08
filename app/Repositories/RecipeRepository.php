@@ -490,8 +490,14 @@ class RecipeRepository
                 if (!empty($ingredient['ingredientId'])) {
                     // Récupération de l'ingrédient
                     $ingredientCompatible = Ingredient::findOrFail($ingredient['ingredientId']);
-                    // @phpstan-ignore-next-line
-                    foreach (json_decode($ingredientCompatible->diets) as $diet) {
+
+                    $recipediets = $ingredientCompatible->diets;
+                    // If diets is a string, decode it
+                    if (is_string($recipediets)) {
+                        $recipediets = json_decode($recipediets);
+                    }
+
+                    foreach ($recipediets as $diet) {
                         //    Si la diet n'est pas présent dans l'ingrédient, on la retire
                         if (!in_array($diet, $diets)) {
                             unset($diets[array_search($diet, $diets)]);
