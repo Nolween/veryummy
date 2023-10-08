@@ -26,7 +26,7 @@ class RecipeAllowRequest extends FormRequest
         return [
             'recipeid' => ['integer', 'required', 'exists:recipes,id'],
             'allow'    => ['boolean', 'required'],
-            'typeList' => ['integer', 'required'],
+            'typeList' => ['integer', 'required', 'min:0', 'max:3'],
         ];
     }
 }

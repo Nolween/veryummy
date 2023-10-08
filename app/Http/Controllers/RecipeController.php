@@ -57,8 +57,12 @@ class RecipeController extends Controller
     /**
      * @details Recettes dans l'administation
      */
-    public function adminIndex(int $type, RecipeAdminIndexRequest $request): View|RedirectResponse
+    public function adminIndex(RecipeAdminIndexRequest $request, int $type ): View|RedirectResponse
     {
+        if($type < 0 || $type > 3){
+            abort(404);
+        }
+
         $response = $this->recipeRepository->getAdminIndex($request, $type);
 
         return view('adminrecipeslist', $response);

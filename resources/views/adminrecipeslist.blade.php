@@ -80,11 +80,19 @@
                     <a href="{{ route('admin-recipes.index', 0) }}"><button type="button"
                             class="{{ $typeList == 0 ? 'bg-veryummy-primary' : 'bg-veryummy-secondary'}} text-4xl w-28 p-2 rounded-sm"><span class="text-white"
                                 id="registration-button">
-                                SIGNALLEES</span></button></a>
+                                A VALIDER</span></button></a>
                     <a href="{{ route('admin-recipes.index', 1) }}"><button type="button"
                             class="{{ $typeList == 1 ? 'bg-veryummy-primary' : 'bg-veryummy-secondary'}} text-4xl w-28 p-2 rounded-sm"><span class="text-white"
                                 id="registration-button">
-                                ACCEPTES</span></button></a>
+                                SIGNALEES</span></button></a>
+                    <a href="{{ route('admin-recipes.index', 2) }}"><button type="button"
+                            class="{{ $typeList == 2 ? 'bg-veryummy-primary' : 'bg-veryummy-secondary'}} text-4xl w-28 p-2 rounded-sm"><span class="text-white"
+                                id="registration-button">
+                                REFUSEES</span></button></a>
+                    <a href="{{ route('admin-recipes.index', 3) }}"><button type="button"
+                            class="{{ $typeList == 3 ? 'bg-veryummy-primary' : 'bg-veryummy-secondary'}} text-4xl w-28 p-2 rounded-sm"><span class="text-white"
+                                id="registration-button">
+                                VALIDEES</span></button></a>
                 </div>
 
             </div>

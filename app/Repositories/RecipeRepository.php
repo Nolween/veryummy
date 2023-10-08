@@ -158,51 +158,53 @@ class RecipeRepository
     {
         $response = [];
 
-        switch ($type) {
+        switch ((int)$type) {
             case 0:
-                // Récupération des ingrédients
-                $recipes = Recipe::having('opinions_count', '>', 0)
+                // Récupération des recettes en attente de validation
+                $recipes = Recipe::where('is_accepted', null)
+                                 ->withCount('opinions')
+                                 ->withCount('ingredients')
                                  ->with('user')
-                                 ->with([
-                                            'opinions' => function ($query) {
-                                                $query->where('is_reported', '=', true);
-                                            },
-                                        ])
-                                 ->withCount([
-                                                 'opinions' => function (Builder $query) {
-                                                     $query->where('is_reported', '=', true);
-                                                 },
-                                             ]);
+                                 ->orderBy('created_at', 'ASC');
 
-                // Si recherche
-                if (!empty($request->search)) {
-                    $recipes->where('name', 'like', "%{$request->search}%");
-                }
-                $response['recipes'] = $recipes->paginate(20);
                 break;
             case 1:
-                // Récupération des ingrédients
-                $recipes = Recipe::having('opinions_count', '=', 0)
-                                 ->with('user')
+                // Récupération des recettes qui ont des signalements
+                $recipes = Recipe::where('is_accepted', true)
                                  ->withCount([
-                                                 'opinions' => function (Builder $query) {
-                                                     $query->where('is_reported', '=', true);
-                                                 },
-                                             ]);
+                                     'opinions' => function (Builder $query) {
+                                         $query->where('is_reported', '=', true);
+                                     },
+                                 ])
+                                 ->withCount('opinions')
+                                 ->withCount('ingredients')
+                                 ->with('user')
+                                 ->orderBy('created_at', 'DESC');
 
-                // Si recherche
-                if (!empty($request->search)) {
-                    $recipes->where('name', 'like', "%{$request->search}%");
-                }
-
-                $response['recipes'] = $recipes->paginate(20);
                 break;
-            default:
-                $type = null;
-                $response['recipes'] = [];
+            case 2:
+            //     Récupération de la liste des recettes validées
+                $recipes = Recipe::where('is_accepted', true)
+                                 ->withCount('opinions')
+                                 ->withCount('ingredients')
+                                 ->with('user')
+                                 ->orderBy('created_at', 'DESC');
                 break;
+            case 3:
+                // Récupération de la liste des recettes refusées
+                $recipes = Recipe::where('is_accepted', false)
+                                 ->withCount('opinions')
+                                 ->withCount('ingredients')
+                                 ->with('user')
+                                 ->orderBy('created_at', 'DESC');
         }
 
+        // Si recherche
+        if (!empty($request->search)) {
+            $recipes->where('name', 'like', "%{$request->search}%");
+        }
+        $response['total'] = $recipes->count();
+        $response['recipes'] = $recipes->paginate(20);
         $response['typeList'] = (int)$type;
         $response['search'] = $request->search;
 
@@ -288,7 +290,7 @@ class RecipeRepository
             $newRecipe->cooking_time = $request->cuisson;
             $newRecipe->making_time = $request->preparation;
             $newRecipe->servings = $request->parts;
-            $newRecipe->is_accepted = true;
+            $newRecipe->is_accepted = null;
             $newRecipe->recipe_type = $request->type;
             $newRecipe->user_id = Auth::user()->id;
             // Sauvegarde de la recette
