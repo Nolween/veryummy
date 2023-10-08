@@ -249,9 +249,6 @@ class RecipeRepository
     {
         // Récupération des infos de l'utilisateur connecté
         $user = Auth::user();
-        if ($user === null) {
-            return false;
-        }
 
         // Transaction pour rollback si erreur
         DB::beginTransaction();
