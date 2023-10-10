@@ -54,4 +54,11 @@ it('comments recipes', function () {
     $response->assertStatus(302)
              ->assertSessionHasNoErrors()
              ->assertSessionHas('success', 'Commentaire effectué');
+//    Ensure that comment is in database
+    $this->assertDatabaseHas('recipe_opinions', [
+        'comment'   => 'test',
+        'score'     => 5,
+        'recipe_id' => $recipe->id,
+        'user_id'   => $user->id
+    ]);
 });
