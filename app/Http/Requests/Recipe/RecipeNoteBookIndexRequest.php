@@ -26,8 +26,8 @@ class RecipeNoteBookIndexRequest extends FormRequest
     {
         return [
             'name'   => ['string', 'nullable'],
-            'type' => ['integer', 'nullable', new ValidateRecipeType()],
-            'diet'   => ['integer', 'nullable', new DietExists],
+            'type' => ['string', 'nullable', new ValidateRecipeType()],
+            'diet'   => ['string', 'nullable', new DietExists],
         ];
     }
 }
