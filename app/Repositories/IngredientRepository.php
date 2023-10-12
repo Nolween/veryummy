@@ -8,6 +8,7 @@ use App\Http\Requests\Ingredient\StoreIngredientRequest;
 use App\Mail\AcceptedIngredient;
 use App\Mail\RefusedIngredient;
 use App\Models\Ingredient;
+use App\Models\User;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +29,7 @@ class IngredientRepository
         // Récupération des ingrédients
         $ingredients = Ingredient::select('*');
         // Si on a quelque chose dans la recherche
-        if (! empty($search)) {
+        if (!empty($search)) {
             $ingredients->where('name', 'like', "%{$search}%");
         }
         $ingredients->where('is_accepted', $type);
@@ -47,11 +48,11 @@ class IngredientRepository
             // Récupération de l'ingrédient par son Id
             $ingredient = Ingredient::where('id', $request->ingredientid)->with('user')->firstOrFail();
 
-            $authorMail              = $ingredient->user->email;
+            $authorMail = $ingredient->user->email;
             $ingredient->is_accepted = false;
             $ingredient->save();
 
-            if (! empty($authorMail) && $request->typeList == 0) {
+            if (!empty($authorMail) && $request->typeList == 0) {
                 // Envoi de mail à la personne ayant proposé l'ingrédient
                 $informations = [
                     'ingredient' => $ingredient->name,
@@ -79,16 +80,18 @@ class IngredientRepository
         DB::beginTransaction();
         try {
             // Récupération de l'ingrédient par son Id
-            $ingredient              = Ingredient::where('id', $request->ingredientid)->with('user')->firstOrFail();
-            $authorMail              = null;
-            $authorMail              = $ingredient->user->email;
-            $ingredient->name        = $request->finalname;
-            $ingredient->icon        = Str::slug($request->finalname, '_');
+            $ingredient = Ingredient::where('id', $request->ingredientid)->with('user')->firstOrFail();
+            $authorMail = null;
+            $authorMail = $ingredient->user->email;
+            $ingredient->name = $request->finalname;
+            $ingredient->icon = Str::slug($request->finalname, '_');
             $ingredient->is_accepted = $request->allow;
             // Si l'ingrédient est accepté, il passe sur le compte principal, en cas de suppression de compte du demandeur
-            $ingredient->user_id = 1;
+            // Trouver le premier compte admin
+            $adminUser = User::where('role', User::ROLE_ADMIN)->where('is_banned', 0)->firstOrFail();
+            $ingredient->user_id = $adminUser->id;
             // Définition du régime de l'aliment
-            $diets   = [];
+            $diets = [];
             $diets[] = $request->vegetarian ? 'vegetarian' : null;
             $diets[] = $request->vegan ? 'vegan' : null;
             $diets[] = $request->glutenfree ? 'gluten_free' : null;
@@ -108,7 +111,6 @@ class IngredientRepository
             return true;
         } catch (Exception $e) {
             DB::rollback();
-
             return false;
         }
     }
@@ -116,10 +118,10 @@ class IngredientRepository
     public function storeIngredient(StoreIngredientRequest $request): bool
     {
         // Création d'un nouvel ingredient
-        $newIngredient              = new Ingredient;
-        $newIngredient->user_id     = Auth::user()->id ?? 1;
-        $newIngredient->name        = $request->ingredient;
-        $newIngredient->icon        = null;
+        $newIngredient = new Ingredient;
+        $newIngredient->user_id = Auth::user()->id ?? 1;
+        $newIngredient->name = $request->ingredient;
+        $newIngredient->icon = null;
         $newIngredient->is_accepted = null;
 
         return $newIngredient->save();

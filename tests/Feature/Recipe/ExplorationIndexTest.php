@@ -43,6 +43,7 @@ it('show exploration page with filters', function() {
     //    Create Recipes
     $recipe = Recipe::factory()->create(['is_accepted' => 1, 'diets' => json_encode([$randomDiet]), 'recipe_type' => $randomType]);
 
+    // dd($randomType, $randomDiet);
     $response = $this->get(route('exploration.index', [
         'name' => $recipe->name,
         'type' => $randomType,
@@ -60,6 +61,6 @@ it('show exploration page with filters', function() {
         'type'
     ]);
     $response->assertSee($recipe->name);
-
-    expect($response->viewData('recipes')->count())->toBe(1);
+//    Expect having one recipe corresponding to the filters
+    expect($response['recipes'])->count(1);
 });

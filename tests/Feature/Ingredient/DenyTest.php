@@ -14,7 +14,7 @@ it('denies access to ingredients deny in admin page if not admin', function () {
 
 
 it('denies access to deny ingredient if not existing ingredient, deny message or typelist', function () {
-    $user = User::factory()->create(['role' => User::ROLE_ADMIN]);
+    $user = User::factory()->create(['role' => User::ROLE_ADMIN, 'is_banned' => 0]);
 
     actingAs($user)->post(route('admin-ingredients.deny'))
                    ->assertStatus(302)
@@ -22,7 +22,7 @@ it('denies access to deny ingredient if not existing ingredient, deny message or
 });
 
 it('deny ingredient', function () {
-    $user = User::factory()->create(['role' => User::ROLE_ADMIN]);
+    $user = User::factory()->create(['role' => User::ROLE_ADMIN, 'is_banned' => 0]);
     $ingredient = Ingredient::factory()->create(['is_accepted' => null]);
 
     $response = actingAs($user)->post(route('admin-ingredients.deny'), [

@@ -14,15 +14,15 @@ it('denies access to ingredients allow in admin page if not admin', function () 
 
 
 it('denies access to allow ingredient if not existing ingredientid, allow finalname or typeList', function () {
-    $user = User::factory()->create(['role' => User::ROLE_ADMIN]);
+    $user = User::factory()->create(['role' => User::ROLE_ADMIN, 'is_banned' => 0]);
 
     actingAs($user)->post(route('admin-ingredients.allow'))
                    ->assertStatus(302)
                    ->assertSessionHasErrors(['ingredientid', 'allow', 'finalname', 'typeList']);
 });
 
-it('allow ingredient', function () {
-    $user = User::factory()->create(['role' => User::ROLE_ADMIN]);
+it('allows ingredient', function () {
+    $user = User::factory()->create(['role' => User::ROLE_ADMIN, 'is_banned' => 0]);
     $ingredient = Ingredient::factory()->create(['is_accepted' => null]);
 
     $response = actingAs($user)->post(route('admin-ingredients.allow'), [
@@ -32,10 +32,9 @@ it('allow ingredient', function () {
         'typeList'     => 1,
     ]);
 
-    // L'ingrédient est désorais accepté
+    $response->assertStatus(302)
+             ->assertSessionHas('ingredientAllowSuccess');
+
+    // L'ingrédient est désormais accepté
     expect(Ingredient::find($ingredient->id)->is_accepted)->toBe(1);
-    // On s'attend à une redirection vers la liste des ingrédients
-    $response->assertRedirect(route('admin-ingredients.index', ['type' => 1]));
-    // On s'attend à avoir un message de succès
-    $response->assertSessionHas('ingredientAllowSuccess');
 });

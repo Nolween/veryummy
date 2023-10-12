@@ -15,7 +15,7 @@ it('denies access to ingredients list in admin page if not admin', function () {
 });
 
 it('shows accepted ingredients list in admin page', function () {
-    $user = User::factory()->create(['role' => User::ROLE_ADMIN]);
+    $user = User::factory()->create(['role' => User::ROLE_ADMIN, 'is_banned' => 0]);
     Ingredient::factory()->count(20)->create(['is_accepted' => true]);
 
    $response = actingAs($user)->get(route('admin-ingredients.index', ['type' => 1]))
@@ -25,7 +25,7 @@ it('shows accepted ingredients list in admin page', function () {
 });
 
 it('shows accepted ingredients list in admin page with search', function () {
-    $user = User::factory()->create(['role' => User::ROLE_ADMIN]);
+    $user = User::factory()->create(['role' => User::ROLE_ADMIN, 'is_banned' => 0]);
     Ingredient::factory()->count(20)->create(['is_accepted' => true]);
     Ingredient::factory()->create(['is_accepted' => true, 'name' => 'test']);
 

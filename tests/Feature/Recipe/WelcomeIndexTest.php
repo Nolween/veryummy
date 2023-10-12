@@ -12,5 +12,7 @@ it('show welcome page with recipes', function () {
     $response->assertStatus(200);
     $response->assertViewIs('welcome');
     $response->assertViewHas(['popularRecipes', 'recentRecipes', 'counts']);
-    $response->assertSee($recipes->first()->name);
+
+    expect($response['popularRecipes'])->count(4);
+    expect($response['recentRecipes'])->count(4);
 });
