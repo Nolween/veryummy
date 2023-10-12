@@ -25,9 +25,9 @@ class RecipeUserIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'   => ['string', 'nullable'],
-            'type' => ['integer', 'nullable', new ValidateRecipeType],
-            'diet'   => ['integer', 'nullable', new DietExists],
+            'name' => ['string', 'nullable'],
+            'type' => ['string', 'nullable', new ValidateRecipeType],
+            'diet' => ['string', 'nullable', new DietExists],
         ];
     }
 }
