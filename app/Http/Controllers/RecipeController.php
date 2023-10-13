@@ -91,9 +91,9 @@ class RecipeController extends Controller
     {
         if ($this->recipeRepository->updateStatus($request)) {
             // Définition du message de retour
-            if ($request->is_reported == null) {
+            if (is_null($request->is_reported)) {
                 $message = $request->is_favorite == 1 ? 'La recette a été ajoutée à vos favoris' : 'La recette a été retirée de vos favoris';
-            } elseif ($request->is_favorite == null) {
+            } elseif (is_null($request->is_favorite)) {
                 $message = $request->is_reported == 1 ? 'La recette a été signalée' : 'La recette a été retirée des signalements';
             } else {
                 $message = 'Erreur inconnue';
@@ -136,8 +136,6 @@ class RecipeController extends Controller
      */
     public function edit(RecipeEditRequest $request, int $id): View|RedirectResponse
     {
-        $user = Auth::user();
-
         // Récupération de la recette
         $recipe = Recipe::where('id', $id)->with('ingredients')->with('steps')->firstOrFail();
 
@@ -191,7 +189,7 @@ class RecipeController extends Controller
             'steps'       => Recipe::findOrFail($id)->steps()->get(),
             'comments'    => Recipe::findOrFail($id)->comments()->where('user_id', '!=', $userId)->get(),
             'userId'      => $userId,
-            'opinion'     => !empty($user) ? RecipeOpinion::whereBelongsTo($user)->where('recipe_id', $id)->first(
+            'opinion'     => $user !== null ? RecipeOpinion::whereBelongsTo($user)->where('recipe_id', $id)->first(
             ) : [],
             'type'        => $recipe->recipe_type,
         ];

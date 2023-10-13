@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use App\Mail\PendingModeration as MailPendingModeration;
@@ -43,16 +45,24 @@ class PendingModeration extends Command
      */
     public function handle()
     {
-
+        $informations = [];
         // Récupération des ingrédients en attente de modération
         $informations['ingredients'] = Ingredient::where('is_accepted', null)->with('user')->get();
 
+        $opinionCount = [
+            'opinions' => function (Builder $query) {
+                $query->where('is_reported', '=', true);
+            }
+        ];
+
         // Récupération des recettes en non ignorées avec des signalements
         $informations['recettes'] = Recipe::having('opinions_count', '>', 0)
-            ->with('user')
-            ->withCount(['opinions' => function (Builder $query) {
-                $query->where('is_reported', '=', true);
-            }])->get();
+                                          ->with('user')
+                                          ->withCount([
+                                                          'opinions' => function (Builder $query) {
+                                                              $query->where('is_reported', '=', true);
+                                                          }
+                                                      ])->get();
 
         $informations['url'] = URL::to('/');
 

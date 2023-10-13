@@ -94,7 +94,7 @@ class RecipeFactory extends Factory
                         unset($diets[array_search($diet, $diets)]);
                     }
                 }
-                if (empty($diets)) {
+                if ($diets === []) {
                     break;
                 }
             }

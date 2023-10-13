@@ -29,3 +29,8 @@
 - `./vendor/bin/phpstan analyse --generate-baseline`: Analyse + rapport généré dans un fichier à la racine
 - `./vendor/bin/phpstan analyse path/to/yourfile.php`: Analyse d'un seul fichier
 
+### Laravel PHP Insights (analyse de qualité)
+- `php artisan insights`: Analyse totale du projet
+- `php artisan insights path/to/analyze`: Analyse ciblée
+- `php artisan insights path/to/analyze --fix`: Analyse et CORRECTION AUTOMATIQUE ciblée
+- `./vendor/bin/phpinsights analyse --format=json > test.json`: Analyse et CORRECTION AUTOMATIQUE ciblée

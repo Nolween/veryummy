@@ -199,16 +199,15 @@ class RecipeRepository
         }
 
         // Si recherche
-        if (!empty($request->search)) {
+        if (!is_null($request->search) && $request->search !== '') {
             $recipes->where('name', 'like', "%{$request->search}%");
         }
-        $response = [
+        return [
             'recipes' => $recipes->paginate(20),
             'typeList' => (int)$type,
             'search' => $request->search,
             'total' => $recipes->count(),
         ];
-        return $response;
     }
 
     public function moderateRecipe(RecipeAllowRequest $request): bool
@@ -241,6 +240,7 @@ class RecipeRepository
         } // Si erreur dans la transaction
         catch (Exception $e) {
             DB::rollback();
+            dd($e->getMessage());
             return false;
         }
     }
@@ -253,9 +253,6 @@ class RecipeRepository
         // Transaction pour rollback si erreur
         DB::beginTransaction();
         try {
-            // La recette existe t-elle?
-            $recipe = Recipe::findOrFail($request->recipeid);
-
             RecipeOpinion::updateOrCreate(
                 ['user_id' => $user->id, 'recipe_id' => $request->recipeid],
                 ['is_favorite' => $request->is_favorite, 'is_reported' => $request->is_reported]
@@ -311,11 +308,8 @@ class RecipeRepository
                     $newRecipeIngredient = new RecipeIngredients;
                     $newRecipeIngredient->recipe_id = $newRecipe->id;
                     $newRecipeIngredient->order = $ingredientOrder;
-                    $unit = $ingredient['ingredientUnit'];
 
                     $newRecipeIngredient->unit = $ingredient['ingredientUnit'];
-                    $ingr = Ingredient::where('id', $ingredient['ingredientId'])->firstOrFail();
-
                     $newRecipeIngredient->ingredient_id = $ingredient['ingredientId'];
                     $newRecipeIngredient->quantity = $ingredient['ingredientQuantity'];
                     $newRecipeIngredient->save();
@@ -336,7 +330,7 @@ class RecipeRepository
                             unset($diets[array_search($diet, $diets)]);
                         }
                     }
-                    if (empty($diets)) {
+                    if ($diets === []) {
                         break;
                     }
                 }
@@ -443,7 +437,7 @@ class RecipeRepository
             $recipe->save();
 
             // On efface les étapes de la recette avant de les refaire
-            $stepsDelete = RecipeStep::where('recipe_id', $recipe->id)->delete();
+            RecipeStep::where('recipe_id', $recipe->id)->delete();
 
             //? Création des étapes pour la recette
             $stepOrder = 0;
@@ -461,7 +455,7 @@ class RecipeRepository
             }
 
             // On efface les étapes de la recette avant de les refaire
-            $ingredientsDelete = RecipeIngredients::where('recipe_id', $recipe->id)->delete();
+            RecipeIngredients::where('recipe_id', $recipe->id)->delete();
             //? Création des ingrédients pour la recette
             $ingredientOrder = 0;
             foreach ($request->ingredients as $ingredient) {
@@ -471,9 +465,7 @@ class RecipeRepository
                     $newRecipeIngredient = new RecipeIngredients;
                     $newRecipeIngredient->recipe_id = $recipe->id;
                     $newRecipeIngredient->order = $ingredientOrder;
-                    $unit = $ingredient['ingredientUnit'];
                     $newRecipeIngredient->unit = $ingredient['ingredientUnit'];
-                    $ingr = Ingredient::where('id', $ingredient['ingredientId'])->firstOrFail();
 
                     $newRecipeIngredient->quantity = $ingredient['ingredientQuantity'];
                     $newRecipeIngredient->ingredient_id = $ingredient['ingredientId'];
@@ -503,7 +495,7 @@ class RecipeRepository
                             unset($diets[array_search($diet, $diets)]);
                         }
                     }
-                    if (empty($diets)) {
+                    if ($diets === []) {
                         break;
                     }
                 }

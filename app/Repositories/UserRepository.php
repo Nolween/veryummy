@@ -94,7 +94,7 @@ class UserRepository
                 $recipesWithFavorite->toQuery()->update(['user_id' => 1]);
             }
             // Suppression de l'utilisateur
-            $userDestroy = User::destroy($userDelete->id);
+            User::destroy($userDelete->id);
             // Validation de la transaction
             DB::commit();
         } // Si erreur dans la transaction
@@ -131,7 +131,7 @@ class UserRepository
                     ])
                     ->withCount('reportedOpinionsByOther');
                 // Si recherche
-                if (! empty($request->search)) {
+                if (isset($request->search) && $request->search !== '') {
                     $users->where('name', 'like', "%{$request->search}%");
                 }
                 break;
@@ -150,7 +150,7 @@ class UserRepository
                     ])
                     ->withCount('reportedOpinionsByOther');
                 // Si recherche
-                if (! empty($request->search)) {
+                if (isset($request->search) && $request->search !== '') {
                     $users->where('name', 'like', "%{$request->search}%");
                 }
                 break;
@@ -231,7 +231,7 @@ class UserRepository
                 $returnType = 1;
             } // Si suppression des signalements liés à ce commentaire
             else {
-                $test       = OpinionReport::where('opinion_id', $request->opinionid)->delete();
+                OpinionReport::where('opinion_id', $request->opinionid)->delete();
                 $returnType = 2;
             }
 

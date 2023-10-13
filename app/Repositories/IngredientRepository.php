@@ -29,7 +29,7 @@ class IngredientRepository
         // Récupération des ingrédients
         $ingredients = Ingredient::select('*');
         // Si on a quelque chose dans la recherche
-        if (!empty($search)) {
+        if ($search !== null || $search !== '') {
             $ingredients->where('name', 'like', "%{$search}%");
         }
         $ingredients->where('is_accepted', $type);
@@ -52,7 +52,7 @@ class IngredientRepository
             $ingredient->is_accepted = false;
             $ingredient->save();
 
-            if (!empty($authorMail) && $request->typeList == 0) {
+            if (!is_null($authorMail) && $request->typeList == 0) {
                 // Envoi de mail à la personne ayant proposé l'ingrédient
                 $informations = [
                     'ingredient' => $ingredient->name,
