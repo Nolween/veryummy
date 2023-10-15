@@ -68,7 +68,7 @@ class UserController extends Controller
     /**
      * @details Affichage de la liste des utilisateurs
      */
-    public function index(int $type, UserIndexRequest $request): View|RedirectResponse
+    public function index($type, UserIndexRequest $request): View|RedirectResponse
     {
         $response = [
             'typeList' => $type,
